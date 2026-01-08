@@ -1,9 +1,12 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8" />
-<title>Painel da Loja | Gestão de Excursões</title>
+<meta charset="UTF-8">
+<title>Painel da Loja • Excursões</title>
 
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
@@ -13,59 +16,59 @@
   --bg:#f3f4f6;
   --card:#ffffff;
   --border:#e5e7eb;
-  --success:#16a34a;
+  --muted:#6b7280;
 }
 
-*{box-sizing:border-box}
+*{box-sizing:border-box;font-family:Inter}
 
 body{
   margin:0;
-  font-family:Inter,system-ui,Arial;
   background:var(--bg);
 }
 
+/* HEADER */
 header{
   background:linear-gradient(135deg,#020617,#0f172a);
   color:#fff;
-  padding:18px 28px;
-  font-size:20px;
+  padding:18px 24px;
   display:flex;
   justify-content:space-between;
   align-items:center;
 }
+header h1{font-size:20px;margin:0}
+header span{font-size:13px;opacity:.8}
 
-header span{
-  font-size:14px;
-  opacity:.8;
-}
-
+/* CONTAINER */
 .container{
-  max-width:1200px;
+  max-width:1280px;
   margin:auto;
   padding:24px;
 }
 
+/* CARD */
 .card{
   background:var(--card);
   border-radius:14px;
   padding:22px;
-  margin-bottom:22px;
-  box-shadow:0 8px 20px rgba(0,0,0,.05);
+  margin-bottom:24px;
+  box-shadow:0 8px 20px rgba(0,0,0,.06);
 }
 
-h2{
-  margin:0 0 14px;
+.card h2{
+  margin:0 0 16px;
   font-size:18px;
 }
 
-.grid{
-  display:grid;
-  gap:14px;
-}
-
+/* GRID */
+.grid{display:grid;gap:14px}
 .grid-2{grid-template-columns:1fr 1fr}
 .grid-3{grid-template-columns:1fr 1fr 1fr}
 
+@media(max-width:900px){
+  .grid-2,.grid-3{grid-template-columns:1fr}
+}
+
+/* INPUTS */
 input,textarea{
   width:100%;
   padding:12px;
@@ -73,56 +76,52 @@ input,textarea{
   border:1px solid var(--border);
   font-size:14px;
 }
-
 textarea{resize:vertical}
 
 label{
   font-size:13px;
-  display:flex;
-  align-items:center;
-  gap:8px;
+  color:var(--muted);
 }
 
+/* BUTTON */
 button{
   background:var(--accent);
   color:#fff;
   border:none;
   padding:14px;
   border-radius:10px;
-  font-size:15px;
+  font-size:14px;
+  font-weight:700;
   cursor:pointer;
 }
-
-button:hover{filter:brightness(1.1)}
-
-.badge{
-  display:inline-block;
-  padding:6px 10px;
-  border-radius:999px;
-  background:#e0e7ff;
-  color:#1e40af;
-  font-size:12px;
-}
-
-.excursao-item{
-  border:1px solid var(--border);
-  border-radius:12px;
-  padding:16px;
-  display:grid;
-  gap:6px;
-}
-
-.excursao-item strong{
-  font-size:16px;
-}
+button:hover{filter:brightness(1.05)}
 
 .hidden{display:none}
 
-footer{
-  text-align:center;
+/* EXCURSÃO */
+.excursao{
+  border:1px solid var(--border);
+  border-radius:14px;
+  overflow:hidden;
+}
+.excursao img{
+  width:100%;
+  height:160px;
+  object-fit:cover;
+  background:#ddd;
+}
+.excursao-body{
+  padding:16px;
+  display:grid;
+  gap:10px;
+}
+.badge{
+  background:#e0e7ff;
+  color:#1e40af;
   font-size:12px;
-  color:#64748b;
-  margin-top:40px;
+  padding:4px 10px;
+  border-radius:999px;
+  width:fit-content;
 }
 </style>
 </head>
@@ -130,18 +129,18 @@ footer{
 <body>
 
 <header>
-  🏖️ Painel da Loja – Gestão de Excursões
-  <span>Sistema Interno</span>
+  <h1>🏖️ Painel da Loja — Excursões</h1>
+  <span>Administrativo</span>
 </header>
 
 <div class="container">
 
 <!-- LOGIN -->
 <div class="card" id="loginBox">
-  <h2>🔐 Login da Loja</h2>
+  <h2>🔐 Login</h2>
   <div class="grid">
-    <input id="email" placeholder="E-mail" />
-    <input id="password" type="password" placeholder="Senha" />
+    <input id="email" placeholder="E-mail">
+    <input id="password" type="password" placeholder="Senha">
     <button onclick="login()">Entrar</button>
   </div>
 </div>
@@ -149,105 +148,87 @@ footer{
 <!-- DASHBOARD -->
 <div id="dashboard" class="hidden">
 
-  <!-- PERFIL DA LOJA -->
-  <div class="card">
-    <h2>🏢 Dados da Loja</h2>
-    <div class="grid grid-2">
-      <input id="nome_fantasia" placeholder="Nome Fantasia" />
-      <input id="razao_social" placeholder="Razão Social" />
-      <input id="cnpj" placeholder="CNPJ" />
-      <input id="telefone" placeholder="Telefone" />
-      <input id="endereco" placeholder="Endereço Completo" />
-    </div>
-    <br>
-    <button onclick="salvarLoja()">Salvar Dados da Loja</button>
+<!-- DADOS DA LOJA -->
+<div class="card">
+  <h2>🏢 Dados da Loja</h2>
+  <div class="grid grid-2">
+    <input id="nome_fantasia" placeholder="Nome Fantasia">
+    <input id="razao_social" placeholder="Razão Social">
+    <input id="cnpj" placeholder="CNPJ">
+    <input id="telefone" placeholder="Telefone">
+    <input id="endereco" placeholder="Endereço Completo">
+  </div>
+  <br>
+  <button onclick="salvarLoja()">Salvar Dados</button>
+</div>
+
+<!-- CADASTRO -->
+<div class="card">
+  <h2>🧳 Nova Excursão</h2>
+
+  <div class="grid grid-2">
+    <input id="titulo" placeholder="Título da Excursão">
+    <input id="destino" placeholder="Destino">
   </div>
 
-  <!-- NOVA EXCURSÃO -->
-  <div class="card">
-    <h2>🧳 Nova Excursão</h2>
+  <textarea id="descricao" placeholder="Descrição detalhada"></textarea>
 
-    <div class="grid grid-2">
-      <input id="titulo" placeholder="Título da Excursão" />
-      <input id="destino" placeholder="Destino" />
-    </div>
-
-    <textarea id="descricao" placeholder="Descrição completa da excursão"></textarea>
-
-    <div class="grid grid-3">
-      <input type="date" id="data_saida" />
-      <input type="date" id="data_retorno" />
-      <input id="hospedagem_dias" placeholder="Dias de Hospedagem" />
-    </div>
-
-    <div class="grid grid-2">
-      <input id="local_embarque" placeholder="Local de Embarque" />
-      <input id="local_desembarque" placeholder="Local de Desembarque" />
-    </div>
-
-    <div class="grid grid-3">
-      <input id="valor" placeholder="Valor por Pessoa (R$)" />
-      <input id="parcelas" placeholder="Parcelas" />
-    </div>
-
-    <div class="grid grid-3">
-      <label><input type="checkbox" id="inclui_cafe"> Café da manhã</label>
-      <label><input type="checkbox" id="inclui_seguro"> Seguro viagem</label>
-      <label><input type="checkbox" id="inclui_guia"> Guia turístico</label>
-      <label><input type="checkbox" id="inclui_transporte"> Transporte</label>
-    </div>
-
-    <textarea id="roteiro" placeholder="Roteiro detalhado"></textarea>
-
-    <label>Poster da Excursão</label>
-    <input type="file" id="poster" accept="image/*" />
-
-    <label>Vídeos (opcional)</label>
-    <input type="file" id="videos" accept="video/*" multiple />
-
-    <br>
-    <button onclick="salvarExcursao()">Cadastrar Excursão</button>
+  <div class="grid grid-3">
+    <input id="data_saida" placeholder="Data saída (dd/mm/aaaa)">
+    <input id="data_retorno" placeholder="Data retorno (dd/mm/aaaa)">
+    <input id="hospedagem_dias" placeholder="Dias de hospedagem">
   </div>
 
-  <!-- LISTAGEM -->
-  <div class="card">
-    <h2>📋 Excursões Cadastradas</h2>
-    <div class="grid" id="listaExcursao"></div>
+  <div class="grid grid-2">
+    <input id="local_embarque" placeholder="Local de embarque">
+    <input id="local_desembarque" placeholder="Local de desembarque">
   </div>
+
+  <div class="grid grid-3">
+    <input id="valor" placeholder="Valor por pessoa (R$)">
+    <input id="parcelas" placeholder="Parcelas">
+  </div>
+
+  <label>Poster da excursão</label>
+  <input type="file" id="poster" accept="image/*">
+
+  <br>
+  <button onclick="salvarExcursao()">Cadastrar Excursão</button>
+</div>
+
+<!-- LISTAGEM -->
+<div class="card">
+  <h2>📋 Excursões Cadastradas</h2>
+  <div class="grid grid-3" id="lista"></div>
+</div>
 
 </div>
 
-<footer>
-  Sistema de Gestão de Excursões • Savio Turismo
-</footer>
-
 <script>
-const supabaseClient = supabase.createClient(
-  'https://ghkfeobnrfvqwzuliqfz.supabase.co',
-  'sb_publishable_R-eenS9xurRgnrqDR9kz0Q_kJonEi7t'
+const sb = supabase.createClient(
+  "https://ghkfeobnrfvqwzuliqfz.supabase.co",
+  "sb_publishable_R-eenS9xurRgnrqDR9kz0Q_kJonEi7t"
 );
 
-let userId = null;
+let userId=null;
 
 // LOGIN
 async function login(){
-  const {data,error} = await supabaseClient.auth.signInWithPassword({
-    email: email.value,
-    password: password.value
+  const {data,error} = await sb.auth.signInWithPassword({
+    email:email.value,
+    password:password.value
   });
   if(error) return alert(error.message);
-
-  userId = data.user.id;
-  loginBox.classList.add('hidden');
-  dashboard.classList.remove('hidden');
-
+  userId=data.user.id;
+  loginBox.classList.add("hidden");
+  dashboard.classList.remove("hidden");
   carregarLoja();
   carregarExcursao();
 }
 
-// SALVAR LOJA
+// LOJA
 async function salvarLoja(){
-  await supabaseClient.from('loja_profile').upsert({
+  await sb.from("loja_profile").upsert({
     id:userId,
     nome_fantasia:nome_fantasia.value,
     razao_social:razao_social.value,
@@ -255,23 +236,36 @@ async function salvarLoja(){
     telefone:telefone.value,
     endereco:endereco.value
   });
-  alert('Dados da loja salvos!');
+  alert("Dados da loja salvos");
 }
 
-// SALVAR EXCURSÃO
-async function salvarExcursao(){
-  let posterUrl = null;
+async function carregarLoja(){
+  const {data}=await sb.from("loja_profile").select("*").eq("id",userId).single();
+  if(!data) return;
+  nome_fantasia.value=data.nome_fantasia||"";
+  razao_social.value=data.razao_social||"";
+  cnpj.value=data.cnpj||"";
+  telefone.value=data.telefone||"";
+  endereco.value=data.endereco||"";
+}
 
-  if(poster.files[0]){
-    const file = poster.files[0];
-    const path = `${userId}/${Date.now()}-${file.name}`;
-    const {data} = await supabaseClient.storage
-      .from('posters-excursoes')
-      .upload(path,file);
-    posterUrl = data.path;
+// EXCURSÃO
+async function salvarExcursao(){
+  let posterPath=null;
+
+  if(poster.files.length){
+    const file=poster.files[0];
+    posterPath=`${userId}/${Date.now()}_${file.name}`;
+    const {error} = await sb.storage
+      .from("posters-excursoes")
+      .upload(posterPath,file,{upsert:true});
+    if(error){
+      alert("Erro ao enviar imagem");
+      return;
+    }
   }
 
-  await supabaseClient.from('excursoes').insert({
+  const {error} = await sb.from("excursoes").insert({
     loja_id:userId,
     titulo:titulo.value,
     destino:destino.value,
@@ -283,53 +277,46 @@ async function salvarExcursao(){
     valor:valor.value,
     parcelas:parcelas.value,
     hospedagem_dias:hospedagem_dias.value,
-    inclui_cafe:inclui_cafe.checked,
-    inclui_seguro:inclui_seguro.checked,
-    inclui_guia:inclui_guia.checked,
-    inclui_transporte:inclui_transporte.checked,
-    roteiro:roteiro.value,
-    poster_url:posterUrl,
-    ativo:true
+    poster_url:posterPath
   });
 
-  alert('Excursão cadastrada com sucesso!');
-  carregarExcursao();
-}
-
-// LISTAR
-async function carregarExcursao(){
-  const {data} = await supabaseClient
-    .from('excursoes')
-    .select('*')
-    .eq('loja_id',userId)
-    .order('data_saida');
-
-  listaExcursao.innerHTML = '';
-  data.forEach(e=>{
-    listaExcursao.innerHTML += `
-      <div class="excursao-item">
-        <strong>${e.titulo}</strong>
-        <span class="badge">${e.destino}</span>
-        <div>📅 ${e.data_saida} → ${e.data_retorno}</div>
-        <div>💰 R$ ${e.valor}</div>
-      </div>`;
-  });
-}
-
-async function carregarLoja(){
-  const {data} = await supabaseClient
-    .from('loja_profile')
-    .select('*')
-    .eq('id',userId)
-    .single();
-
-  if(data){
-    nome_fantasia.value=data.nome_fantasia||'';
-    razao_social.value=data.razao_social||'';
-    cnpj.value=data.cnpj||'';
-    telefone.value=data.telefone||'';
-    endereco.value=data.endereco||'';
+  if(error){
+    alert("Erro ao salvar excursão");
+    return;
   }
+
+  carregarExcursao();
+  alert("Excursão cadastrada!");
+}
+
+// LISTAGEM
+async function carregarExcursao(){
+  const {data}=await sb
+    .from("excursoes")
+    .select("*")
+    .eq("loja_id",userId)
+    .order("created_at",{ascending:false});
+
+  lista.innerHTML="";
+  data.forEach(e=>{
+    let img="";
+    if(e.poster_url){
+      img=sb.storage
+        .from("posters-excursoes")
+        .getPublicUrl(e.poster_url).data.publicUrl;
+    }
+    lista.innerHTML+=`
+      <div class="excursao">
+        ${img?`<img src="${img}">`:""}
+        <div class="excursao-body">
+          <strong>${e.titulo}</strong>
+          <span class="badge">${e.destino}</span>
+          <div>📅 ${e.data_saida} → ${e.data_retorno}</div>
+          <div>💰 R$ ${e.valor}</div>
+        </div>
+      </div>
+    `;
+  });
 }
 </script>
 
