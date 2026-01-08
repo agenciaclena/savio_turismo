@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Painel da Loja • Excursões</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+:root{
+  --primary:#ff6a00;
+  --primary-soft:rgba(255,106,0,.15);
+  --bg:#f4f6fb;
+  --card:#fff;
+  --border:#e5e7eb;
+  --text:#111827;
+  --muted:#6b7280;
+  --danger:#dc2626;
+}
+*{box-sizing:border-box;font-family:Inter}
+body{margin:0;background:var(--bg)}
+
+.header{
+  padding:18px 16px;
+}
+.header h1{font-size:20px;font-weight:800}
+.header span{color:var(--primary)}
+.header p{font-size:12px;color:var(--muted)}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
+  gap:12px;
+  padding:0 16px 140px;
+}
+
+.card{
+  background:#fff;
+  border-radius:18px;
+  box-shadow:0 10px 26px rgba(0,0,0,.08);
+  overflow:hidden;
+  cursor:pointer;
+}
+
+.card img{
+  width:100%;
+  height:110px;
+  object-fit:cover;
+}
+
+.card-body{
+  padding:10px;
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+
+.card-body h4{
+  font-size:13px;
+  font-weight:800;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.badge{
+  font-size:10px;
+  font-weight:800;
+  padding:4px 10px;
+  border-radius:999px;
+  background:var(--primary-soft);
+  color:var(--primary);
+  width:fit-content;
+}
+
+.price{font-size:13px;font-weight:800}
+
+.fab{
+  position:fixed;
+  right:16px;
+  bottom:16px;
+  width:56px;
+  height:56px;
+  border-radius:50%;
+  background:linear-gradient(135deg,#ff6a00,#ff9a57);
+  color:#fff;
+  font-size:28px;
+  border:none;
+  box-shadow:0 14px 34px rgba(0,0,0,.35);
+}
+
+/* ===== BOTTOM SHEET ===== */
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.55);
+  display:none;
+  align-items:flex-end;
+  z-index:9999;
+}
+.modal.show{display:flex}
+
+.sheet{
+  width:100%;
+  height:94vh;
+  background:#fff;
+  border-radius:28px 28px 0 0;
+  display:flex;
+  flex-direction:column;
+}
+
+.sheet-header{
+  padding:16px;
+  font-weight:800;
+  display:flex;
+  justify-content:space-between;
+  border-bottom:1px solid var(--border);
+}
+
+.sheet-body{
+  flex:1;
+  padding:16px;
+  overflow-y:auto;
+}
+
+.sheet-body label{
+  font-size:12px;
+  font-weight:700;
+  color:var(--muted);
+  display:block;
+  margin-bottom:4px;
+}
+
+.sheet-body input,
+.sheet-body textarea{
+  width:100%;
+  height:42px;
+  border-radius:12px;
+  border:1px solid var(--border);
+  padding:0 12px;
+  margin-bottom:12px;
+}
+
+.sheet-body textarea{
+  height:auto;
+  min-height:80px;
+  padding:10px;
+}
+
+.image-box{
+  height:160px;
+  border-radius:18px;
+  background:#f1f1f1;
+  margin-bottom:16px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  overflow:hidden;
+}
+
+.image-box img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.sheet-footer{
+  padding:14px;
+  border-top:1px solid var(--border);
+  display:flex;
+  gap:12px;
+}
+
+.btn{
+  flex:1;
+  height:48px;
+  border-radius:999px;
+  border:none;
+  font-weight:800;
+}
+
+.btn-save{
+  background:linear-gradient(135deg,#ff6a00,#ff9a57);
+  color:#fff;
+}
+
+.btn-cancel{background:#e5e7eb}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+  <h1>Painel <span>Excursões</span></h1>
+  <p>Gestão da loja</p>
+</div>
+
+<div class="grid" id="lista"></div>
+<button class="fab" onclick="novo()">+</button>
+
+<!-- SHEET -->
+<div class="modal" id="modal">
+  <div class="sheet">
+    <div class="sheet-header">
+      <span id="tituloSheet">Nova excursão</span>
+      <span onclick="fechar()">✕</span>
+    </div>
+
+    <div class="sheet-body">
+
+      <label>Imagem principal</label>
+      <div class="image-box" onclick="imgInput.click()">
+        <img id="preview" style="display:none">
+        <span id="textoImg">Toque para adicionar imagem</span>
+        <input type="file" id="imgInput" hidden accept="image/*">
+      </div>
+
+      <label>Título</label>
+      <input id="titulo">
+
+      <label>Destino</label>
+      <input id="destino">
+
+      <label>Descrição</label>
+      <textarea id="descricao"></textarea>
+
+      <label>Valor (R$)</label>
+      <input id="valor" oninput="moeda(this)">
+
+      <label>Data saída</label>
+      <input id="data_saida" placeholder="dd/mm/aaaa">
+
+      <label>Data retorno</label>
+      <input id="data_retorno" placeholder="dd/mm/aaaa">
+
+    </div>
+
+    <div class="sheet-footer">
+      <button class="btn btn-cancel" onclick="fechar()">Cancelar</button>
+      <button class="btn btn-save" onclick="salvar()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const sb = supabase.createClient(
+ "https://ghkfeobnrfvqwzuliqfz.supabase.co",
+ "sb_publishable_R-eenS9xurRgnrqDR9kz0Q_kJonEi7t"
+);
+
+let userId, editId=null, blob=null, itens=[];
+
+// ===== AUTH =====
+(async()=>{
+  const {data:{session}} = await sb.auth.getSession();
+  if(!session){ alert("Faça login"); return; }
+  userId=session.user.id;
+  carregar();
+})();
+
+// ===== MOEDA =====
+function moeda(i){
+  let v=i.value.replace(/\D/g,"");
+  i.value=(v/100).toLocaleString("pt-BR",{minimumFractionDigits:2});
+}
+function moedaNum(v){
+  return Number(v.replace(/\./g,"").replace(",","."))||0;
+}
+
+// ===== IMAGE =====
+imgInput.onchange=()=>{
+  blob=imgInput.files[0];
+  preview.src=URL.createObjectURL(blob);
+  preview.style.display="block";
+  textoImg.style.display="none";
+};
+
+// ===== CRUD =====
+async function salvar(){
+  let path=null;
+  if(blob){
+    path=`${userId}/${Date.now()}.jpg`;
+    await sb.storage.from("posters-excursoes").upload(path,blob,{upsert:true});
+  }
+
+  const payload={
+    loja_id:userId,
+    titulo:titulo.value,
+    destino:destino.value,
+    descricao:descricao.value,
+    valor:moedaNum(valor.value),
+    data_saida:data_saida.value,
+    data_retorno:data_retorno.value,
+    poster_url:path,
+    ativo:true
+  };
+
+  editId
+    ? await sb.from("excursoes").update(payload).eq("id",editId)
+    : await sb.from("excursoes").insert(payload);
+
+  fechar();
+  carregar();
+}
+
+async function carregar(){
+  const {data}=await sb.from("excursoes")
+    .select("*")
+    .eq("loja_id",userId)
+    .order("data_saida");
+
+  itens=data||[];
+  lista.innerHTML="";
+  itens.forEach(e=>{
+    lista.innerHTML+=`
+      <div class="card" onclick='editar(${JSON.stringify(e)})'>
+        ${e.poster_url?`<img src="${img(e.poster_url)}">`:""}
+        <div class="card-body">
+          <h4>${e.titulo}</h4>
+          <span class="badge">${e.destino}</span>
+          <span class="price">R$ ${e.valor.toLocaleString("pt-BR",{minimumFractionDigits:2})}</span>
+        </div>
+      </div>
+    `;
+  });
+}
+
+function img(p){
+  return sb.storage.from("posters-excursoes").getPublicUrl(p).data.publicUrl;
+}
+
+function novo(){
+  editId=null;
+  tituloSheet.innerText="Nova excursão";
+  titulo.value=destino.value=descricao.value=valor.value=data_saida.value=data_retorno.value="";
+  preview.style.display="none";
+  textoImg.style.display="block";
+  modal.classList.add("show");
+}
+
+function editar(e){
+  editId=e.id;
+  tituloSheet.innerText="Editar excursão";
+  titulo.value=e.titulo;
+  destino.value=e.destino;
+  descricao.value=e.descricao||"";
+  valor.value=e.valor.toLocaleString("pt-BR",{minimumFractionDigits:2});
+  data_saida.value=e.data_saida;
+  data_retorno.value=e.data_retorno;
+  if(e.poster_url){
+    preview.src=img(e.poster_url);
+    preview.style.display="block";
+    textoImg.style.display="none";
+  }
+  modal.classList.add("show");
+}
+
+function fechar(){
+  modal.classList.remove("show");
+  blob=null;
+}
+</script>
+
+</body>
+</html>
