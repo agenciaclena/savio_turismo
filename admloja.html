@@ -14,7 +14,6 @@
 *{margin:0;padding:0;box-sizing:border-box;font-family:Inter}
 body{background:#f4f6fb}
 
-/* VARS */
 :root{
   --primary:#ff6a00;
   --border:#e5e7eb;
@@ -24,17 +23,25 @@ body{background:#f4f6fb}
 }
 
 /* HEADER */
-.header{padding:16px}
-.header h1{font-size:18px;font-weight:800}
+.header{
+  padding:16px;
+}
+.header h1{
+  font-size:18px;
+  font-weight:800;
+}
 .header span{color:var(--primary)}
-.header p{font-size:12px;color:var(--muted)}
+.header p{
+  font-size:12px;
+  color:var(--muted);
+}
 
-/* LIST */
+/* GRID */
 .grid{
   display:grid;
   grid-template-columns:repeat(3,1fr);
   gap:10px;
-  padding:0 16px 140px;
+  padding:0 16px 120px;
 }
 @media(max-width:900px){
   .grid{grid-template-columns:repeat(2,1fr)}
@@ -77,7 +84,10 @@ body{background:#f4f6fb}
   color:#c2410c;
   width:fit-content;
 }
-.price{font-size:13px;font-weight:800}
+.price{
+  font-size:13px;
+  font-weight:800;
+}
 .actions{
   font-size:12px;
   font-weight:700;
@@ -171,7 +181,6 @@ body{background:#f4f6fb}
   background:#e5e7eb;
   border-radius:999px;
   position:relative;
-  cursor:pointer;
 }
 .sheet-body input[type="checkbox"]::after{
   content:"";
@@ -252,7 +261,7 @@ body{background:#f4f6fb}
 
 <div class="sheet-body">
 
-<label>Imagem principal</label>
+<label>Imagem</label>
 <div class="image-box" onclick="imagem.click()">
   <img id="preview" style="display:none">
   <input type="file" id="imagem" hidden accept="image/*">
@@ -268,33 +277,16 @@ body{background:#f4f6fb}
 <textarea id="descricao"></textarea>
 
 <label>Data saída</label>
-<input id="data_saida" placeholder="dd/mm/aaaa">
+<input type="date" id="data_saida">
 
 <label>Data retorno</label>
-<input id="data_retorno" placeholder="dd/mm/aaaa">
-
-<label>Dias hospedagem</label>
-<input id="hospedagem_dias" inputmode="numeric">
-
-<label>Local embarque</label>
-<input id="local_embarque">
-
-<label>Local desembarque</label>
-<input id="local_desembarque">
+<input type="date" id="data_retorno">
 
 <label>Valor por pessoa</label>
 <input id="valor" oninput="moeda(this)">
 
 <label>Parcelas</label>
-<input id="parcelas" inputmode="numeric">
-
-<label><input type="checkbox" id="inclui_cafe"> Café da manhã</label>
-<label><input type="checkbox" id="inclui_seguro"> Seguro viagem</label>
-<label><input type="checkbox" id="inclui_guia"> Guia turístico</label>
-<label><input type="checkbox" id="inclui_transporte"> Transporte</label>
-
-<label>Roteiro</label>
-<textarea id="roteiro"></textarea>
+<input id="parcelas">
 
 </div>
 
@@ -308,16 +300,20 @@ body{background:#f4f6fb}
 </div>
 
 <script>
-const sb=supabase.createClient(
+const sb = supabase.createClient(
  "https://ghkfeobnrfvqwzuliqfz.supabase.co",
  "sb_publishable_R-eenS9xurRgnrqDR9kz0Q_kJonEi7t"
 );
 
 let userId=null,editId=null,blob=null,itens=[];
 
+/* 🔐 PROTEÇÃO */
 (async()=>{
- const {data:{session}}=await sb.auth.getSession();
- if(!session) location.href="login.html";
+ const {data:{session}} = await sb.auth.getSession();
+ if(!session){
+   location.href="login.html";
+   return;
+ }
  userId=session.user.id;
  carregar();
 })();
@@ -365,16 +361,8 @@ async function salvar(){
   descricao:descricao.value,
   data_saida:data_saida.value,
   data_retorno:data_retorno.value,
-  hospedagem_dias:hospedagem_dias.value,
-  local_embarque:local_embarque.value,
-  local_desembarque:local_desembarque.value,
   valor:moedaNum(valor.value),
   parcelas:parcelas.value,
-  inclui_cafe:inclui_cafe.checked,
-  inclui_seguro:inclui_seguro.checked,
-  inclui_guia:inclui_guia.checked,
-  inclui_transporte:inclui_transporte.checked,
-  roteiro:roteiro.value,
   poster_url:poster
  };
 
@@ -383,7 +371,8 @@ async function salvar(){
  }else{
   await sb.from("excursoes").insert(payload);
  }
- fechar();carregar();
+ fechar();
+ carregar();
 }
 
 async function carregar(){
@@ -417,16 +406,8 @@ function editar(id){
  descricao.value=e.descricao;
  data_saida.value=e.data_saida;
  data_retorno.value=e.data_retorno;
- hospedagem_dias.value=e.hospedagem_dias;
- local_embarque.value=e.local_embarque;
- local_desembarque.value=e.local_desembarque;
  valor.value=Number(e.valor).toLocaleString("pt-BR",{minimumFractionDigits:2});
  parcelas.value=e.parcelas;
- inclui_cafe.checked=e.inclui_cafe;
- inclui_seguro.checked=e.inclui_seguro;
- inclui_guia.checked=e.inclui_guia;
- inclui_transporte.checked=e.inclui_transporte;
- roteiro.value=e.roteiro;
  if(e.poster_url){
   preview.src=sb.storage.from("buffet_excursoes").getPublicUrl(e.poster_url).data.publicUrl;
   preview.style.display="block";
@@ -437,7 +418,8 @@ function editar(id){
 async function excluir(){
  if(!confirm("Excluir excursão?")) return;
  await sb.from("excursoes").delete().eq("id",editId);
- fechar();carregar();
+ fechar();
+ carregar();
 }
 </script>
 
