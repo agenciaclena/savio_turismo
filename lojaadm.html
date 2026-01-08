@@ -2,9 +2,9 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Painel Admin • Cadastro de Excursões</title>
+<title>Painel Admin • Excursões</title>
 
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -19,15 +19,8 @@
   --border:#e5e7eb;
   --muted:#6b7280;
 }
-
 *{box-sizing:border-box;font-family:Inter}
-
-body{
-  margin:0;
-  background:var(--bg);
-}
-
-/* HEADER */
+body{margin:0;background:var(--bg)}
 header{
   background:linear-gradient(135deg,#020617,#0f172a);
   color:#fff;
@@ -38,138 +31,77 @@ header{
 }
 header h1{font-size:20px;margin:0}
 header span{font-size:13px;opacity:.8}
-
-/* CONTAINER */
-.container{
-  max-width:1300px;
-  margin:auto;
-  padding:24px;
-}
-
-/* CARD */
+.container{max-width:1300px;margin:auto;padding:24px}
 .card{
   background:var(--card);
-  border-radius:16px;
+  border-radius:18px;
   padding:22px;
   margin-bottom:24px;
-  box-shadow:0 10px 26px rgba(0,0,0,.07);
+  box-shadow:0 10px 26px rgba(0,0,0,.08);
 }
-.card h2{
-  margin:0 0 16px;
-  font-size:18px;
-}
-
-/* GRID */
+.card h2{margin:0 0 16px;font-size:18px}
 .grid{display:grid;gap:14px}
 .grid-2{grid-template-columns:1fr 1fr}
 .grid-3{grid-template-columns:1fr 1fr 1fr}
 .grid-4{grid-template-columns:1fr 1fr 1fr 1fr}
-
 @media(max-width:900px){
   .grid-2,.grid-3,.grid-4{grid-template-columns:1fr}
 }
-
-/* INPUTS */
+label{font-size:12px;font-weight:700;color:var(--muted)}
 input,textarea{
   width:100%;
   padding:12px;
-  border-radius:10px;
+  border-radius:12px;
   border:1px solid var(--border);
   font-size:14px;
 }
-textarea{resize:vertical;min-height:90px}
-
-label{
-  font-size:12px;
-  font-weight:600;
-  color:var(--muted);
-  margin-bottom:4px;
-  display:block;
-}
-
-/* CHECKBOX */
+textarea{min-height:90px}
 .checkbox{
   display:flex;
   align-items:center;
   gap:10px;
   font-size:14px;
-  font-weight:600;
+  font-weight:700;
 }
-.checkbox input{width:18px;height:18px}
-
-/* BUTTONS */
 button{
   background:var(--accent);
   color:#fff;
   border:none;
   padding:14px;
   border-radius:999px;
-  font-size:14px;
   font-weight:800;
   cursor:pointer;
 }
-button.secondary{
-  background:#e5e7eb;
-  color:#111;
-}
-button.danger{
-  background:var(--danger);
-}
-button:hover{filter:brightness(1.05)}
-
-.hidden{display:none}
-
-/* IMAGE PREVIEW */
+button.danger{background:var(--danger)}
 .image-box{
-  height:180px;
-  border-radius:18px;
-  background:#f1f1f1;
+  height:200px;
+  border-radius:20px;
+  background:#ececec;
   display:flex;
   align-items:center;
   justify-content:center;
   cursor:pointer;
   overflow:hidden;
 }
-.image-box img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-}
-.image-box span{
-  font-size:13px;
-  color:#6b7280;
-}
-
-/* LISTAGEM */
+.image-box img{width:100%;height:100%;object-fit:cover}
+.image-box span{color:#6b7280;font-size:13px}
 .excursao{
   border:1px solid var(--border);
-  border-radius:16px;
+  border-radius:20px;
   overflow:hidden;
-  background:#fff;
 }
-.excursao img{
-  width:100%;
-  height:150px;
-  object-fit:cover;
-}
-.excursao-body{
-  padding:16px;
-  display:grid;
-  gap:8px;
-}
+.excursao img{width:100%;height:160px;object-fit:cover}
+.excursao-body{padding:16px;display:grid;gap:8px}
 .badge{
   background:#e0e7ff;
   color:#1e40af;
-  font-size:11px;
   padding:4px 10px;
   border-radius:999px;
+  font-size:11px;
   width:fit-content;
 }
-.actions{
-  display:flex;
-  gap:10px;
-  margin-top:8px;
-}
+.actions{display:flex;gap:10px;margin-top:6px}
+.hidden{display:none}
 </style>
 </head>
 
@@ -195,88 +127,67 @@ button:hover{filter:brightness(1.05)}
 <!-- DASHBOARD -->
 <div id="dashboard" class="hidden">
 
-<!-- CADASTRO COMPLETO -->
+<!-- CADASTRO -->
 <div class="card">
-  <h2>🧳 Cadastro da Excursão</h2>
+<h2>🧳 Cadastro da Excursão</h2>
 
-  <label>Imagem principal</label>
-  <div class="image-box" onclick="poster.click()">
-    <img id="preview" style="display:none">
-    <span id="imgText">Clique para adicionar imagem</span>
-    <input type="file" id="poster" hidden accept="image/*">
+<label>Imagem principal</label>
+<div class="image-box" onclick="poster.click()">
+  <img id="preview" style="display:none">
+  <span id="imgText">Clique para adicionar imagem</span>
+  <input type="file" id="poster" hidden accept="image/*">
+</div>
+
+<br>
+
+<div class="grid grid-2">
+  <div>
+    <label>Título</label>
+    <input id="titulo">
   </div>
-
-  <br>
-
-  <div class="grid grid-2">
-    <div>
-      <label>Título</label>
-      <input id="titulo">
-    </div>
-    <div>
-      <label>Destino</label>
-      <input id="destino">
-    </div>
+  <div>
+    <label>Destino</label>
+    <input id="destino">
   </div>
+</div>
 
-  <label>Descrição</label>
-  <textarea id="descricao"></textarea>
+<label>Descrição</label>
+<textarea id="descricao"></textarea>
 
-  <div class="grid grid-3">
-    <div>
-      <label>Data de saída</label>
-      <input id="data_saida" placeholder="dd/mm/aaaa">
-    </div>
-    <div>
-      <label>Data de retorno</label>
-      <input id="data_retorno" placeholder="dd/mm/aaaa">
-    </div>
-    <div>
-      <label>Dias de hospedagem</label>
-      <input id="hospedagem_dias" inputmode="numeric">
-    </div>
-  </div>
+<div class="grid grid-3">
+  <div><label>Data saída</label><input id="data_saida" placeholder="dd/mm/aaaa"></div>
+  <div><label>Data retorno</label><input id="data_retorno" placeholder="dd/mm/aaaa"></div>
+  <div><label>Dias hospedagem</label><input id="hospedagem_dias" inputmode="numeric"></div>
+</div>
 
-  <div class="grid grid-2">
-    <div>
-      <label>Local de embarque</label>
-      <input id="local_embarque">
-    </div>
-    <div>
-      <label>Local de desembarque</label>
-      <input id="local_desembarque">
-    </div>
-  </div>
+<div class="grid grid-2">
+  <div><label>Local embarque</label><input id="local_embarque"></div>
+  <div><label>Local desembarque</label><input id="local_desembarque"></div>
+</div>
 
-  <div class="grid grid-3">
-    <div>
-      <label>Valor por pessoa</label>
-      <input id="valor" inputmode="decimal" oninput="formatarMoeda(this)">
-    </div>
-    <div>
-      <label>Parcelas</label>
-      <input id="parcelas" inputmode="numeric">
-    </div>
-  </div>
+<div class="grid grid-3">
+  <div><label>Valor por pessoa</label><input id="valor" oninput="formatarMoeda(this)"></div>
+  <div><label>Parcelas</label><input id="parcelas" inputmode="numeric"></div>
+</div>
 
-  <div class="grid grid-4">
-    <label class="checkbox"><input type="checkbox" id="inclui_cafe"> Café da manhã</label>
-    <label class="checkbox"><input type="checkbox" id="inclui_seguro"> Seguro viagem</label>
-    <label class="checkbox"><input type="checkbox" id="inclui_guia"> Guia turístico</label>
-    <label class="checkbox"><input type="checkbox" id="inclui_transporte"> Transporte</label>
-  </div>
+<div class="grid grid-4">
+  <label class="checkbox"><input type="checkbox" id="inclui_cafe"> Café</label>
+  <label class="checkbox"><input type="checkbox" id="inclui_seguro"> Seguro</label>
+  <label class="checkbox"><input type="checkbox" id="inclui_guia"> Guia</label>
+  <label class="checkbox"><input type="checkbox" id="inclui_transporte"> Transporte</label>
+</div>
 
-  <label>Roteiro detalhado</label>
-  <textarea id="roteiro"></textarea>
+<label>Roteiro detalhado</label>
+<textarea id="roteiro"></textarea>
 
-  <br>
-  <button onclick="salvarExcursao()">Salvar Excursão</button>
+<br>
+<button onclick="salvarExcursao()">Salvar Excursão</button>
 </div>
 
 <!-- LISTAGEM -->
 <div class="card">
-  <h2>📋 Excursões cadastradas</h2>
-  <div class="grid grid-3" id="lista"></div>
+<h2>📋 Excursões cadastradas</h2>
+<div class="grid grid-3" id="lista"></div>
 </div>
 
 </div>
@@ -286,15 +197,12 @@ const sb = supabase.createClient(
   "https://ghkfeobnrfvqwzuliqfz.supabase.co",
   "sb_publishable_R-eenS9xurRgnrqDR9kz0Q_kJonEi7t"
 );
-
-let userId=null;
-let imagemBlob=null;
+let userId=null, imagemBlob=null;
 
 /* LOGIN */
 async function login(){
-  const {data,error} = await sb.auth.signInWithPassword({
-    email:email.value,
-    password:password.value
+  const {data,error}=await sb.auth.signInWithPassword({
+    email:email.value,password:password.value
   });
   if(error) return alert(error.message);
   userId=data.user.id;
@@ -305,10 +213,8 @@ async function login(){
 
 /* PREVIEW */
 poster.addEventListener("change",()=>{
-  const file=poster.files[0];
-  if(!file) return;
-  imagemBlob=file;
-  preview.src=URL.createObjectURL(file);
+  imagemBlob=poster.files[0];
+  preview.src=URL.createObjectURL(imagemBlob);
   preview.style.display="block";
   imgText.style.display="none";
 });
@@ -316,26 +222,24 @@ poster.addEventListener("change",()=>{
 /* MOEDA */
 function formatarMoeda(i){
   let v=i.value.replace(/\D/g,'');
-  v=(Number(v)/100).toLocaleString("pt-BR",{minimumFractionDigits:2});
-  i.value=v;
+  i.value=(Number(v)/100).toLocaleString("pt-BR",{minimumFractionDigits:2});
 }
-function moedaParaNumero(v){
+function moeda(v){
   return Number(v.replace(/\./g,'').replace(',','.'));
 }
 
 /* SALVAR */
 async function salvarExcursao(){
   let posterPath=null;
-
   if(imagemBlob){
     posterPath=`${userId}/${Date.now()}.jpg`;
-    const {error} = await sb.storage
+    const {error}=await sb.storage
       .from("posters-excursoes")
       .upload(posterPath,imagemBlob,{upsert:true});
     if(error) return alert("Erro ao enviar imagem");
   }
 
-  const {error} = await sb.from("excursoes").insert({
+  const {error}=await sb.from("excursoes").insert({
     loja_id:userId,
     titulo:titulo.value,
     destino:destino.value,
@@ -345,7 +249,7 @@ async function salvarExcursao(){
     hospedagem_dias:hospedagem_dias.value,
     local_embarque:local_embarque.value,
     local_desembarque:local_desembarque.value,
-    valor:moedaParaNumero(valor.value),
+    valor:moeda(valor.value),
     parcelas:parcelas.value,
     inclui_cafe:inclui_cafe.checked,
     inclui_seguro:inclui_seguro.checked,
@@ -355,21 +259,21 @@ async function salvarExcursao(){
     poster_url:posterPath
   });
 
-  if(error) return alert("Erro ao salvar");
-
-  alert("Excursão cadastrada com sucesso");
+  if(error) return alert("Erro ao salvar excursão");
   location.reload();
 }
 
 /* LISTAR */
 async function carregarExcursao(){
-  const {data}=await sb.from("excursoes").select("*").eq("loja_id",userId).order("created_at",{ascending:false});
+  const {data}=await sb.from("excursoes")
+    .select("*")
+    .eq("loja_id",userId)
+    .order("created_at",{ascending:false});
   lista.innerHTML="";
   data.forEach(e=>{
-    let img="";
-    if(e.poster_url){
-      img=sb.storage.from("posters-excursoes").getPublicUrl(e.poster_url).data.publicUrl;
-    }
+    const img=e.poster_url
+      ? sb.storage.from("posters-excursoes").getPublicUrl(e.poster_url).data.publicUrl
+      : "";
     lista.innerHTML+=`
       <div class="excursao">
         ${img?`<img src="${img}">`:""}
@@ -379,8 +283,7 @@ async function carregarExcursao(){
           <div>📅 ${e.data_saida} → ${e.data_retorno}</div>
           <div>💰 R$ ${Number(e.valor).toLocaleString("pt-BR",{minimumFractionDigits:2})}</div>
         </div>
-      </div>
-    `;
+      </div>`;
   });
 }
 </script>
