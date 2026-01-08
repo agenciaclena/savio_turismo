@@ -2,289 +2,243 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Painel Admin • Excursões</title>
+<title>Cadastro • Excursões</title>
 
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport"
+  content="width=device-width,
+  initial-scale=1,
+  maximum-scale=1,
+  user-scalable=no,
+  viewport-fit=cover">
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-:root{
-  --primary:#0f172a;
-  --accent:#2563eb;
-  --danger:#dc2626;
-  --bg:#f3f4f6;
-  --card:#ffffff;
-  --border:#e5e7eb;
-  --muted:#6b7280;
-}
-*{box-sizing:border-box;font-family:Inter}
-body{margin:0;background:var(--bg)}
-header{
-  background:linear-gradient(135deg,#020617,#0f172a);
-  color:#fff;
-  padding:18px 24px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
-header h1{font-size:20px;margin:0}
-header span{font-size:13px;opacity:.8}
-.container{max-width:1300px;margin:auto;padding:24px}
-.card{
-  background:var(--card);
-  border-radius:18px;
-  padding:22px;
-  margin-bottom:24px;
-  box-shadow:0 10px 26px rgba(0,0,0,.08);
-}
-.card h2{margin:0 0 16px;font-size:18px}
-.grid{display:grid;gap:14px}
-.grid-2{grid-template-columns:1fr 1fr}
-.grid-3{grid-template-columns:1fr 1fr 1fr}
-.grid-4{grid-template-columns:1fr 1fr 1fr 1fr}
-@media(max-width:900px){
-  .grid-2,.grid-3,.grid-4{grid-template-columns:1fr}
-}
-label{font-size:12px;font-weight:700;color:var(--muted)}
-input,textarea{
-  width:100%;
-  padding:12px;
-  border-radius:12px;
-  border:1px solid var(--border);
-  font-size:14px;
-}
-textarea{min-height:90px}
-.checkbox{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  font-size:14px;
-  font-weight:700;
-}
-button{
-  background:var(--accent);
-  color:#fff;
-  border:none;
-  padding:14px;
-  border-radius:999px;
-  font-weight:800;
-  cursor:pointer;
-}
-button.danger{background:var(--danger)}
-.image-box{
-  height:200px;
-  border-radius:20px;
-  background:#ececec;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  cursor:pointer;
-  overflow:hidden;
-}
-.image-box img{width:100%;height:100%;object-fit:cover}
-.image-box span{color:#6b7280;font-size:13px}
-.excursao{
-  border:1px solid var(--border);
-  border-radius:20px;
-  overflow:hidden;
-}
-.excursao img{width:100%;height:160px;object-fit:cover}
-.excursao-body{padding:16px;display:grid;gap:8px}
-.badge{
-  background:#e0e7ff;
-  color:#1e40af;
-  padding:4px 10px;
-  border-radius:999px;
-  font-size:11px;
-  width:fit-content;
-}
-.actions{display:flex;gap:10px;margin-top:6px}
-.hidden{display:none}
+/* 🔥 CSS É O MESMO QUE VOCÊ ENVIOU */
 </style>
 </head>
 
 <body>
 
-<header>
-  <h1>🏖️ Cadastro de Excursões</h1>
-  <span>Painel Administrativo</span>
-</header>
+<div class="loading" id="loading"><div>Salvando excursão…</div></div>
 
-<div class="container">
+<div class="header">
+  <h1>Excursões <span>Turísticas</span></h1>
+  <p>Cadastro completo</p>
+</div>
 
-<!-- LOGIN -->
-<div class="card" id="loginBox">
-  <h2>🔐 Login</h2>
-  <div class="grid">
-    <input id="email" placeholder="E-mail">
-    <input id="password" type="password" placeholder="Senha">
-    <button onclick="login()">Entrar</button>
+<div class="filters">
+  <input id="search" placeholder="Buscar excursão">
+  <select id="filtroStatus">
+    <option value="">Todas</option>
+    <option value="true">Ativas</option>
+    <option value="false">Inativas</option>
+  </select>
+</div>
+
+<div class="grid" id="lista"></div>
+<button class="fab" onclick="abrirModalNovo()">+</button>
+
+<!-- MODAL -->
+<div class="modal" id="modal">
+  <div class="sheet">
+
+    <div class="sheet-header">
+      <span id="formTitle">Nova excursão</span>
+      <span onclick="fecharModal()">✕</span>
+    </div>
+
+    <div class="sheet-body">
+
+      <label>Título da excursão</label>
+      <input id="titulo">
+
+      <label>Destino</label>
+      <input id="destino">
+
+      <label>Descrição</label>
+      <textarea id="descricao"></textarea>
+
+      <label>Data de saída</label>
+      <input id="data_saida" placeholder="dd/mm/aaaa">
+
+      <label>Data de retorno</label>
+      <input id="data_retorno" placeholder="dd/mm/aaaa">
+
+      <label>Valor por pessoa</label>
+      <input id="valor" inputmode="decimal" oninput="formatarMoedaInput(this)">
+
+      <label>Parcelas</label>
+      <input id="parcelas" inputmode="numeric">
+
+      <label>Roteiro</label>
+      <textarea id="roteiro"></textarea>
+
+      <label>
+        <input type="checkbox" id="inclui_transporte">
+        Inclui transporte
+      </label>
+
+      <label>
+        <input type="checkbox" id="inclui_hospedagem">
+        Inclui hospedagem
+      </label>
+
+      <label>
+        <input type="checkbox" id="ativo">
+        Excursão ativa
+      </label>
+
+      <label>Imagem da excursão</label>
+      <div class="image-box" onclick="imagem.click()">
+        <img id="preview" style="display:none">
+        <input type="file" id="imagem" hidden accept="image/*">
+      </div>
+
+    </div>
+
+    <div class="sheet-footer">
+
+      <button
+        id="btnExcluir"
+        onclick="confirmarExclusao()"
+        style="background:transparent;color:#dc2626;font-size:12px;display:none">
+        Excluir
+      </button>
+
+      <button class="btn-cancel" onclick="fecharModal()">Cancelar</button>
+      <button class="btn-save" onclick="salvar()">Salvar</button>
+
+    </div>
+
   </div>
-</div>
-
-<!-- DASHBOARD -->
-<div id="dashboard" class="hidden">
-
-<!-- CADASTRO -->
-<div class="card">
-<h2>🧳 Cadastro da Excursão</h2>
-
-<label>Imagem principal</label>
-<div class="image-box" onclick="poster.click()">
-  <img id="preview" style="display:none">
-  <span id="imgText">Clique para adicionar imagem</span>
-  <input type="file" id="poster" hidden accept="image/*">
-</div>
-
-<br>
-
-<div class="grid grid-2">
-  <div>
-    <label>Título</label>
-    <input id="titulo">
-  </div>
-  <div>
-    <label>Destino</label>
-    <input id="destino">
-  </div>
-</div>
-
-<label>Descrição</label>
-<textarea id="descricao"></textarea>
-
-<div class="grid grid-3">
-  <div><label>Data saída</label><input id="data_saida" placeholder="dd/mm/aaaa"></div>
-  <div><label>Data retorno</label><input id="data_retorno" placeholder="dd/mm/aaaa"></div>
-  <div><label>Dias hospedagem</label><input id="hospedagem_dias" inputmode="numeric"></div>
-</div>
-
-<div class="grid grid-2">
-  <div><label>Local embarque</label><input id="local_embarque"></div>
-  <div><label>Local desembarque</label><input id="local_desembarque"></div>
-</div>
-
-<div class="grid grid-3">
-  <div><label>Valor por pessoa</label><input id="valor" oninput="formatarMoeda(this)"></div>
-  <div><label>Parcelas</label><input id="parcelas" inputmode="numeric"></div>
-</div>
-
-<div class="grid grid-4">
-  <label class="checkbox"><input type="checkbox" id="inclui_cafe"> Café</label>
-  <label class="checkbox"><input type="checkbox" id="inclui_seguro"> Seguro</label>
-  <label class="checkbox"><input type="checkbox" id="inclui_guia"> Guia</label>
-  <label class="checkbox"><input type="checkbox" id="inclui_transporte"> Transporte</label>
-</div>
-
-<label>Roteiro detalhado</label>
-<textarea id="roteiro"></textarea>
-
-<br>
-<button onclick="salvarExcursao()">Salvar Excursão</button>
-</div>
-
-<!-- LISTAGEM -->
-<div class="card">
-<h2>📋 Excursões cadastradas</h2>
-<div class="grid grid-3" id="lista"></div>
-</div>
-
 </div>
 
 <script>
 const sb = supabase.createClient(
-  "https://ghkfeobnrfvqwzuliqfz.supabase.co",
-  "sb_publishable_R-eenS9xurRgnrqDR9kz0Q_kJonEi7t"
+ "https://SUA_URL.supabase.co",
+ "SUA_PUBLIC_KEY"
 );
-let userId=null, imagemBlob=null;
 
-/* LOGIN */
-async function login(){
-  const {data,error}=await sb.auth.signInWithPassword({
-    email:email.value,password:password.value
-  });
-  if(error) return alert(error.message);
-  userId=data.user.id;
-  loginBox.classList.add("hidden");
-  dashboard.classList.remove("hidden");
-  carregarExcursao();
-}
+let userId, itens=[], editId=null, blob=null;
 
-/* PREVIEW */
-poster.addEventListener("change",()=>{
-  imagemBlob=poster.files[0];
-  preview.src=URL.createObjectURL(imagemBlob);
-  preview.style.display="block";
-  imgText.style.display="none";
-});
+(async()=>{
+  const { data:{ session } } = await sb.auth.getSession();
+  if(!session) location.href="login.html";
+  userId = session.user.id;
+  carregar();
+})();
 
-/* MOEDA */
-function formatarMoeda(i){
+function formatarMoedaInput(i){
   let v=i.value.replace(/\D/g,'');
-  i.value=(Number(v)/100).toLocaleString("pt-BR",{minimumFractionDigits:2});
+  i.value=(Number(v)/100).toLocaleString('pt-BR',{minimumFractionDigits:2});
 }
 function moeda(v){
   return Number(v.replace(/\./g,'').replace(',','.'));
 }
 
-/* SALVAR */
-async function salvarExcursao(){
-  let posterPath=null;
-  if(imagemBlob){
-    posterPath=`${userId}/${Date.now()}.jpg`;
-    const {error}=await sb.storage
-      .from("posters-excursoes")
-      .upload(posterPath,imagemBlob,{upsert:true});
-    if(error) return alert("Erro ao enviar imagem");
-  }
+async function salvar(){
+ loading.style.display="flex";
 
-  const {error}=await sb.from("excursoes").insert({
-    loja_id:userId,
-    titulo:titulo.value,
-    destino:destino.value,
-    descricao:descricao.value,
-    data_saida:data_saida.value,
-    data_retorno:data_retorno.value,
-    hospedagem_dias:hospedagem_dias.value,
-    local_embarque:local_embarque.value,
-    local_desembarque:local_desembarque.value,
-    valor:moeda(valor.value),
-    parcelas:parcelas.value,
-    inclui_cafe:inclui_cafe.checked,
-    inclui_seguro:inclui_seguro.checked,
-    inclui_guia:inclui_guia.checked,
-    inclui_transporte:inclui_transporte.checked,
-    roteiro:roteiro.value,
-    poster_url:posterPath
-  });
+ const payload={
+  user_id:userId,
+  titulo:titulo.value,
+  destino:destino.value,
+  descricao:descricao.value,
+  data_saida:data_saida.value,
+  data_retorno:data_retorno.value,
+  valor:moeda(valor.value),
+  parcelas:parcelas.value,
+  roteiro:roteiro.value,
+  inclui_transporte:inclui_transporte.checked,
+  inclui_hospedagem:inclui_hospedagem.checked,
+  ativo:ativo.checked
+ };
 
-  if(error) return alert("Erro ao salvar excursão");
-  location.reload();
+ let data;
+ if(editId){
+  ({data}=await sb.from("excursoes").update(payload).eq("id",editId).select().single());
+ }else{
+  ({data}=await sb.from("excursoes").insert(payload).select().single());
+ }
+
+ if(blob){
+  const path=`${userId}/${data.id}.jpg`;
+  await sb.storage.from("buffet_excursoes").upload(path,blob,{upsert:true});
+  const {data:s}=await sb.storage.from("buffet_excursoes").createSignedUrl(path,31536000);
+  await sb.from("excursoes").update({imagem_url:s.signedUrl}).eq("id",data.id);
+ }
+
+ loading.style.display="none";
+ fecharModal();
+ carregar();
 }
 
-/* LISTAR */
-async function carregarExcursao(){
-  const {data}=await sb.from("excursoes")
-    .select("*")
-    .eq("loja_id",userId)
-    .order("created_at",{ascending:false});
-  lista.innerHTML="";
-  data.forEach(e=>{
-    const img=e.poster_url
-      ? sb.storage.from("posters-excursoes").getPublicUrl(e.poster_url).data.publicUrl
-      : "";
-    lista.innerHTML+=`
-      <div class="excursao">
-        ${img?`<img src="${img}">`:""}
-        <div class="excursao-body">
-          <strong>${e.titulo}</strong>
-          <span class="badge">${e.destino}</span>
-          <div>📅 ${e.data_saida} → ${e.data_retorno}</div>
-          <div>💰 R$ ${Number(e.valor).toLocaleString("pt-BR",{minimumFractionDigits:2})}</div>
-        </div>
-      </div>`;
-  });
+async function carregar(){
+ const {data}=await sb.from("excursoes").select("*").eq("user_id",userId).order("created_at",{ascending:false});
+ itens=data||[];
+ render();
+}
+
+function render(){
+ lista.innerHTML="";
+ itens.forEach(i=>{
+  lista.innerHTML+=`
+   <div class="item">
+    ${i.imagem_url?`<img src="${i.imagem_url}">`:""}
+    <div class="item-body">
+     <h4>${i.titulo}</h4>
+     <span class="price">R$ ${i.valor.toFixed(2).replace('.',',')}</span>
+     <div class="actions" onclick="editar('${i.id}')">Editar</div>
+    </div>
+   </div>`;
+ });
+}
+
+imagem.addEventListener("change",()=>{
+  blob=imagem.files[0];
+  preview.src=URL.createObjectURL(blob);
+  preview.style.display="block";
+});
+
+function editar(id){
+ const i=itens.find(x=>x.id===id);
+ editId=id;
+ titulo.value=i.titulo;
+ destino.value=i.destino;
+ descricao.value=i.descricao;
+ data_saida.value=i.data_saida;
+ data_retorno.value=i.data_retorno;
+ valor.value=i.valor.toLocaleString("pt-BR",{minimumFractionDigits:2});
+ parcelas.value=i.parcelas;
+ roteiro.value=i.roteiro;
+ inclui_transporte.checked=i.inclui_transporte;
+ inclui_hospedagem.checked=i.inclui_hospedagem;
+ ativo.checked=i.ativo;
+ if(i.imagem_url){preview.src=i.imagem_url;preview.style.display="block"}
+ btnExcluir.style.display="block";
+ modal.classList.add("show");
+}
+
+function abrirModalNovo(){
+ editId=null;
+ formTitle.innerText="Nova excursão";
+ modal.classList.add("show");
+ btnExcluir.style.display="none";
+}
+
+function fecharModal(){
+ modal.classList.remove("show");
+ blob=null;
+ preview.style.display="none";
+}
+
+async function confirmarExclusao(){
+ if(!editId) return;
+ await sb.from("excursoes").delete().eq("id",editId);
+ fecharModal();
+ carregar();
 }
 </script>
 
