@@ -2,7 +2,6 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-
 <title>Sávio Turismo • Excursões</title>
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -15,17 +14,26 @@
   --primary:#ff6a00;
   --primary-soft:rgba(255,106,0,.14);
   --bg:#f4f6fb;
-  --card:#fff;
+  --card:#ffffff;
   --border:#e5e7eb;
   --text:#111827;
   --muted:#6b7280;
 }
 
-*{box-sizing:border-box;font-family:Inter}
-body{margin:0;background:var(--bg)}
+*{
+  box-sizing:border-box;
+  font-family:Inter;
+}
 
+body{
+  margin:0;
+  background:var(--bg);
+  overscroll-behavior:none;
+}
+
+/* ================= HEADER ================= */
 .header{
-  padding:18px;
+  padding:18px 16px 10px;
 }
 .header h1{
   font-size:20px;
@@ -37,31 +45,40 @@ body{margin:0;background:var(--bg)}
   color:var(--muted);
 }
 
+/* ================= GRID ================= */
 .grid{
   display:grid;
   grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
   gap:12px;
-  padding:0 16px 120px;
+  padding:0 16px 140px;
 }
 
+/* ================= CARD ================= */
 .card{
-  background:#fff;
-  border-radius:16px;
-  box-shadow:0 6px 18px rgba(0,0,0,.08);
+  background:var(--card);
+  border-radius:18px;
+  box-shadow:0 10px 26px rgba(0,0,0,.08);
   overflow:hidden;
   cursor:pointer;
+  transition:.2s;
 }
+.card:hover{
+  transform:translateY(-2px);
+}
+
 .card img{
   width:100%;
   height:120px;
   object-fit:cover;
 }
+
 .card-body{
   padding:10px;
   display:flex;
   flex-direction:column;
   gap:6px;
 }
+
 .card-body h4{
   font-size:13px;
   font-weight:800;
@@ -69,6 +86,7 @@ body{margin:0;background:var(--bg)}
   overflow:hidden;
   text-overflow:ellipsis;
 }
+
 .badge{
   font-size:10px;
   font-weight:800;
@@ -78,11 +96,13 @@ body{margin:0;background:var(--bg)}
   color:var(--primary);
   width:fit-content;
 }
+
 .price{
   font-size:13px;
   font-weight:800;
 }
 
+/* ================= MODAL / SHEET ================= */
 .modal{
   position:fixed;
   inset:0;
@@ -97,9 +117,15 @@ body{margin:0;background:var(--bg)}
   width:100%;
   height:94vh;
   background:#fff;
-  border-radius:24px 24px 0 0;
+  border-radius:28px 28px 0 0;
   display:flex;
   flex-direction:column;
+  animation:slideUp .25s ease;
+}
+
+@keyframes slideUp{
+  from{transform:translateY(100%)}
+  to{transform:translateY(0)}
 }
 
 .sheet-header{
@@ -107,6 +133,8 @@ body{margin:0;background:var(--bg)}
   font-weight:800;
   display:flex;
   justify-content:space-between;
+  align-items:center;
+  border-bottom:1px solid var(--border);
 }
 
 .sheet-body{
@@ -118,26 +146,15 @@ body{margin:0;background:var(--bg)}
 .sheet-footer{
   padding:14px;
   border-top:1px solid var(--border);
+  background:#fff;
 }
 
-.btn{
-  width:100%;
-  height:48px;
-  border-radius:999px;
-  border:none;
-  font-weight:800;
-  font-size:14px;
-}
-.btn-primary{
-  background:linear-gradient(135deg,#ff6a00,#ff9a57);
-  color:#fff;
-}
-
+/* ================= HERO ================= */
 .hero{
-  height:180px;
-  border-radius:18px;
+  height:190px;
+  border-radius:20px;
   overflow:hidden;
-  margin-bottom:16px;
+  margin-bottom:18px;
 }
 .hero img{
   width:100%;
@@ -145,8 +162,9 @@ body{margin:0;background:var(--bg)}
   object-fit:cover;
 }
 
+/* ================= SECTIONS ================= */
 .section{
-  margin-bottom:16px;
+  margin-bottom:18px;
 }
 .section h3{
   font-size:14px;
@@ -159,6 +177,7 @@ body{margin:0;background:var(--bg)}
   white-space:pre-line;
 }
 
+/* ================= FLAGS ================= */
 .flags{
   display:flex;
   flex-wrap:wrap;
@@ -167,10 +186,27 @@ body{margin:0;background:var(--bg)}
 .flag{
   background:#e0f2fe;
   color:#0369a1;
-  padding:6px 10px;
+  padding:6px 12px;
   border-radius:999px;
   font-size:11px;
   font-weight:800;
+}
+
+/* ================= BUTTON ================= */
+.btn{
+  width:100%;
+  height:50px;
+  border-radius:999px;
+  border:none;
+  font-weight:800;
+  font-size:15px;
+  cursor:pointer;
+}
+
+.btn-primary{
+  background:linear-gradient(135deg,#ff6a00,#ff9a57);
+  color:#fff;
+  box-shadow:0 14px 34px rgba(0,0,0,.25);
 }
 </style>
 </head>
@@ -179,17 +215,17 @@ body{margin:0;background:var(--bg)}
 
 <div class="header">
   <h1>Sávio <span>Turismo</span></h1>
-  <p>Excursões disponíveis</p>
+  <p>Escolha sua próxima experiência</p>
 </div>
 
 <div class="grid" id="lista"></div>
 
-<!-- SHEET DETALHES -->
+<!-- ================= SHEET ================= -->
 <div class="modal" id="modal">
   <div class="sheet">
 
     <div class="sheet-header">
-      <span id="titulo"></span>
+      <span id="sheetTitulo"></span>
       <span onclick="fechar()">✕</span>
     </div>
 
@@ -199,26 +235,26 @@ body{margin:0;background:var(--bg)}
 
       <div class="section">
         <h3>Destino</h3>
-        <p id="destino"></p>
+        <p id="sheetDestino"></p>
       </div>
 
       <div class="section">
-        <h3>Datas</h3>
-        <p id="datas"></p>
+        <h3>Período</h3>
+        <p id="sheetDatas"></p>
       </div>
 
-      <div class="section">
+      <div class="section" id="boxDescricao" style="display:none">
         <h3>Descrição</h3>
-        <p id="descricao"></p>
+        <p id="sheetDescricao"></p>
       </div>
 
       <div class="section" id="boxRoteiro" style="display:none">
         <h3>Roteiro</h3>
-        <p id="roteiro"></p>
+        <p id="sheetRoteiro"></p>
       </div>
 
-      <div class="section" id="boxFlags">
-        <h3>Inclusos</h3>
+      <div class="section" id="boxInclusos" style="display:none">
+        <h3>Incluso no pacote</h3>
         <div class="flags" id="flags"></div>
       </div>
 
@@ -226,7 +262,7 @@ body{margin:0;background:var(--bg)}
 
     <div class="sheet-footer">
       <button class="btn btn-primary" onclick="adquirir()">
-        Adquirir esta viagem
+        Quero garantir minha vaga
       </button>
     </div>
 
@@ -241,6 +277,7 @@ const sb = supabase.createClient(
 
 let excursaoAtual = null;
 
+// ================= LOAD =================
 async function carregar(){
   const {data} = await sb
     .from("excursoes")
@@ -253,59 +290,74 @@ async function carregar(){
   data.forEach(e=>{
     lista.innerHTML += `
       <div class="card" onclick='abrir(${JSON.stringify(e)})'>
-        ${e.poster_url ? `<img src="${publicImg(e.poster_url)}">` : ``}
+        ${e.poster_url ? `<img src="${imgPublica(e.poster_url)}">` : ``}
         <div class="card-body">
           <h4>${e.titulo}</h4>
           <span class="badge">${e.destino}</span>
-          <span class="price">R$ ${Number(e.valor).toLocaleString("pt-BR",{minimumFractionDigits:2})}</span>
+          <span class="price">
+            R$ ${Number(e.valor).toLocaleString("pt-BR",{minimumFractionDigits:2})}
+          </span>
         </div>
       </div>
     `;
   });
 }
 
-function publicImg(path){
-  return sb.storage.from("posters-excursoes").getPublicUrl(path).data.publicUrl;
+// ================= IMAGEM =================
+function imgPublica(path){
+  return sb.storage.from("posters-excursoes")
+    .getPublicUrl(path).data.publicUrl;
 }
 
+// ================= OPEN =================
 function abrir(e){
   excursaoAtual = e;
-  titulo.innerText = e.titulo;
-  destino.innerText = e.destino;
-  datas.innerText = formatarData(e.data_saida)+" → "+formatarData(e.data_retorno);
-  descricao.innerText = e.descricao || "";
+
+  sheetTitulo.innerText = e.titulo;
+  sheetDestino.innerText = e.destino;
+  sheetDatas.innerText = formatarData(e.data_saida) + " → " + formatarData(e.data_retorno);
 
   hero.innerHTML = e.poster_url
-    ? `<img src="${publicImg(e.poster_url)}">`
+    ? `<img src="${imgPublica(e.poster_url)}">`
     : "";
+
+  if(e.descricao){
+    boxDescricao.style.display="block";
+    sheetDescricao.innerText=e.descricao;
+  }else boxDescricao.style.display="none";
 
   if(e.roteiro){
     boxRoteiro.style.display="block";
-    roteiro.innerText=e.roteiro;
-  }else{
-    boxRoteiro.style.display="none";
-  }
+    sheetRoteiro.innerText=e.roteiro;
+  }else boxRoteiro.style.display="none";
 
   flags.innerHTML="";
-  if(e.inclui_cafe) flags.innerHTML+=`<div class="flag">☕ Café</div>`;
-  if(e.inclui_seguro) flags.innerHTML+=`<div class="flag">🛡 Seguro</div>`;
-  if(e.inclui_guia) flags.innerHTML+=`<div class="flag">🧑‍✈️ Guia</div>`;
-  if(e.inclui_transporte) flags.innerHTML+=`<div class="flag">🚌 Transporte</div>`;
+  let temInclusos=false;
+
+  if(e.inclui_cafe){flags.innerHTML+=`<div class="flag">☕ Café da manhã</div>`;temInclusos=true;}
+  if(e.inclui_seguro){flags.innerHTML+=`<div class="flag">🛡 Seguro viagem</div>`;temInclusos=true;}
+  if(e.inclui_guia){flags.innerHTML+=`<div class="flag">🧑‍✈️ Guia turístico</div>`;temInclusos=true;}
+  if(e.inclui_transporte){flags.innerHTML+=`<div class="flag">🚌 Transporte</div>`;temInclusos=true;}
+
+  boxInclusos.style.display = temInclusos ? "block" : "none";
 
   modal.classList.add("show");
 }
 
+// ================= CLOSE =================
 function fechar(){
   modal.classList.remove("show");
 }
 
+// ================= HELPERS =================
 function formatarData(d){
   const [y,m,day]=d.split("-");
   return `${day}/${m}/${y}`;
 }
 
+// ================= CTA =================
 function adquirir(){
-  alert("Próximo passo: cadastro do cliente + contrato");
+  alert("Próximo passo: cadastro do cliente + contrato + assinatura");
 }
 
 carregar();
