@@ -2,354 +2,313 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Painel da Loja | Excursões</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<title>Sávio Turismo • Excursões</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 :root{
-  --bg:#f4f6f8;
-  --primary:#0f172a;
-  --accent:#2563eb;
-  --card:#ffffff;
+  --primary:#ff6a00;
+  --primary-soft:rgba(255,106,0,.14);
+  --bg:#f4f6fb;
+  --card:#fff;
   --border:#e5e7eb;
-  --radius:14px;
+  --text:#111827;
+  --muted:#6b7280;
 }
 
-*{box-sizing:border-box}
+*{box-sizing:border-box;font-family:Inter}
+body{margin:0;background:var(--bg)}
 
-body{
-  margin:0;
-  font-family:Inter,system-ui,Arial;
-  background:var(--bg);
-  color:#111827;
-}
-
-header{
-  background:linear-gradient(135deg,#020617,#0f172a);
-  color:#fff;
+.header{
   padding:18px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
 }
-
-.container{
-  max-width:1200px;
-  margin:auto;
-  padding:20px;
+.header h1{
+  font-size:20px;
+  font-weight:800;
 }
-
-.card{
-  background:var(--card);
-  border-radius:var(--radius);
-  padding:20px;
-  margin-bottom:20px;
-  box-shadow:0 10px 25px rgba(0,0,0,.05);
-}
-
-h2{
-  margin:0 0 14px;
-  font-size:18px;
+.header span{color:var(--primary)}
+.header p{
+  font-size:12px;
+  color:var(--muted);
 }
 
 .grid{
   display:grid;
-  gap:14px;
+  grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
+  gap:12px;
+  padding:0 16px 120px;
 }
 
-.grid-2{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
-.grid-3{grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
-
-input,textarea{
-  width:100%;
-  padding:12px;
-  border-radius:10px;
-  border:1px solid var(--border);
-  font-size:14px;
-}
-
-textarea{resize:vertical}
-
-button{
-  background:var(--accent);
-  color:#fff;
-  border:none;
-  padding:14px;
-  border-radius:12px;
-  font-size:15px;
-  cursor:pointer;
-}
-
-button:hover{filter:brightness(1.1)}
-
-.hidden{display:none}
-
-/* Cards */
-.cards{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-  gap:16px;
-}
-
-.card-exc{
-  border:1px solid var(--border);
-  border-radius:14px;
+.card{
+  background:#fff;
+  border-radius:16px;
+  box-shadow:0 6px 18px rgba(0,0,0,.08);
   overflow:hidden;
   cursor:pointer;
-  background:#fff;
 }
-
-.card-exc img{
+.card img{
   width:100%;
-  height:180px;
+  height:120px;
   object-fit:cover;
 }
-
-.card-exc .info{
-  padding:14px;
-  display:grid;
+.card-body{
+  padding:10px;
+  display:flex;
+  flex-direction:column;
   gap:6px;
 }
-
+.card-body h4{
+  font-size:13px;
+  font-weight:800;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
 .badge{
-  background:#e0e7ff;
-  color:#1e40af;
+  font-size:10px;
+  font-weight:800;
   padding:4px 10px;
   border-radius:999px;
-  font-size:12px;
+  background:var(--primary-soft);
+  color:var(--primary);
   width:fit-content;
 }
+.price{
+  font-size:13px;
+  font-weight:800;
+}
 
-/* MODAL */
 .modal{
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,.6);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  z-index:999;
+  background:rgba(0,0,0,.55);
+  display:none;
+  align-items:flex-end;
+  z-index:9999;
 }
+.modal.show{display:flex}
 
-.modal-content{
+.sheet{
+  width:100%;
+  height:94vh;
   background:#fff;
-  width:95%;
-  max-width:900px;
-  border-radius:18px;
-  overflow:auto;
-  max-height:95vh;
+  border-radius:24px 24px 0 0;
+  display:flex;
+  flex-direction:column;
 }
 
-.modal-header{
+.sheet-header{
   padding:16px;
-  background:#0f172a;
-  color:#fff;
+  font-weight:800;
   display:flex;
   justify-content:space-between;
-  align-items:center;
 }
 
-.modal-body{
-  padding:20px;
+.sheet-body{
+  flex:1;
+  overflow-y:auto;
+  padding:16px;
 }
 
-.close{
-  cursor:pointer;
-  font-size:22px;
+.sheet-footer{
+  padding:14px;
+  border-top:1px solid var(--border);
+}
+
+.btn{
+  width:100%;
+  height:48px;
+  border-radius:999px;
+  border:none;
+  font-weight:800;
+  font-size:14px;
+}
+.btn-primary{
+  background:linear-gradient(135deg,#ff6a00,#ff9a57);
+  color:#fff;
+}
+
+.hero{
+  height:180px;
+  border-radius:18px;
+  overflow:hidden;
+  margin-bottom:16px;
+}
+.hero img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.section{
+  margin-bottom:16px;
+}
+.section h3{
+  font-size:14px;
+  font-weight:800;
+  margin-bottom:6px;
+}
+.section p{
+  font-size:13px;
+  color:var(--muted);
+  white-space:pre-line;
+}
+
+.flags{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+.flag{
+  background:#e0f2fe;
+  color:#0369a1;
+  padding:6px 10px;
+  border-radius:999px;
+  font-size:11px;
+  font-weight:800;
 }
 </style>
 </head>
 
 <body>
 
-<header>
-  🏖️ Painel da Loja – Excursões
-  <span>Sistema Interno</span>
-</header>
-
-<div class="container">
-
-<!-- LOGIN -->
-<div class="card" id="loginBox">
-  <h2>Login</h2>
-  <div class="grid">
-    <input id="email" placeholder="E-mail">
-    <input id="password" type="password" placeholder="Senha">
-    <button onclick="login()">Entrar</button>
-  </div>
+<div class="header">
+  <h1>Sávio <span>Turismo</span></h1>
+  <p>Excursões disponíveis</p>
 </div>
 
-<!-- DASH -->
-<div id="dashboard" class="hidden">
+<div class="grid" id="lista"></div>
 
-<!-- LOJA -->
-<div class="card">
-  <h2>🏢 Dados da Empresa</h2>
-  <div class="grid grid-2">
-    <input id="nome_fantasia" placeholder="Nome Fantasia">
-    <input id="razao_social" placeholder="Razão Social">
-    <input id="cnpj" placeholder="CNPJ">
-    <input id="telefone" placeholder="Telefone">
-    <input id="endereco" placeholder="Endereço">
-  </div>
-  <br>
-  <button onclick="salvarLoja()">Salvar Dados</button>
-</div>
+<!-- SHEET DETALHES -->
+<div class="modal" id="modal">
+  <div class="sheet">
 
-<!-- NOVA -->
-<div class="card">
-  <h2>🧳 Nova Excursão</h2>
-  <div class="grid grid-2">
-    <input id="titulo" placeholder="Título">
-    <input id="destino" placeholder="Destino">
-  </div>
-
-  <textarea id="descricao" placeholder="Descrição completa"></textarea>
-
-  <div class="grid grid-3">
-    <input id="data_saida" placeholder="Data Saída (dd/mm/aaaa)">
-    <input id="data_retorno" placeholder="Data Retorno (dd/mm/aaaa)">
-    <input id="valor" placeholder="Valor por pessoa">
-  </div>
-
-  <input type="file" id="poster" accept="image/*">
-
-  <br>
-  <button onclick="salvarExcursao()">Cadastrar</button>
-</div>
-
-<!-- LISTA -->
-<div class="card">
-  <h2>📋 Excursões</h2>
-  <div class="cards" id="listaExcursao"></div>
-</div>
-
-</div>
-
-<!-- MODAL -->
-<div class="modal hidden" id="modal">
-  <div class="modal-content">
-    <div class="modal-header">
-      <span id="modalTitulo"></span>
-      <span class="close" onclick="fecharModal()">×</span>
+    <div class="sheet-header">
+      <span id="titulo"></span>
+      <span onclick="fechar()">✕</span>
     </div>
-    <div class="modal-body">
-      <img id="modalImg" style="width:100%;border-radius:14px;margin-bottom:14px">
-      <input type="file" id="modalPoster">
-      <br><br>
-      <button onclick="atualizarPoster()">Atualizar Imagem</button>
+
+    <div class="sheet-body">
+
+      <div class="hero" id="hero"></div>
+
+      <div class="section">
+        <h3>Destino</h3>
+        <p id="destino"></p>
+      </div>
+
+      <div class="section">
+        <h3>Datas</h3>
+        <p id="datas"></p>
+      </div>
+
+      <div class="section">
+        <h3>Descrição</h3>
+        <p id="descricao"></p>
+      </div>
+
+      <div class="section" id="boxRoteiro" style="display:none">
+        <h3>Roteiro</h3>
+        <p id="roteiro"></p>
+      </div>
+
+      <div class="section" id="boxFlags">
+        <h3>Inclusos</h3>
+        <div class="flags" id="flags"></div>
+      </div>
+
     </div>
+
+    <div class="sheet-footer">
+      <button class="btn btn-primary" onclick="adquirir()">
+        Adquirir esta viagem
+      </button>
+    </div>
+
   </div>
 </div>
 
 <script>
-const supabaseClient = supabase.createClient(
-  'https://ghkfeobnrfvqwzuliqfz.supabase.co',
-  'sb_publishable_R-eenS9xurRgnrqDR9kz0Q_kJonEi7t'
+const sb = supabase.createClient(
+ "https://ghkfeobnrfvqwzuliqfz.supabase.co",
+ "sb_publishable_R-eenS9xurRgnrqDR9kz0Q_kJonEi7t"
 );
 
-let userId=null, excursaoAtual=null;
+let excursaoAtual = null;
 
-// LOGIN
-async function login(){
-  const {data,error} = await supabaseClient.auth.signInWithPassword({
-    email:email.value,
-    password:password.value
-  });
-  if(error) return alert(error.message);
-  userId=data.user.id;
-  loginBox.classList.add('hidden');
-  dashboard.classList.remove('hidden');
-  carregarLoja();
-  carregarExcursao();
-}
+async function carregar(){
+  const {data} = await sb
+    .from("excursoes")
+    .select("*")
+    .eq("ativo",true)
+    .order("data_saida");
 
-// LOJA
-async function carregarLoja(){
-  const {data} = await supabaseClient.from('loja_profile').select('*').eq('id',userId).single();
-  if(data){
-    nome_fantasia.value=data.nome_fantasia||'';
-    razao_social.value=data.razao_social||'';
-    cnpj.value=data.cnpj||'';
-    telefone.value=data.telefone||'';
-    endereco.value=data.endereco||'';
-  }
-}
+  lista.innerHTML = "";
 
-async function salvarLoja(){
-  await supabaseClient.from('loja_profile').upsert({
-    id:userId,
-    nome_fantasia:nome_fantasia.value,
-    razao_social:razao_social.value,
-    cnpj:cnpj.value,
-    telefone:telefone.value,
-    endereco:endereco.value
-  });
-  alert('Dados salvos');
-}
-
-// EXCURSÕES
-async function salvarExcursao(){
-  let posterUrl=null;
-  if(poster.files[0]){
-    const path=`${userId}/${Date.now()}-${poster.files[0].name}`;
-    const {data} = await supabaseClient.storage.from('posters-excursoes').upload(path,poster.files[0]);
-    posterUrl=data.path;
-  }
-
-  await supabaseClient.from('excursoes').insert({
-    loja_id:userId,
-    titulo:titulo.value,
-    destino:destino.value,
-    descricao:descricao.value,
-    data_saida:data_saida.value,
-    data_retorno:data_retorno.value,
-    valor:valor.value,
-    poster_url:posterUrl,
-    ativo:true
-  });
-
-  carregarExcursao();
-}
-
-async function carregarExcursao(){
-  const {data} = await supabaseClient.from('excursoes').select('*').eq('loja_id',userId);
-  listaExcursao.innerHTML='';
   data.forEach(e=>{
-    listaExcursao.innerHTML+=`
-      <div class="card-exc" onclick="abrirModal('${e.id}','${e.poster_url||''}','${e.titulo}')">
-        ${e.poster_url?`<img src="https://ghkfeobnrfvqwzuliqfz.supabase.co/storage/v1/object/public/posters-excursoes/${e.poster_url}">`:''}
-        <div class="info">
-          <strong>${e.titulo}</strong>
+    lista.innerHTML += `
+      <div class="card" onclick='abrir(${JSON.stringify(e)})'>
+        ${e.poster_url ? `<img src="${publicImg(e.poster_url)}">` : ``}
+        <div class="card-body">
+          <h4>${e.titulo}</h4>
           <span class="badge">${e.destino}</span>
-          <div>💰 ${e.valor}</div>
+          <span class="price">R$ ${Number(e.valor).toLocaleString("pt-BR",{minimumFractionDigits:2})}</span>
         </div>
-      </div>`;
+      </div>
+    `;
   });
 }
 
-// MODAL
-function abrirModal(id,img,titulo){
-  excursaoAtual=id;
-  modalTitulo.innerText=titulo;
-  modalImg.src=img?`https://ghkfeobnrfvqwzuliqfz.supabase.co/storage/v1/object/public/posters-excursoes/${img}`:'';
-  modal.classList.remove('hidden');
+function publicImg(path){
+  return sb.storage.from("posters-excursoes").getPublicUrl(path).data.publicUrl;
 }
 
-function fecharModal(){
-  modal.classList.add('hidden');
+function abrir(e){
+  excursaoAtual = e;
+  titulo.innerText = e.titulo;
+  destino.innerText = e.destino;
+  datas.innerText = formatarData(e.data_saida)+" → "+formatarData(e.data_retorno);
+  descricao.innerText = e.descricao || "";
+
+  hero.innerHTML = e.poster_url
+    ? `<img src="${publicImg(e.poster_url)}">`
+    : "";
+
+  if(e.roteiro){
+    boxRoteiro.style.display="block";
+    roteiro.innerText=e.roteiro;
+  }else{
+    boxRoteiro.style.display="none";
+  }
+
+  flags.innerHTML="";
+  if(e.inclui_cafe) flags.innerHTML+=`<div class="flag">☕ Café</div>`;
+  if(e.inclui_seguro) flags.innerHTML+=`<div class="flag">🛡 Seguro</div>`;
+  if(e.inclui_guia) flags.innerHTML+=`<div class="flag">🧑‍✈️ Guia</div>`;
+  if(e.inclui_transporte) flags.innerHTML+=`<div class="flag">🚌 Transporte</div>`;
+
+  modal.classList.add("show");
 }
 
-async function atualizarPoster(){
-  if(!modalPoster.files[0]) return;
-  const path=`${userId}/${Date.now()}-${modalPoster.files[0].name}`;
-  const {data} = await supabaseClient.storage.from('posters-excursoes').upload(path,modalPoster.files[0]);
-  await supabaseClient.from('excursoes').update({poster_url:data.path}).eq('id',excursaoAtual);
-  fecharModal();
-  carregarExcursao();
+function fechar(){
+  modal.classList.remove("show");
 }
+
+function formatarData(d){
+  const [y,m,day]=d.split("-");
+  return `${day}/${m}/${y}`;
+}
+
+function adquirir(){
+  alert("Próximo passo: cadastro do cliente + contrato");
+}
+
+carregar();
 </script>
 
 </body>
