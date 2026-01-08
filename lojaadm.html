@@ -2,144 +2,361 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Cadastro • Excursões</title>
+<title>Painel Admin • Excursões</title>
 
-<meta name="viewport"
-  content="width=device-width,
-  initial-scale=1,
-  maximum-scale=1,
-  user-scalable=no,
-  viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#ff6a00">
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-/* 🔥 CSS É O MESMO QUE VOCÊ ENVIOU */
+*{margin:0;padding:0;box-sizing:border-box;font-family:Inter}
+body{background:#f4f6fb}
+
+/* VARS */
+:root{
+  --primary:#ff6a00;
+  --border:#e5e7eb;
+  --text:#111827;
+  --muted:#6b7280;
+  --card:#fff;
+}
+
+/* HEADER */
+.header{padding:16px}
+.header h1{font-size:18px;font-weight:800}
+.header span{color:var(--primary)}
+.header p{font-size:12px;color:var(--muted)}
+
+/* LIST */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+  padding:0 16px 140px;
+}
+@media(max-width:900px){
+  .grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:520px){
+  .grid{grid-template-columns:1fr}
+}
+
+/* CARD */
+.card{
+  background:#fff;
+  border-radius:16px;
+  overflow:hidden;
+  box-shadow:0 6px 18px rgba(0,0,0,.08);
+}
+.card img{
+  width:100%;
+  height:120px;
+  object-fit:cover;
+}
+.card-body{
+  padding:10px;
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+.card-body h4{
+  font-size:13px;
+  font-weight:800;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.badge{
+  font-size:10px;
+  font-weight:800;
+  padding:3px 10px;
+  border-radius:999px;
+  background:#fff7ed;
+  color:#c2410c;
+  width:fit-content;
+}
+.price{font-size:13px;font-weight:800}
+.actions{
+  font-size:12px;
+  font-weight:700;
+  color:var(--primary);
+  cursor:pointer;
+}
+
+/* FAB */
+.fab{
+  position:fixed;
+  right:16px;
+  bottom:16px;
+  width:56px;
+  height:56px;
+  border-radius:50%;
+  border:none;
+  font-size:28px;
+  color:#fff;
+  background:linear-gradient(135deg,#ff6a00,#ff9a57);
+  box-shadow:0 14px 34px rgba(0,0,0,.35);
+}
+
+/* MODAL */
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.55);
+  display:none;
+  align-items:flex-end;
+  z-index:9999;
+}
+.modal.show{display:flex}
+
+/* SHEET */
+.sheet{
+  width:100%;
+  height:92vh;
+  background:#fff;
+  border-radius:24px 24px 0 0;
+  display:flex;
+  flex-direction:column;
+}
+.sheet-header{
+  padding:16px;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  justify-content:space-between;
+  font-weight:800;
+}
+.sheet-body{
+  flex:1;
+  padding:16px;
+  overflow-y:auto;
+}
+.sheet-body label{
+  font-size:12px;
+  font-weight:600;
+  color:var(--muted);
+  margin-bottom:4px;
+  display:block;
+}
+.sheet-body input,
+.sheet-body textarea{
+  width:100%;
+  height:42px;
+  border-radius:12px;
+  border:1px solid var(--border);
+  padding:0 12px;
+  margin-bottom:12px;
+  font-size:14px;
+}
+.sheet-body textarea{
+  height:auto;
+  min-height:80px;
+  padding:10px;
+}
+
+/* TOGGLE */
+.sheet-body label:has(input[type="checkbox"]){
+  display:flex;
+  gap:10px;
+  align-items:center;
+  font-size:13px;
+  font-weight:700;
+  color:var(--text);
+}
+.sheet-body input[type="checkbox"]{
+  appearance:none;
+  width:42px;
+  height:24px;
+  background:#e5e7eb;
+  border-radius:999px;
+  position:relative;
+  cursor:pointer;
+}
+.sheet-body input[type="checkbox"]::after{
+  content:"";
+  width:18px;
+  height:18px;
+  background:#fff;
+  border-radius:50%;
+  position:absolute;
+  top:3px;
+  left:3px;
+  transition:.25s;
+}
+.sheet-body input[type="checkbox"]:checked{
+  background:var(--primary);
+}
+.sheet-body input[type="checkbox"]:checked::after{
+  transform:translateX(18px);
+}
+
+/* IMAGE */
+.image-box{
+  height:140px;
+  border-radius:16px;
+  background:#f1f1f1;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin-bottom:16px;
+  cursor:pointer;
+}
+.image-box img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+/* FOOTER */
+.sheet-footer{
+  padding:14px;
+  border-top:1px solid var(--border);
+  display:flex;
+  gap:12px;
+}
+.sheet-footer button{
+  flex:1;
+  height:46px;
+  border:none;
+  border-radius:999px;
+  font-weight:800;
+}
+.save{background:var(--primary);color:#fff}
+.cancel{background:#e5e7eb}
+.delete{
+  background:transparent;
+  color:#dc2626;
+  font-size:12px;
+}
 </style>
 </head>
 
 <body>
 
-<div class="loading" id="loading"><div>Salvando excursão…</div></div>
-
 <div class="header">
-  <h1>Excursões <span>Turísticas</span></h1>
-  <p>Cadastro completo</p>
-</div>
-
-<div class="filters">
-  <input id="search" placeholder="Buscar excursão">
-  <select id="filtroStatus">
-    <option value="">Todas</option>
-    <option value="true">Ativas</option>
-    <option value="false">Inativas</option>
-  </select>
+  <h1>Excursões <span>Admin</span></h1>
+  <p>Cadastro e gestão</p>
 </div>
 
 <div class="grid" id="lista"></div>
-<button class="fab" onclick="abrirModalNovo()">+</button>
+<button class="fab" onclick="novo()">+</button>
 
 <!-- MODAL -->
 <div class="modal" id="modal">
-  <div class="sheet">
+<div class="sheet">
+<div class="sheet-header">
+  <span id="tituloForm">Nova excursão</span>
+  <span onclick="fechar()">✕</span>
+</div>
 
-    <div class="sheet-header">
-      <span id="formTitle">Nova excursão</span>
-      <span onclick="fecharModal()">✕</span>
-    </div>
+<div class="sheet-body">
 
-    <div class="sheet-body">
+<label>Imagem principal</label>
+<div class="image-box" onclick="imagem.click()">
+  <img id="preview" style="display:none">
+  <input type="file" id="imagem" hidden accept="image/*">
+</div>
 
-      <label>Título da excursão</label>
-      <input id="titulo">
+<label>Título</label>
+<input id="titulo">
 
-      <label>Destino</label>
-      <input id="destino">
+<label>Destino</label>
+<input id="destino">
 
-      <label>Descrição</label>
-      <textarea id="descricao"></textarea>
+<label>Descrição</label>
+<textarea id="descricao"></textarea>
 
-      <label>Data de saída</label>
-      <input id="data_saida" placeholder="dd/mm/aaaa">
+<label>Data saída</label>
+<input id="data_saida" placeholder="dd/mm/aaaa">
 
-      <label>Data de retorno</label>
-      <input id="data_retorno" placeholder="dd/mm/aaaa">
+<label>Data retorno</label>
+<input id="data_retorno" placeholder="dd/mm/aaaa">
 
-      <label>Valor por pessoa</label>
-      <input id="valor" inputmode="decimal" oninput="formatarMoedaInput(this)">
+<label>Dias hospedagem</label>
+<input id="hospedagem_dias" inputmode="numeric">
 
-      <label>Parcelas</label>
-      <input id="parcelas" inputmode="numeric">
+<label>Local embarque</label>
+<input id="local_embarque">
 
-      <label>Roteiro</label>
-      <textarea id="roteiro"></textarea>
+<label>Local desembarque</label>
+<input id="local_desembarque">
 
-      <label>
-        <input type="checkbox" id="inclui_transporte">
-        Inclui transporte
-      </label>
+<label>Valor por pessoa</label>
+<input id="valor" oninput="moeda(this)">
 
-      <label>
-        <input type="checkbox" id="inclui_hospedagem">
-        Inclui hospedagem
-      </label>
+<label>Parcelas</label>
+<input id="parcelas" inputmode="numeric">
 
-      <label>
-        <input type="checkbox" id="ativo">
-        Excursão ativa
-      </label>
+<label><input type="checkbox" id="inclui_cafe"> Café da manhã</label>
+<label><input type="checkbox" id="inclui_seguro"> Seguro viagem</label>
+<label><input type="checkbox" id="inclui_guia"> Guia turístico</label>
+<label><input type="checkbox" id="inclui_transporte"> Transporte</label>
 
-      <label>Imagem da excursão</label>
-      <div class="image-box" onclick="imagem.click()">
-        <img id="preview" style="display:none">
-        <input type="file" id="imagem" hidden accept="image/*">
-      </div>
+<label>Roteiro</label>
+<textarea id="roteiro"></textarea>
 
-    </div>
+</div>
 
-    <div class="sheet-footer">
+<div class="sheet-footer">
+  <button class="delete" id="btnExcluir" onclick="excluir()" style="display:none">Excluir</button>
+  <button class="cancel" onclick="fechar()">Cancelar</button>
+  <button class="save" onclick="salvar()">Salvar</button>
+</div>
 
-      <button
-        id="btnExcluir"
-        onclick="confirmarExclusao()"
-        style="background:transparent;color:#dc2626;font-size:12px;display:none">
-        Excluir
-      </button>
-
-      <button class="btn-cancel" onclick="fecharModal()">Cancelar</button>
-      <button class="btn-save" onclick="salvar()">Salvar</button>
-
-    </div>
-
-  </div>
+</div>
 </div>
 
 <script>
-const sb = supabase.createClient(
- "https://SUA_URL.supabase.co",
- "SUA_PUBLIC_KEY"
+const sb=supabase.createClient(
+ "https://ghkfeobnrfvqwzuliqfz.supabase.co",
+ "sb_publishable_R-eenS9xurRgnrqDR9kz0Q_kJonEi7t"
 );
 
-let userId, itens=[], editId=null, blob=null;
+let userId=null,editId=null,blob=null,itens=[];
 
 (async()=>{
-  const { data:{ session } } = await sb.auth.getSession();
-  if(!session) location.href="login.html";
-  userId = session.user.id;
-  carregar();
+ const {data:{session}}=await sb.auth.getSession();
+ if(!session) location.href="login.html";
+ userId=session.user.id;
+ carregar();
 })();
 
-function formatarMoedaInput(i){
-  let v=i.value.replace(/\D/g,'');
-  i.value=(Number(v)/100).toLocaleString('pt-BR',{minimumFractionDigits:2});
+function moeda(i){
+ let v=i.value.replace(/\D/g,'');
+ i.value=(Number(v)/100).toLocaleString("pt-BR",{minimumFractionDigits:2});
 }
-function moeda(v){
-  return Number(v.replace(/\./g,'').replace(',','.'));
+function moedaNum(v){
+ return Number(v.replace(/\./g,'').replace(',','.'));
+}
+
+imagem.onchange=()=>{
+ const f=imagem.files[0];
+ if(!f) return;
+ blob=f;
+ preview.src=URL.createObjectURL(f);
+ preview.style.display="block";
+}
+
+function novo(){
+ editId=null;
+ preview.style.display="none";
+ blob=null;
+ btnExcluir.style.display="none";
+ tituloForm.innerText="Nova excursão";
+ modal.classList.add("show");
+}
+
+function fechar(){
+ modal.classList.remove("show");
 }
 
 async function salvar(){
- loading.style.display="flex";
+ let poster=null;
+ if(blob){
+  poster=`${userId}/${Date.now()}.jpg`;
+  await sb.storage.from("buffet_excursoes").upload(poster,blob,{upsert:true});
+ }
 
  const payload={
   user_id:userId,
@@ -148,97 +365,79 @@ async function salvar(){
   descricao:descricao.value,
   data_saida:data_saida.value,
   data_retorno:data_retorno.value,
-  valor:moeda(valor.value),
+  hospedagem_dias:hospedagem_dias.value,
+  local_embarque:local_embarque.value,
+  local_desembarque:local_desembarque.value,
+  valor:moedaNum(valor.value),
   parcelas:parcelas.value,
-  roteiro:roteiro.value,
+  inclui_cafe:inclui_cafe.checked,
+  inclui_seguro:inclui_seguro.checked,
+  inclui_guia:inclui_guia.checked,
   inclui_transporte:inclui_transporte.checked,
-  inclui_hospedagem:inclui_hospedagem.checked,
-  ativo:ativo.checked
+  roteiro:roteiro.value,
+  poster_url:poster
  };
 
- let data;
  if(editId){
-  ({data}=await sb.from("excursoes").update(payload).eq("id",editId).select().single());
+  await sb.from("excursoes").update(payload).eq("id",editId);
  }else{
-  ({data}=await sb.from("excursoes").insert(payload).select().single());
+  await sb.from("excursoes").insert(payload);
  }
-
- if(blob){
-  const path=`${userId}/${data.id}.jpg`;
-  await sb.storage.from("buffet_excursoes").upload(path,blob,{upsert:true});
-  const {data:s}=await sb.storage.from("buffet_excursoes").createSignedUrl(path,31536000);
-  await sb.from("excursoes").update({imagem_url:s.signedUrl}).eq("id",data.id);
- }
-
- loading.style.display="none";
- fecharModal();
- carregar();
+ fechar();carregar();
 }
 
 async function carregar(){
- const {data}=await sb.from("excursoes").select("*").eq("user_id",userId).order("created_at",{ascending:false});
+ const {data}=await sb.from("excursoes").select("*").eq("user_id",userId);
  itens=data||[];
- render();
-}
-
-function render(){
  lista.innerHTML="";
- itens.forEach(i=>{
+ itens.forEach(e=>{
+  const img=e.poster_url
+   ? sb.storage.from("buffet_excursoes").getPublicUrl(e.poster_url).data.publicUrl
+   : "";
   lista.innerHTML+=`
-   <div class="item">
-    ${i.imagem_url?`<img src="${i.imagem_url}">`:""}
-    <div class="item-body">
-     <h4>${i.titulo}</h4>
-     <span class="price">R$ ${i.valor.toFixed(2).replace('.',',')}</span>
-     <div class="actions" onclick="editar('${i.id}')">Editar</div>
+  <div class="card">
+    ${img?`<img src="${img}">`:""}
+    <div class="card-body">
+      <h4>${e.titulo}</h4>
+      <span class="badge">${e.destino}</span>
+      <div class="price">R$ ${Number(e.valor).toLocaleString("pt-BR",{minimumFractionDigits:2})}</div>
+      <div class="actions" onclick="editar('${e.id}')">Editar</div>
     </div>
-   </div>`;
+  </div>`;
  });
 }
 
-imagem.addEventListener("change",()=>{
-  blob=imagem.files[0];
-  preview.src=URL.createObjectURL(blob);
-  preview.style.display="block";
-});
-
 function editar(id){
- const i=itens.find(x=>x.id===id);
+ const e=itens.find(i=>i.id===id);
  editId=id;
- titulo.value=i.titulo;
- destino.value=i.destino;
- descricao.value=i.descricao;
- data_saida.value=i.data_saida;
- data_retorno.value=i.data_retorno;
- valor.value=i.valor.toLocaleString("pt-BR",{minimumFractionDigits:2});
- parcelas.value=i.parcelas;
- roteiro.value=i.roteiro;
- inclui_transporte.checked=i.inclui_transporte;
- inclui_hospedagem.checked=i.inclui_hospedagem;
- ativo.checked=i.ativo;
- if(i.imagem_url){preview.src=i.imagem_url;preview.style.display="block"}
  btnExcluir.style.display="block";
+ tituloForm.innerText="Editar excursão";
+ titulo.value=e.titulo;
+ destino.value=e.destino;
+ descricao.value=e.descricao;
+ data_saida.value=e.data_saida;
+ data_retorno.value=e.data_retorno;
+ hospedagem_dias.value=e.hospedagem_dias;
+ local_embarque.value=e.local_embarque;
+ local_desembarque.value=e.local_desembarque;
+ valor.value=Number(e.valor).toLocaleString("pt-BR",{minimumFractionDigits:2});
+ parcelas.value=e.parcelas;
+ inclui_cafe.checked=e.inclui_cafe;
+ inclui_seguro.checked=e.inclui_seguro;
+ inclui_guia.checked=e.inclui_guia;
+ inclui_transporte.checked=e.inclui_transporte;
+ roteiro.value=e.roteiro;
+ if(e.poster_url){
+  preview.src=sb.storage.from("buffet_excursoes").getPublicUrl(e.poster_url).data.publicUrl;
+  preview.style.display="block";
+ }
  modal.classList.add("show");
 }
 
-function abrirModalNovo(){
- editId=null;
- formTitle.innerText="Nova excursão";
- modal.classList.add("show");
- btnExcluir.style.display="none";
-}
-
-function fecharModal(){
- modal.classList.remove("show");
- blob=null;
- preview.style.display="none";
-}
-
-async function confirmarExclusao(){
- if(!editId) return;
+async function excluir(){
+ if(!confirm("Excluir excursão?")) return;
  await sb.from("excursoes").delete().eq("id",editId);
- fecharModal();
- carregar();
+ fechar();carregar();
 }
 </script>
 
