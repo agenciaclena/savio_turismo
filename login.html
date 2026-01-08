@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Login • Painel de Excursões</title>
+
+<meta name="viewport"
+  content="width=device-width,
+  initial-scale=1,
+  maximum-scale=1,
+  viewport-fit=cover">
+<meta name="theme-color" content="#ff6a00">
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Inter
+}
+
+body{
+  background:#f4f6fb;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-height:100vh;
+}
+
+:root{
+  --primary:#ff6a00;
+  --border:#e5e7eb;
+  --text:#111827;
+  --muted:#6b7280;
+  --card:#ffffff;
+}
+
+/* CARD */
+.login-card{
+  width:100%;
+  max-width:380px;
+  background:#fff;
+  border-radius:20px;
+  padding:26px 24px;
+  box-shadow:0 20px 50px rgba(0,0,0,.15);
+}
+
+/* HEADER */
+.login-card h1{
+  font-size:20px;
+  font-weight:800;
+  margin-bottom:6px;
+}
+.login-card h1 span{color:var(--primary)}
+.login-card p{
+  font-size:13px;
+  color:var(--muted);
+  margin-bottom:22px;
+}
+
+/* INPUTS */
+label{
+  font-size:12px;
+  font-weight:700;
+  color:var(--muted);
+  display:block;
+  margin-bottom:6px;
+}
+
+input{
+  width:100%;
+  height:46px;
+  border-radius:14px;
+  border:1px solid var(--border);
+  padding:0 14px;
+  font-size:14px;
+  margin-bottom:14px;
+}
+
+/* BUTTON */
+button{
+  width:100%;
+  height:48px;
+  border:none;
+  border-radius:999px;
+  background:linear-gradient(135deg,#ff6a00,#ff9a57);
+  color:#fff;
+  font-size:14px;
+  font-weight:800;
+  cursor:pointer;
+  margin-top:10px;
+}
+button:disabled{
+  opacity:.6;
+  cursor:not-allowed;
+}
+
+/* ERROR */
+.error{
+  font-size:12px;
+  color:#dc2626;
+  margin-top:12px;
+  display:none;
+}
+
+/* FOOTER */
+.footer{
+  text-align:center;
+  font-size:11px;
+  color:#6b7280;
+  margin-top:18px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="login-card">
+
+  <h1>Painel <span>Excursões</span></h1>
+  <p>Acesso administrativo</p>
+
+  <label>E-mail</label>
+  <input id="email" type="email" placeholder="seu@email.com">
+
+  <label>Senha</label>
+  <input id="password" type="password" placeholder="••••••">
+
+  <button onclick="login()">Entrar</button>
+
+  <div class="error" id="error"></div>
+
+  <div class="footer">
+    Sistema de Gestão de Excursões<br>
+    Savio Turismo
+  </div>
+
+</div>
+
+<script>
+const sb = supabase.createClient(
+  "https://ghkfeobnrfvqwzuliqfz.supabase.co",
+  "sb_publishable_R-eenS9xurRgnrqDR9kz0Q_kJonEi7t"
+);
+
+async function login(){
+  error.style.display="none";
+
+  if(!email.value || !password.value){
+    error.innerText="Informe e-mail e senha";
+    error.style.display="block";
+    return;
+  }
+
+  const { error:err } = await sb.auth.signInWithPassword({
+    email: email.value,
+    password: password.value
+  });
+
+  if(err){
+    error.innerText="E-mail ou senha inválidos";
+    error.style.display="block";
+    return;
+  }
+
+  // login OK
+  location.href="admloja.html";
+}
+</script>
+
+</body>
+</html>
