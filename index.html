@@ -50,7 +50,7 @@ header{
 }
 
 h2{
-  margin:0 0 12px;
+  margin:0 0 14px;
   font-size:18px;
 }
 
@@ -59,8 +59,8 @@ h2{
   gap:14px;
 }
 
-.grid-2{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
-.grid-3{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.grid-2{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.grid-3{grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
 
 input,textarea{
   width:100%;
@@ -86,7 +86,7 @@ button:hover{filter:brightness(1.1)}
 
 .hidden{display:none}
 
-/* Cards excursão */
+/* Cards */
 .cards{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
@@ -184,7 +184,7 @@ button:hover{filter:brightness(1.1)}
 <!-- DASH -->
 <div id="dashboard" class="hidden">
 
-<!-- DADOS LOJA -->
+<!-- LOJA -->
 <div class="card">
   <h2>🏢 Dados da Empresa</h2>
   <div class="grid grid-2">
@@ -198,7 +198,7 @@ button:hover{filter:brightness(1.1)}
   <button onclick="salvarLoja()">Salvar Dados</button>
 </div>
 
-<!-- NOVA EXCURSÃO -->
+<!-- NOVA -->
 <div class="card">
   <h2>🧳 Nova Excursão</h2>
   <div class="grid grid-2">
@@ -220,7 +220,7 @@ button:hover{filter:brightness(1.1)}
   <button onclick="salvarExcursao()">Cadastrar</button>
 </div>
 
-<!-- LISTAGEM -->
+<!-- LISTA -->
 <div class="card">
   <h2>📋 Excursões</h2>
   <div class="cards" id="listaExcursao"></div>
