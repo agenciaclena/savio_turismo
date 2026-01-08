@@ -2,210 +2,336 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8" />
-<title>Painel da Loja | Excursões</title>
+<title>Painel da Loja | Gestão de Excursões</title>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
-body {
-  margin: 0;
-  font-family: Inter, Arial, sans-serif;
-  background: #f3f4f6;
+:root{
+  --primary:#0f172a;
+  --accent:#2563eb;
+  --bg:#f3f4f6;
+  --card:#ffffff;
+  --border:#e5e7eb;
+  --success:#16a34a;
 }
-header {
-  background: #0f172a;
-  color: #fff;
-  padding: 16px;
-  font-size: 20px;
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  font-family:Inter,system-ui,Arial;
+  background:var(--bg);
 }
-.container {
-  padding: 20px;
+
+header{
+  background:linear-gradient(135deg,#020617,#0f172a);
+  color:#fff;
+  padding:18px 28px;
+  font-size:20px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
 }
-.card {
-  background: #fff;
-  border-radius: 10px;
-  padding: 20px;
-  margin-bottom: 20px;
+
+header span{
+  font-size:14px;
+  opacity:.8;
 }
-h2 {
-  margin-top: 0;
+
+.container{
+  max-width:1200px;
+  margin:auto;
+  padding:24px;
 }
-input, textarea, select {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 12px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
+
+.card{
+  background:var(--card);
+  border-radius:14px;
+  padding:22px;
+  margin-bottom:22px;
+  box-shadow:0 8px 20px rgba(0,0,0,.05);
 }
-button {
-  background: #2563eb;
-  color: #fff;
-  border: none;
-  padding: 12px;
-  border-radius: 8px;
-  cursor: pointer;
+
+h2{
+  margin:0 0 14px;
+  font-size:18px;
 }
-button:hover {
-  background: #1d4ed8;
+
+.grid{
+  display:grid;
+  gap:14px;
 }
-.list {
-  display: grid;
-  gap: 10px;
+
+.grid-2{grid-template-columns:1fr 1fr}
+.grid-3{grid-template-columns:1fr 1fr 1fr}
+
+input,textarea{
+  width:100%;
+  padding:12px;
+  border-radius:8px;
+  border:1px solid var(--border);
+  font-size:14px;
 }
-.excursao-item {
-  border: 1px solid #e5e7eb;
-  padding: 12px;
-  border-radius: 8px;
+
+textarea{resize:vertical}
+
+label{
+  font-size:13px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+button{
+  background:var(--accent);
+  color:#fff;
+  border:none;
+  padding:14px;
+  border-radius:10px;
+  font-size:15px;
+  cursor:pointer;
+}
+
+button:hover{filter:brightness(1.1)}
+
+.badge{
+  display:inline-block;
+  padding:6px 10px;
+  border-radius:999px;
+  background:#e0e7ff;
+  color:#1e40af;
+  font-size:12px;
+}
+
+.excursao-item{
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:16px;
+  display:grid;
+  gap:6px;
+}
+
+.excursao-item strong{
+  font-size:16px;
+}
+
+.hidden{display:none}
+
+footer{
+  text-align:center;
+  font-size:12px;
+  color:#64748b;
+  margin-top:40px;
 }
 </style>
 </head>
 
 <body>
-<header>🏖️ Painel da Loja – Gestão de Excursões</header>
+
+<header>
+  🏖️ Painel da Loja – Gestão de Excursões
+  <span>Sistema Interno</span>
+</header>
 
 <div class="container">
 
 <!-- LOGIN -->
 <div class="card" id="loginBox">
-  <h2>Login da Loja</h2>
-  <input id="email" placeholder="E-mail" />
-  <input id="password" type="password" placeholder="Senha" />
-  <button onclick="login()">Entrar</button>
+  <h2>🔐 Login da Loja</h2>
+  <div class="grid">
+    <input id="email" placeholder="E-mail" />
+    <input id="password" type="password" placeholder="Senha" />
+    <button onclick="login()">Entrar</button>
+  </div>
 </div>
 
 <!-- DASHBOARD -->
-<div id="dashboard" style="display:none">
+<div id="dashboard" class="hidden">
 
-  <!-- DADOS DA LOJA -->
+  <!-- PERFIL DA LOJA -->
   <div class="card">
-    <h2>Dados da Loja</h2>
-    <input id="nome_fantasia" placeholder="Nome Fantasia" />
-    <input id="razao_social" placeholder="Razão Social" />
-    <input id="cnpj" placeholder="CNPJ" />
-    <input id="telefone" placeholder="Telefone" />
-    <input id="endereco" placeholder="Endereço Completo" />
+    <h2>🏢 Dados da Loja</h2>
+    <div class="grid grid-2">
+      <input id="nome_fantasia" placeholder="Nome Fantasia" />
+      <input id="razao_social" placeholder="Razão Social" />
+      <input id="cnpj" placeholder="CNPJ" />
+      <input id="telefone" placeholder="Telefone" />
+      <input id="endereco" placeholder="Endereço Completo" />
+    </div>
+    <br>
     <button onclick="salvarLoja()">Salvar Dados da Loja</button>
   </div>
 
-  <!-- CADASTRO DE EXCURSÃO -->
+  <!-- NOVA EXCURSÃO -->
   <div class="card">
-    <h2>Cadastrar Excursão</h2>
-    <input id="titulo" placeholder="Título da Excursão" />
-    <input id="destino" placeholder="Destino" />
-    <textarea id="descricao" placeholder="Descrição detalhada"></textarea>
+    <h2>🧳 Nova Excursão</h2>
 
-    <input type="date" id="data_saida" />
-    <input type="date" id="data_retorno" />
-    <input id="local_embarque" placeholder="Local de Embarque" />
-    <input id="local_desembarque" placeholder="Local de Desembarque" />
+    <div class="grid grid-2">
+      <input id="titulo" placeholder="Título da Excursão" />
+      <input id="destino" placeholder="Destino" />
+    </div>
 
-    <input id="valor" placeholder="Valor por Pessoa" />
-    <input id="parcelas" placeholder="Quantidade de Parcelas" />
-    <input id="hospedagem_dias" placeholder="Dias de Hospedagem" />
+    <textarea id="descricao" placeholder="Descrição completa da excursão"></textarea>
 
-    <label><input type="checkbox" id="inclui_cafe" /> Café da Manhã</label><br>
-    <label><input type="checkbox" id="inclui_seguro" /> Seguro Viagem</label><br>
-    <label><input type="checkbox" id="inclui_guia" /> Guia Turístico</label><br>
-    <label><input type="checkbox" id="inclui_transporte" /> Transporte</label><br>
+    <div class="grid grid-3">
+      <input type="date" id="data_saida" />
+      <input type="date" id="data_retorno" />
+      <input id="hospedagem_dias" placeholder="Dias de Hospedagem" />
+    </div>
 
-    <textarea id="roteiro" placeholder="Roteiro da Viagem"></textarea>
+    <div class="grid grid-2">
+      <input id="local_embarque" placeholder="Local de Embarque" />
+      <input id="local_desembarque" placeholder="Local de Desembarque" />
+    </div>
 
-    <input type="file" id="poster" />
-    <input type="file" id="videos" multiple />
+    <div class="grid grid-3">
+      <input id="valor" placeholder="Valor por Pessoa (R$)" />
+      <input id="parcelas" placeholder="Parcelas" />
+    </div>
 
-    <button onclick="salvarExcursao()">Salvar Excursão</button>
+    <div class="grid grid-3">
+      <label><input type="checkbox" id="inclui_cafe"> Café da manhã</label>
+      <label><input type="checkbox" id="inclui_seguro"> Seguro viagem</label>
+      <label><input type="checkbox" id="inclui_guia"> Guia turístico</label>
+      <label><input type="checkbox" id="inclui_transporte"> Transporte</label>
+    </div>
+
+    <textarea id="roteiro" placeholder="Roteiro detalhado"></textarea>
+
+    <label>Poster da Excursão</label>
+    <input type="file" id="poster" accept="image/*" />
+
+    <label>Vídeos (opcional)</label>
+    <input type="file" id="videos" accept="video/*" multiple />
+
+    <br>
+    <button onclick="salvarExcursao()">Cadastrar Excursão</button>
   </div>
 
   <!-- LISTAGEM -->
   <div class="card">
-    <h2>Excursões Cadastradas</h2>
-    <div class="list" id="listaExcursao"></div>
+    <h2>📋 Excursões Cadastradas</h2>
+    <div class="grid" id="listaExcursao"></div>
   </div>
 
 </div>
-</div>
+
+<footer>
+  Sistema de Gestão de Excursões • Savio Turismo
+</footer>
 
 <script>
-const supabase = supabase.createClient(
+const supabaseClient = supabase.createClient(
   'https://ghkfeobnrfvqwzuliqfz.supabase.co',
   'sb_publishable_R-eenS9xurRgnrqDR9kz0Q_kJonEi7t'
 );
 
 let userId = null;
 
-async function login() {
-  const { data, error } = await supabase.auth.signInWithPassword({
+// LOGIN
+async function login(){
+  const {data,error} = await supabaseClient.auth.signInWithPassword({
     email: email.value,
     password: password.value
   });
-  if (error) return alert(error.message);
+  if(error) return alert(error.message);
+
   userId = data.user.id;
-  loginBox.style.display = 'none';
-  dashboard.style.display = 'block';
+  loginBox.classList.add('hidden');
+  dashboard.classList.remove('hidden');
+
+  carregarLoja();
   carregarExcursao();
 }
 
-async function salvarLoja() {
-  await supabase.from('loja_profile').upsert({
-    id: userId,
-    nome_fantasia: nome_fantasia.value,
-    razao_social: razao_social.value,
-    cnpj: cnpj.value,
-    telefone: telefone.value,
-    endereco: endereco.value
+// SALVAR LOJA
+async function salvarLoja(){
+  await supabaseClient.from('loja_profile').upsert({
+    id:userId,
+    nome_fantasia:nome_fantasia.value,
+    razao_social:razao_social.value,
+    cnpj:cnpj.value,
+    telefone:telefone.value,
+    endereco:endereco.value
   });
   alert('Dados da loja salvos!');
 }
 
-async function salvarExcursao() {
-  const posterFile = poster.files[0];
+// SALVAR EXCURSÃO
+async function salvarExcursao(){
   let posterUrl = null;
 
-  if (posterFile) {
-    const { data } = await supabase.storage
+  if(poster.files[0]){
+    const file = poster.files[0];
+    const path = `${userId}/${Date.now()}-${file.name}`;
+    const {data} = await supabaseClient.storage
       .from('posters-excursoes')
-      .upload(`/${Date.now()}-${posterFile.name}`, posterFile);
+      .upload(path,file);
     posterUrl = data.path;
   }
 
-  const { data } = await supabase.from('excursoes').insert({
-    loja_id: userId,
-    titulo: titulo.value,
-    destino: destino.value,
-    descricao: descricao.value,
-    data_saida: data_saida.value,
-    data_retorno: data_retorno.value,
-    local_embarque: local_embarque.value,
-    local_desembarque: local_desembarque.value,
-    valor: valor.value,
-    parcelas: parcelas.value,
-    hospedagem_dias: hospedagem_dias.value,
-    inclui_cafe: inclui_cafe.checked,
-    inclui_seguro: inclui_seguro.checked,
-    inclui_guia: inclui_guia.checked,
-    inclui_transporte: inclui_transporte.checked,
-    roteiro: roteiro.value,
-    poster_url: posterUrl
+  await supabaseClient.from('excursoes').insert({
+    loja_id:userId,
+    titulo:titulo.value,
+    destino:destino.value,
+    descricao:descricao.value,
+    data_saida:data_saida.value,
+    data_retorno:data_retorno.value,
+    local_embarque:local_embarque.value,
+    local_desembarque:local_desembarque.value,
+    valor:valor.value,
+    parcelas:parcelas.value,
+    hospedagem_dias:hospedagem_dias.value,
+    inclui_cafe:inclui_cafe.checked,
+    inclui_seguro:inclui_seguro.checked,
+    inclui_guia:inclui_guia.checked,
+    inclui_transporte:inclui_transporte.checked,
+    roteiro:roteiro.value,
+    poster_url:posterUrl,
+    ativo:true
   });
 
-  alert('Excursão cadastrada!');
+  alert('Excursão cadastrada com sucesso!');
   carregarExcursao();
 }
 
-async function carregarExcursao() {
-  const { data } = await supabase
+// LISTAR
+async function carregarExcursao(){
+  const {data} = await supabaseClient
     .from('excursoes')
     .select('*')
-    .eq('loja_id', userId);
+    .eq('loja_id',userId)
+    .order('data_saida');
 
   listaExcursao.innerHTML = '';
-  data.forEach(e => {
+  data.forEach(e=>{
     listaExcursao.innerHTML += `
       <div class="excursao-item">
-        <strong>${e.titulo}</strong><br>
-        ${e.destino}<br>
-        Saída: ${e.data_saida} | Retorno: ${e.data_retorno}
+        <strong>${e.titulo}</strong>
+        <span class="badge">${e.destino}</span>
+        <div>📅 ${e.data_saida} → ${e.data_retorno}</div>
+        <div>💰 R$ ${e.valor}</div>
       </div>`;
   });
 }
+
+async function carregarLoja(){
+  const {data} = await supabaseClient
+    .from('loja_profile')
+    .select('*')
+    .eq('id',userId)
+    .single();
+
+  if(data){
+    nome_fantasia.value=data.nome_fantasia||'';
+    razao_social.value=data.razao_social||'';
+    cnpj.value=data.cnpj||'';
+    telefone.value=data.telefone||'';
+    endereco.value=data.endereco||'';
+  }
+}
 </script>
+
 </body>
 </html>
