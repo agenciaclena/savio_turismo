@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>CONTRATO • SÁVIO TURISMO</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+<style>
+*{box-sizing:border-box;font-family:Inter}
+body{margin:0;background:#fff;color:#111}
+#contrato{
+  max-width:800px;
+  margin:auto;
+  padding:40px;
+  font-size:13px;
+  line-height:1.6;
+}
+h1,h2{text-align:center}
+h1{font-size:18px}
+h2{font-size:14px;margin-top:30px}
+.assinatura{
+  margin-top:40px;
+  text-align:center;
+}
+.assinatura img{
+  max-width:300px;
+  border-bottom:1px solid #000;
+}
+.footer{
+  margin-top:20px;
+  font-size:12px;
+  text-align:center;
+}
+</style>
+</head>
+
+<body>
+
+<div id="contrato">
+
+<h1>CONTRATO DE PRESTAÇÃO DE SERVIÇOS TURÍSTICOS</h1>
+
+<p>
+Pelo presente instrumento particular, de um lado,
+<b>SÁVIO TURISMO</b>, pessoa jurídica de direito privado,
+inscrita no CNPJ nº <b>56.173.108/0001-30</b>, doravante denominada
+<b>CONTRATADA</b>, e, de outro lado,
+<b id="c_nome"></b>, CPF <b id="c_cpf"></b>, RG <b id="c_rg"></b>,
+doravante denominado(a) <b>CONTRATANTE</b>, têm entre si justo e contratado
+o que segue, nos termos da legislação vigente.
+</p>
+
+<h2>I. DO OBJETO</h2>
+<p>
+O presente contrato tem por objeto a prestação de serviços turísticos
+relativos à excursão <b id="p_titulo"></b>,
+com saída em <b id="p_saida"></b> e retorno em <b id="p_retorno"></b>,
+conforme pacote contratado.
+</p>
+
+<h2>II. DOS SERVIÇOS INCLUSOS</h2>
+<p id="p_inclusos"></p>
+
+<h2>III. DO VALOR E FORMAS DE PAGAMENTO</h2>
+<p>
+O valor total do pacote contratado é de
+<b id="p_valor"></b>, conforme condições informadas no momento da contratação.
+</p>
+
+<h2>IV. DAS OBRIGAÇÕES DO PASSAGEIRO</h2>
+<p>
+O passageiro compromete-se a cumprir todas as orientações da equipe,
+portar documentos oficiais, respeitar horários, zelar por seus pertences
+e agir com boa conduta durante toda a viagem.
+</p>
+
+<h2>V. DOS RISCOS E RESPONSABILIDADES</h2>
+<p>
+O passageiro declara estar ciente de que atividades turísticas envolvem
+riscos naturais, isentando a CONTRATADA de responsabilidades decorrentes
+de imprudência, negligência ou fatores externos.
+</p>
+
+<h2>VI. DO CANCELAMENTO</h2>
+<p>
+Não haverá reembolso em caso de desistência por iniciativa do passageiro.
+O valor poderá ser convertido em crédito, a critério da CONTRATADA.
+</p>
+
+<h2>VII. DA PROTEÇÃO DE DADOS</h2>
+<p>
+O CONTRATANTE autoriza o tratamento de seus dados pessoais para fins
+de execução deste contrato, conforme a Lei nº 13.709/2018 (LGPD).
+</p>
+
+<h2>VIII. DA DECLARAÇÃO FINAL</h2>
+<p>
+O CONTRATANTE declara que leu, compreendeu e aceita integralmente
+os termos deste contrato.
+</p>
+
+<div class="assinatura">
+<p>ASSINATURA DO CONTRATANTE</p>
+<img id="assin_img">
+<p id="local_data"></p>
+</div>
+
+<div class="footer">
+SÁVIO TURISMO • CNPJ 56.173.108/0001-30
+</div>
+
+</div>
+
+<script>
+/* ========= DADOS ========= */
+const dados = JSON.parse(localStorage.getItem("cadastro_savio")||"{}");
+const pacote = JSON.parse(localStorage.getItem("pacote")||"{}");
+const assinatura = localStorage.getItem("assinatura_base64");
+
+/* CLIENTE */
+c_nome.innerText = dados.nome || "";
+c_cpf.innerText = dados.cpf || "";
+c_rg.innerText = dados.rg || "";
+
+/* PACOTE */
+p_titulo.innerText = pacote.titulo || "";
+p_saida.innerText = formatarData(pacote.data_saida);
+p_retorno.innerText = formatarData(pacote.data_retorno);
+p_valor.innerText = Number(pacote.valor).toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
+
+/* INCLUSOS */
+let inclusos = [];
+if(pacote.inclui_transporte) inclusos.push("Transporte");
+if(pacote.inclui_hospedagem) inclusos.push("Hospedagem");
+if(pacote.inclui_cafe) inclusos.push("Café da manhã");
+if(pacote.inclui_seguro) inclusos.push("Seguro viagem");
+if(pacote.inclui_guia) inclusos.push("Guia turístico");
+
+p_inclusos.innerText = inclusos.join(", ");
+
+/* ASSINATURA */
+if(assinatura){
+  assin_img.src = assinatura;
+}
+
+/* DATA */
+const hoje = new Date();
+local_data.innerText =
+`Assinado em ${hoje.toLocaleDateString("pt-BR")} às ${hoje.toLocaleTimeString("pt-BR")}`;
+
+/* PDF */
+setTimeout(()=>{
+  html2pdf().set({
+    margin:10,
+    filename:`CONTRATO_${dados.nome||"PASSAGEIRO"}.pdf`,
+    html2canvas:{scale:2},
+    jsPDF:{unit:"mm",format:"a4",orientation:"portrait"}
+  }).from(document.getElementById("contrato")).save();
+},800);
+
+function formatarData(d){
+  if(!d) return "";
+  const [y,m,da]=d.split("-");
+  return `${da}/${m}/${y}`;
+}
+</script>
+
+</body>
+</html>
