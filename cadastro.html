@@ -4,7 +4,8 @@
 <meta charset="UTF-8">
 <title>SÁVIO TURISMO • CADASTRO</title>
 
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="viewport"
+content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -13,117 +14,264 @@
 :root{
   --primary:#ff6a00;
   --bg:#f4f6f8;
-  --card:#fff;
+  --card:#ffffff;
   --border:#e5e7eb;
   --text:#111;
+  --muted:#6b7280;
 }
-*{box-sizing:border-box;font-family:Inter;text-transform:uppercase}
-body{margin:0;background:var(--bg);color:var(--text)}
-header{background:#fff;padding:14px;display:flex;justify-content:center;border-bottom:1px solid var(--border)}
+*{
+  box-sizing:border-box;
+  font-family:Inter;
+  text-transform:uppercase;
+  touch-action:manipulation;
+}
+html,body{
+  margin:0;
+  padding:0;
+  background:var(--bg);
+  color:var(--text);
+}
+header{
+  background:#fff;
+  padding:14px;
+  display:flex;
+  justify-content:center;
+  border-bottom:1px solid var(--border);
+}
 header img{height:54px}
 .container{max-width:1200px;margin:auto;padding:16px}
 .grid{display:grid;grid-template-columns:1fr;gap:16px}
 @media(min-width:900px){.grid{grid-template-columns:repeat(2,1fr)}}
 @media(min-width:1200px){.grid{grid-template-columns:repeat(3,1fr)}}
-.card{background:#fff;border-radius:18px;padding:18px;box-shadow:0 10px 24px rgba(0,0,0,.06)}
-.card h2{margin:0 0 12px;font-size:14px;font-weight:800;border-bottom:1px solid var(--border);padding-bottom:8px}
-label{font-size:12px;font-weight:700;margin-top:10px;display:block}
-input{width:100%;padding:14px;border-radius:14px;border:1px solid #d1d5db;margin-top:6px;font-size:16px}
+.card{
+  background:var(--card);
+  border-radius:18px;
+  padding:18px;
+  box-shadow:0 10px 24px rgba(0,0,0,.06);
+}
+.card h2{
+  margin:0 0 12px;
+  font-size:14px;
+  font-weight:800;
+  border-bottom:1px solid var(--border);
+  padding-bottom:8px;
+}
+label{font-size:12px;font-weight:700;display:block;margin-top:10px}
+input{
+  width:100%;
+  padding:14px;
+  border-radius:14px;
+  border:1px solid #d1d5db;
+  margin-top:6px;
+  font-size:16px;
+}
 input:focus{outline:none;border-color:var(--primary)}
 .readonly{background:#f1f1f1}
+
+/* SWITCH */
+.switch-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  padding:14px 0;
+}
+.switch-row span{font-size:14px;font-weight:700}
+.switch-row input{display:none}
+.switch-ui{
+  width:48px;height:28px;background:#d1d5db;border-radius:999px;
+  position:relative;transition:.25s;
+}
+.switch-ui::after{
+  content:"";width:22px;height:22px;background:#fff;border-radius:50%;
+  position:absolute;top:3px;left:3px;transition:.25s;
+}
+.switch-row input:checked + .switch-ui{background:var(--primary)}
+.switch-row input:checked + .switch-ui::after{transform:translateX(20px)}
+
 .actions{margin-top:20px;display:flex;flex-direction:column;gap:12px}
 .btn{padding:18px;border:none;border-radius:999px;font-weight:800;cursor:pointer}
 .btn-primary{background:linear-gradient(135deg,#ff6a00,#ff9a57);color:#fff}
+.btn-clear{background:#e5e7eb}
+.excursoes-box{
+  background:#fff;border-radius:18px;padding:18px;margin-bottom:16px;
+  box-shadow:0 10px 24px rgba(0,0,0,.06);
+}
+.excursoes-box h3{margin:0;font-size:16px;font-weight:900}
+.excursoes-box p{margin:4px 0;font-size:13px;color:#555}
+.valor{font-size:18px;font-weight:900;color:#16a34a}
 </style>
 </head>
 
 <body>
 
 <header>
-  <img src="logo.png">
+  <img src="logo.png" alt="SÁVIO TURISMO">
 </header>
 
 <div class="container">
+
+<!-- ===== RESUMO DA EXCURSÃO (VEM DO INDEX) ===== -->
+<div class="excursoes-box" id="boxExcursao" style="display:none">
+  <h3 id="exTitulo"></h3>
+  <p id="exDestino"></p>
+  <p id="exDatas"></p>
+  <div class="valor" id="exValor"></div>
+</div>
 
 <form id="formCadastro">
 <div class="grid">
 
 <div class="card">
 <h2>DADOS DO PASSAGEIRO</h2>
-<label>NOME</label><input id="nome">
-<label>CPF</label><input id="cpf">
-<label>RG</label><input id="rg">
-<label>NASCIMENTO</label><input id="nascimento" type="date">
+<label>NOME COMPLETO</label><input id="nome" required>
+<label>CPF</label><input id="cpf" required>
+<label>RG</label><input id="rg" required>
+<label>DATA DE NASCIMENTO</label><input id="nascimento" type="date" required>
 <label>PROFISSÃO</label><input id="profissao">
-<label>WHATSAPP</label><input id="telefone">
-<label>E-MAIL</label><input id="email" type="email" style="text-transform:none">
+<label>WHATSAPP</label><input id="telefone" required>
+<label>E-MAIL</label><input id="email" type="email" style="text-transform:none" required>
 </div>
 
 <div class="card">
 <h2>ENDEREÇO</h2>
-<label>CEP</label><input id="cep">
+<label>CEP</label><input id="cep" required>
 <label>RUA</label><input id="rua" class="readonly" readonly>
-<label>NÚMERO</label><input id="numero">
+<label>NÚMERO</label><input id="numero" required>
 <label>BAIRRO</label><input id="bairro" class="readonly" readonly>
 <label>CIDADE</label><input id="cidade" class="readonly" readonly>
 <label>UF</label><input id="uf" class="readonly" readonly>
 </div>
 
 <div class="card">
-<h2>EMERGÊNCIA</h2>
-<label>NOME</label><input id="em_nome">
-<label>PARENTESCO</label><input id="em_parentesco">
-<label>TELEFONE</label><input id="em_telefone">
+<h2>CONTATO DE EMERGÊNCIA</h2>
+<label>NOME</label><input id="em_nome" required>
+<label>PARENTESCO</label><input id="em_parentesco" required>
+<label>TELEFONE</label><input id="em_telefone" required>
+
+<h2 style="margin-top:18px">DECLARAÇÕES</h2>
+
+<label class="switch-row">
+  <span>ACEITO O CONTRATO</span>
+  <input type="checkbox" id="aceite_contrato">
+  <div class="switch-ui"></div>
+</label>
+
+<label class="switch-row">
+  <span>CIÊNCIA DOS RISCOS</span>
+  <input type="checkbox" id="aceite_risco">
+  <div class="switch-ui"></div>
+</label>
+
+<label class="switch-row">
+  <span>AUTORIZO LGPD</span>
+  <input type="checkbox" id="aceite_lgpd">
+  <div class="switch-ui"></div>
+</label>
+
 </div>
 
 </div>
 
 <div class="actions">
-<button class="btn btn-primary">CONFIRMAR</button>
+  <button class="btn btn-primary">CONFIRMAR DADOS</button>
+  <button type="button" class="btn btn-clear" onclick="limparTudo()">LIMPAR TUDO</button>
 </div>
+
 </form>
 </div>
 
 <script>
-/* ================= ELEMENTOS ================= */
-const el = id => document.getElementById(id);
+/* ================= SUPABASE ================= */
+const sb = supabase.createClient(
+ "https://ghkfeobnrfvqwzuliqfz.supabase.co",
+ "sb_publishable_R-eenS9xurRgnrqDR9kz0Q_kJonEi7t"
+);
+const $ = id => document.getElementById(id);
 
-const form = el("formCadastro");
-const campos = [
- "nome","cpf","rg","nascimento","profissao","telefone","email",
- "cep","rua","numero","bairro","cidade","uf",
- "em_nome","em_parentesco","em_telefone"
-];
+/* ================= BUSCAR EXCURSÃO (INDEX) ================= */
+const params = new URLSearchParams(location.search);
+const excursaoId = params.get("id");
+let pacote = null;
+
+async function carregarExcursao(){
+  if(!excursaoId) return;
+  const { data } = await sb.from("excursoes").select("*").eq("id",excursaoId).single();
+  if(!data) return;
+
+  pacote = data;
+  $("boxExcursao").style.display = "block";
+  $("exTitulo").innerText = data.titulo;
+  $("exDestino").innerText = "DESTINO: " + data.destino;
+  $("exDatas").innerText = `SAÍDA ${data.data_saida} • RETORNO ${data.data_retorno}`;
+  $("exValor").innerText =
+    Number(data.valor).toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
+}
+carregarExcursao();
 
 /* ================= RESTAURAR STORAGE ================= */
-const salvo = localStorage.getItem("cadastro_savio");
-if(salvo){
-  const d = JSON.parse(salvo);
-  campos.forEach(c=>{
-    if(d[c] !== undefined) el(c).value = d[c];
-  });
-}
+const salvo = JSON.parse(localStorage.getItem("cadastro_savio")||"{}");
+Object.keys(salvo).forEach(k=>{
+  if($(k)) $(k).value = salvo[k];
+  if($(k) && $(k).type === "checkbox") $(k).checked = salvo[k];
+});
 
 /* ================= CEP ================= */
-el("cep").addEventListener("blur", async ()=>{
-  const c = el("cep").value.replace(/\D/g,"");
-  if(c.length !== 8) return;
+$("cep").addEventListener("blur", async ()=>{
+  const c = $("cep").value.replace(/\D/g,"");
+  if(c.length!==8) return;
   const r = await fetch(`https://viacep.com.br/ws/${c}/json/`).then(r=>r.json());
-  if(r.erro) return alert("CEP não encontrado");
-  el("rua").value = r.logradouro;
-  el("bairro").value = r.bairro;
-  el("cidade").value = r.localidade;
-  el("uf").value = r.uf;
+  if(r.erro) return alert("CEP NÃO ENCONTRADO");
+  $("rua").value=r.logradouro;
+  $("bairro").value=r.bairro;
+  $("cidade").value=r.localidade;
+  $("uf").value=r.uf;
 });
 
 /* ================= SUBMIT ================= */
-form.addEventListener("submit", e=>{
+$("formCadastro").addEventListener("submit", e=>{
   e.preventDefault();
-  const dados = {};
-  campos.forEach(c=>dados[c] = el(c).value);
+
+  if(!$("aceite_contrato").checked || !$("aceite_risco").checked || !$("aceite_lgpd").checked){
+    alert("É necessário aceitar todas as declarações");
+    return;
+  }
+
+  const dados = {
+    nome:$("nome").value,
+    cpf:$("cpf").value,
+    rg:$("rg").value,
+    nascimento:$("nascimento").value,
+    profissao:$("profissao").value,
+    telefone:$("telefone").value,
+    email:$("email").value,
+    cep:$("cep").value,
+    rua:$("rua").value,
+    numero:$("numero").value,
+    bairro:$("bairro").value,
+    cidade:$("cidade").value,
+    uf:$("uf").value,
+    em_nome:$("em_nome").value,
+    em_parentesco:$("em_parentesco").value,
+    em_telefone:$("em_telefone").value,
+    aceite_contrato:true,
+    aceite_risco:true,
+    aceite_lgpd:true
+  };
+
   localStorage.setItem("cadastro_savio", JSON.stringify(dados));
-  alert("DADOS SALVOS COM SUCESSO");
+  localStorage.setItem("pacote", JSON.stringify(pacote));
+
+  location.href = "contrato.html";
 });
+
+/* ================= LIMPAR ================= */
+function limparTudo(){
+  if(confirm("DESEJA LIMPAR TODOS OS DADOS?")){
+    localStorage.clear();
+    location.reload();
+  }
+}
 </script>
 
 </body>
