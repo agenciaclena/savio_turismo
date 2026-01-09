@@ -536,7 +536,7 @@ async function carregarStories(){
   (data || []).forEach(s=>{
     box.innerHTML += `
       <div class="story" onclick="abrirStory('${s.instagram_url}','${s.titulo||""}')">
-<img src="${s.thumbnail_url || 'https://via.placeholder.com/150'}">
+<img src="${s.thumbnail_url || pub('default_story.jpg')}">
         <span>${s.titulo||""}</span>
       </div>
     `;
