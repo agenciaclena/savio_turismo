@@ -4,182 +4,74 @@
 <meta charset="UTF-8">
 <title>SÁVIO TURISMO • CADASTRO</title>
 
-<meta name="viewport"
-content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-:root{
-  --primary:#ff6a00;
-  --bg:#f4f6f8;
-  --card:#ffffff;
-  --border:#e5e7eb;
-  --text:#111;
-  --muted:#6b7280;
-}
-
-*{
-  box-sizing:border-box;
-  font-family:Inter;
-  text-transform:uppercase;
-  touch-action:manipulation;
-}
-
-html,body{
-  margin:0;
-  padding:0;
-  background:var(--bg);
-  color:var(--text);
-  -webkit-text-size-adjust:100%;
-}
-
-/* HEADER */
+*{box-sizing:border-box;font-family:Inter;text-transform:uppercase}
+body{margin:0;background:#f4f6f8;color:#111}
 header{
   background:#fff;
-  padding:14px;
+  padding:16px;
   display:flex;
   justify-content:center;
-  border-bottom:1px solid var(--border);
+  border-bottom:1px solid #e5e7eb
 }
-header img{height:54px}
-
-/* CONTAINER */
-.container{
-  max-width:1200px;
-  margin:auto;
-  padding:16px;
-}
-
-/* GRID */
+header img{height:60px}
+.container{max-width:1200px;margin:auto;padding:20px}
 .grid{
   display:grid;
-  grid-template-columns:1fr;
-  gap:16px;
+  grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+  gap:20px
 }
-@media(min-width:900px){
-  .grid{grid-template-columns:repeat(2,1fr)}
-}
-@media(min-width:1200px){
-  .grid{grid-template-columns:repeat(3,1fr)}
-}
-
-/* CARD */
 .card{
-  background:var(--card);
+  background:#fff;
   border-radius:18px;
-  padding:18px;
-  box-shadow:0 10px 24px rgba(0,0,0,.06);
+  padding:20px;
+  box-shadow:0 10px 24px rgba(0,0,0,.06)
 }
 .card h2{
   margin:0 0 12px;
-  font-size:14px;
-  font-weight:800;
-  border-bottom:1px solid var(--border);
-  padding-bottom:8px;
+  font-size:15px;
+  border-bottom:1px solid #eee;
+  padding-bottom:8px
 }
-
-/* INPUTS */
-label{
-  font-size:12px;
-  font-weight:700;
-  display:block;
-  margin-top:10px;
-}
-
+label{font-size:12px;font-weight:700}
 input{
   width:100%;
-  padding:14px;
-  border-radius:14px;
+  padding:11px;
+  border-radius:10px;
   border:1px solid #d1d5db;
-  margin-top:6px;
-  font-size:16px; /* EVITA ZOOM */
+  margin:6px 0 12px;
+  font-size:14px
 }
-
-input:focus{
-  outline:none;
-  border-color:var(--primary);
-}
-
-.readonly{
-  background:#f1f1f1;
-}
-
-/* SWITCH PREMIUM */
-.switch{
+input:focus{outline:none;border-color:#ff6a00}
+.readonly{background:#f1f1f1}
+.checks label{
   display:flex;
   align-items:center;
-  justify-content:space-between;
-  gap:12px;
-  margin:14px 0;
-}
-
-.switch span{
+  gap:8px;
   font-size:13px;
-  font-weight:700;
+  margin-bottom:10px
 }
-
-.switch input{
-  display:none;
-}
-
-.toggle{
-  width:46px;
-  height:26px;
-  background:#d1d5db;
-  border-radius:999px;
-  position:relative;
-  cursor:pointer;
-  transition:.3s;
-}
-
-.toggle::after{
-  content:"";
-  position:absolute;
-  width:22px;
-  height:22px;
-  background:#fff;
-  border-radius:50%;
-  top:2px;
-  left:2px;
-  transition:.3s;
-  box-shadow:0 2px 6px rgba(0,0,0,.25);
-}
-
-.switch input:checked + .toggle{
-  background:var(--primary);
-}
-.switch input:checked + .toggle::after{
-  transform:translateX(20px);
-}
-
-/* BOTÕES */
-.actions{
-  margin-top:20px;
-  display:flex;
-  flex-direction:column;
-  gap:12px;
-}
-
 .btn{
   width:100%;
-  padding:18px;
+  padding:15px;
   border:none;
   border-radius:999px;
-  font-size:15px;
+  font-size:16px;
   font-weight:800;
-  cursor:pointer;
+  cursor:pointer
 }
-
 .btn-primary{
   background:linear-gradient(135deg,#ff6a00,#ff9a57);
   color:#fff;
 }
-
 .btn-clear{
   background:#e5e7eb;
   color:#111;
+  margin-top:10px;
 }
 </style>
 </head>
@@ -195,6 +87,7 @@ input:focus{
 
 <div class="grid">
 
+<!-- DADOS DO PASSAGEIRO -->
 <div class="card">
 <h2>DADOS DO PASSAGEIRO</h2>
 
@@ -202,10 +95,10 @@ input:focus{
 <input id="nome" required>
 
 <label>CPF</label>
-<input id="cpf" inputmode="numeric" placeholder="000.000.000-00" required>
+<input id="cpf" inputmode="numeric" required>
 
 <label>RG</label>
-<input id="rg" inputmode="numeric" placeholder="00.000.000-0" required>
+<input id="rg" inputmode="numeric" required>
 
 <label>DATA DE NASCIMENTO</label>
 <input id="nascimento" type="date" required>
@@ -214,17 +107,18 @@ input:focus{
 <input id="profissao">
 
 <label>WHATSAPP</label>
-<input id="telefone" inputmode="numeric" placeholder="(00) 00000-0000" required>
+<input id="telefone" inputmode="numeric" required>
 
 <label>E-MAIL</label>
 <input id="email" type="email" style="text-transform:none" required>
 </div>
 
+<!-- ENDEREÇO -->
 <div class="card">
 <h2>ENDEREÇO</h2>
 
 <label>CEP</label>
-<input id="cep" inputmode="numeric" placeholder="00000-000" required>
+<input id="cep" inputmode="numeric" required>
 
 <label>RUA</label>
 <input id="rua" class="readonly" readonly>
@@ -242,6 +136,7 @@ input:focus{
 <input id="uf" class="readonly" readonly>
 </div>
 
+<!-- CONTATO DE EMERGÊNCIA -->
 <div class="card">
 <h2>CONTATO DE EMERGÊNCIA</h2>
 
@@ -252,66 +147,162 @@ input:focus{
 <input id="em_parentesco" required>
 
 <label>TELEFONE</label>
-<input id="em_telefone" inputmode="numeric" placeholder="(00) 00000-0000" required>
+<input id="em_telefone" inputmode="numeric" required>
 </div>
 
+<!-- SAÚDE -->
+<div class="card">
+<h2>INFORMAÇÕES DE SAÚDE (OPCIONAL)</h2>
+
+<label>CONDIÇÃO DE SAÚDE</label>
+<input id="saude_condicao">
+
+<label>MEDICAMENTOS</label>
+<input id="saude_medicamentos">
+
+<label>ALERGIAS</label>
+<input id="saude_alergias">
+
+<label>TIPO SANGUÍNEO</label>
+<input id="saude_sangue">
+</div>
+
+<!-- PACOTE -->
+<div class="card">
+<h2>PACOTE SELECIONADO</h2>
+
+<label>PACOTE</label>
+<input id="pacote_nome" class="readonly" readonly>
+
+<label>PERÍODO</label>
+<input id="pacote_periodo" class="readonly" readonly>
+
+<label>VALOR</label>
+<input id="pacote_valor" class="readonly" readonly>
+</div>
+
+<!-- ACEITES -->
 <div class="card">
 <h2>DECLARAÇÕES</h2>
-
-<div class="switch">
-  <span>ACEITO O CONTRATO</span>
-  <label>
-    <input type="checkbox" id="aceite_contrato" required>
-    <span class="toggle"></span>
-  </label>
+<div class="checks">
+<label><input type="checkbox" id="aceite_contrato" required> LI E ACEITO O CONTRATO</label>
+<label><input type="checkbox" id="aceite_risco" required> CIÊNCIA DOS RISCOS</label>
+<label><input type="checkbox" id="aceite_lgpd" required> AUTORIZO LGPD</label>
 </div>
-
-<div class="switch">
-  <span>CIÊNCIA DOS RISCOS</span>
-  <label>
-    <input type="checkbox" id="aceite_risco" required>
-    <span class="toggle"></span>
-  </label>
-</div>
-
-<div class="switch">
-  <span>AUTORIZO LGPD</span>
-  <label>
-    <input type="checkbox" id="aceite_lgpd" required>
-    <span class="toggle"></span>
-  </label>
 </div>
 
 </div>
 
-</div>
-
-<div class="actions">
-  <button type="submit" class="btn btn-primary">CONFIRMAR DADOS</button>
-  <button type="button" class="btn btn-clear" onclick="limparTudo()">LIMPAR TUDO</button>
-</div>
+<button type="submit" class="btn btn-primary">CONFIRMAR DADOS</button>
+<button type="button" class="btn btn-clear" onclick="limparTudo()">LIMPAR TUDO</button>
 
 </form>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script>
-/* ===== MÁSCARAS ===== */
-function mask(el, fn){
-  el.addEventListener("input", ()=>el.value = fn(el.value));
+/* ========= SUPABASE ========= */
+const supabase = window.supabase.createClient(
+  "https://ghkfeobnrfvqwzuliqfz.supabase.co",
+  "sb_publishable_R-eenS9xurRgnrqDR9kz0Q_kJonEi7t"
+);
+
+/* ========= DADOS ========= */
+const dados = JSON.parse(localStorage.getItem("cadastro_savio") || "{}");
+const pacote = JSON.parse(localStorage.getItem("pacote") || "{}");
+const assinatura = localStorage.getItem("assinatura_base64");
+
+/* ========= HELPERS ========= */
+function formatarData(d){
+  if(!d) return "";
+  const [y,m,da] = d.split("-");
+  return `${da}/${m}/${y}`;
 }
-mask(cpf, v=>v.replace(/\D/g,"").replace(/(\d{3})(\d)/,"$1.$2")
-.replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d{1,2})$/,"$1-$2"));
 
-mask(rg, v=>v.replace(/\D/g,"").replace(/(\d{2})(\d)/,"$1.$2")
-.replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d)$/,"$1-$2"));
+function mesAno(){
+  const d = new Date();
+  return {
+    ano: d.getFullYear(),
+    mes: String(d.getMonth()+1).padStart(2,"0")
+  };
+}
 
-mask(telefone, v=>v.replace(/\D/g,"").replace(/(\d{2})(\d)/,"($1) $2")
-.replace(/(\d{5})(\d)/,"$1-$2"));
+/* ========= PREENCHER CONTRATO ========= */
+c_nome.innerText = dados.nome || "";
+c_cpf.innerText = dados.cpf || "";
+c_rg.innerText = dados.rg || "";
 
-mask(em_telefone, v=>v.replace(/\D/g,"").replace(/(\d{2})(\d)/,"($1) $2")
-.replace(/(\d{5})(\d)/,"$1-$2"));
+p_titulo.innerText = pacote.titulo || "";
+p_saida.innerText = formatarData(pacote.data_saida);
+p_retorno.innerText = formatarData(pacote.data_retorno);
+p_valor.innerText = Number(pacote.valor)
+  .toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
 
-mask(cep, v=>v.replace(/\D/g,"").replace(/(\d{5})(\d)/,"$1-$2"));
+let inclusos = [];
+if(pacote.inclui_transporte) inclusos.push("Transporte");
+if(pacote.inclui_hospedagem) inclusos.push("Hospedagem");
+if(pacote.inclui_cafe) inclusos.push("Café da manhã");
+if(pacote.inclui_seguro) inclusos.push("Seguro viagem");
+if(pacote.inclui_guia) inclusos.push("Guia turístico");
+p_inclusos.innerText = inclusos.join(", ");
+
+if(assinatura) assin_img.src = assinatura;
+
+const agora = new Date();
+local_data.innerText =
+  `Assinado em ${agora.toLocaleDateString("pt-BR")} às ${agora.toLocaleTimeString("pt-BR")}`;
+
+/* ========= GERAR PDF + UPLOAD ========= */
+async function gerarEEnviarPDF(){
+
+  const el = document.getElementById("contrato");
+
+  const opt = {
+    margin:10,
+    html2canvas:{ scale:2 },
+    jsPDF:{ unit:"mm", format:"a4", orientation:"portrait" }
+  };
+
+  // GERA PDF EM MEMÓRIA
+  const pdfBlob = await html2pdf().set(opt).from(el).outputPdf("blob");
+
+  const { ano, mes } = mesAno();
+  const cpfLimpo = (dados.cpf || "SEMCPF").replace(/\D/g,"");
+  const nomeArquivo =
+    `CONTRATO_${pacote.id}_${cpfLimpo}_${Date.now()}.pdf`;
+
+  const caminho = `${ano}/${mes}/${nomeArquivo}`;
+
+  // UPLOAD
+  const { error } = await supabase
+    .storage
+    .from("buffet_contratos")
+    .upload(caminho, pdfBlob, {
+      contentType: "application/pdf",
+      upsert: false
+    });
+
+  if(error){
+    alert("ERRO AO SALVAR CONTRATO");
+    console.error(error);
+    return;
+  }
+
+  // URL PÚBLICA
+  const { data } = supabase
+    .storage
+    .from("buffet_contratos")
+    .getPublicUrl(caminho);
+
+  // SALVAR URL
+  localStorage.setItem("contrato_pdf_url", data.publicUrl);
+
+  console.log("PDF SALVO EM:", data.publicUrl);
+}
+
+/* EXECUTA */
+setTimeout(gerarEEnviarPDF, 800);
 </script>
 
 </body>
