@@ -3,8 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>SÁVIO TURISMO • CADASTRO</title>
-
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -14,223 +13,93 @@
 :root{
   --primary:#ff6a00;
   --bg:#f3f4f6;
-  --card:#ffffff;
+  --card:#fff;
   --border:#e5e7eb;
   --text:#111827;
-  --muted:#6b7280;
 }
-
-*{
-  box-sizing:border-box;
-  font-family:Inter;
-  text-transform:uppercase;
-}
-
-body{
-  margin:0;
-  background:var(--bg);
-  color:var(--text);
-}
-
-/* HEADER */
-header{
-  background:#fff;
-  padding:14px;
-  display:flex;
-  justify-content:center;
-  border-bottom:1px solid var(--border);
-}
+*{box-sizing:border-box;font-family:Inter;text-transform:uppercase}
+body{margin:0;background:var(--bg);color:var(--text)}
+header{background:#fff;padding:14px;display:flex;justify-content:center;border-bottom:1px solid var(--border)}
 header img{height:54px}
+.container{max-width:1200px;margin:auto;padding:16px}
 
-/* CONTAINER */
-.container{
-  max-width:1200px;
-  margin:auto;
-  padding:16px;
+.box{
+  background:#fff;border-radius:18px;padding:18px;
+  box-shadow:0 10px 24px rgba(0,0,0,.06);
+  margin-bottom:16px;
 }
+.box h2{margin:0 0 12px;font-size:15px;font-weight:900;border-bottom:1px solid var(--border);padding-bottom:8px}
 
-/* PACOTE */
-.pacote{
-  background:linear-gradient(135deg,#ff6a00,#ff9a57);
-  color:#fff;
-  border-radius:20px;
-  padding:20px;
-  margin-bottom:20px;
-}
-.pacote h1{margin:0;font-size:20px;font-weight:900}
-.pacote p{margin:6px 0;font-size:13px}
-.pacote .valor{
-  margin-top:10px;
-  font-size:22px;
-  font-weight:900;
-}
+.grid{display:grid;grid-template-columns:1fr;gap:16px}
+@media(min-width:900px){.grid{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:1200px){.grid{grid-template-columns:repeat(3,1fr)}}
 
-/* GRID */
-.grid{
-  display:grid;
-  grid-template-columns:1fr;
-  gap:16px;
+label{font-size:11px;font-weight:800;margin-top:10px;display:block}
+input,select{
+  width:100%;padding:14px;border-radius:14px;
+  border:1px solid #d1d5db;margin-top:6px;font-size:15px
 }
-@media(min-width:900px){
-  .grid{grid-template-columns:repeat(2,1fr)}
-}
-@media(min-width:1200px){
-  .grid{grid-template-columns:repeat(3,1fr)}
-}
-
-/* CARD */
-.card{
-  background:var(--card);
-  border-radius:18px;
-  padding:18px;
-  box-shadow:0 8px 20px rgba(0,0,0,.06);
-}
-.card h2{
-  margin:0 0 12px;
-  font-size:14px;
-  font-weight:900;
-  border-bottom:1px solid var(--border);
-  padding-bottom:8px;
-}
-
-/* INPUTS */
-label{
-  font-size:11px;
-  font-weight:800;
-  margin-top:10px;
-  display:block;
-  color:#374151;
-}
-input{
-  width:100%;
-  padding:14px;
-  border-radius:14px;
-  border:1px solid #d1d5db;
-  margin-top:6px;
-  font-size:15px;
-}
-input:focus{
-  outline:none;
-  border-color:var(--primary);
-}
-.readonly{
-  background:#f1f5f9;
-}
+.readonly{background:#f1f5f9}
 
 /* SWITCH */
-.switch{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-top:14px;
-}
-.switch span{
-  font-size:13px;
-  font-weight:800;
-}
+.switch{display:flex;justify-content:space-between;align-items:center;margin-top:14px}
 .switch input{display:none}
 .switch-ui{
-  width:48px;
-  height:28px;
-  background:#d1d5db;
-  border-radius:999px;
-  position:relative;
+  width:48px;height:28px;background:#d1d5db;border-radius:999px;position:relative
 }
 .switch-ui::after{
-  content:"";
-  width:22px;
-  height:22px;
-  background:#fff;
-  border-radius:50%;
-  position:absolute;
-  top:3px;
-  left:3px;
-  transition:.25s;
+  content:"";width:22px;height:22px;background:#fff;border-radius:50%;
+  position:absolute;top:3px;left:3px;transition:.25s
 }
-.switch input:checked + .switch-ui{
-  background:var(--primary);
-}
-.switch input:checked + .switch-ui::after{
-  transform:translateX(20px);
-}
+.switch input:checked + .switch-ui{background:var(--primary)}
+.switch input:checked + .switch-ui::after{transform:translateX(20px)}
 
-/* ACTIONS */
-.actions{
-  margin-top:20px;
-  display:flex;
-  flex-direction:column;
-  gap:12px;
-}
 .btn{
-  width:100%;
-  padding:18px;
-  border:none;
-  border-radius:999px;
-  font-weight:900;
-  cursor:pointer;
-  font-size:15px;
+  width:100%;padding:18px;border:none;border-radius:999px;
+  font-weight:900;font-size:15px;cursor:pointer;margin-top:14px
 }
-.btn-primary{
-  background:linear-gradient(135deg,#ff6a00,#ff9a57);
-  color:#fff;
-}
-.btn-secondary{
-  background:#e5e7eb;
-}
+.btn-primary{background:linear-gradient(135deg,#ff6a00,#ff9a57);color:#fff}
+.btn-secondary{background:#e5e7eb}
+
 #btnAssinar{display:none}
 
 /* MODAL */
 .modal{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.6);
-  display:none;
-  align-items:center;
-  justify-content:center;
-  z-index:9999;
+  position:fixed;inset:0;background:rgba(0,0,0,.6);
+  display:none;align-items:center;justify-content:center;z-index:9999
 }
 .modal.show{display:flex}
 .modal-box{
-  background:#fff;
-  border-radius:18px;
-  padding:20px;
-  width:340px;
+  background:#fff;border-radius:18px;padding:20px;width:340px
 }
-canvas{
-  width:100%;
-  height:140px;
-  border:1px solid #000;
-  border-radius:8px;
-}
+canvas{width:100%;height:140px;border:1px solid #000;border-radius:8px}
 </style>
 </head>
 
 <body>
 
 <header>
-  <img src="logo.png" alt="SÁVIO TURISMO">
+  <img src="logo.png">
 </header>
 
 <div class="container">
 
-<!-- PACOTE -->
-<div class="pacote" id="pacoteBox"></div>
+<div class="box" id="pacoteBox"></div>
 
-<form id="formCadastro">
+<form id="form">
+
 <div class="grid">
 
-<div class="card">
+<div class="box">
 <h2>DADOS DO PASSAGEIRO</h2>
-<label>NOME COMPLETO</label><input id="nome">
+<label>NOME</label><input id="nome">
 <label>CPF</label><input id="cpf">
 <label>RG</label><input id="rg">
-<label>DATA DE NASCIMENTO</label><input id="nascimento" type="date">
-<label>PROFISSÃO</label><input id="profissao">
-<label>WHATSAPP</label><input id="telefone">
+<label>TELEFONE</label><input id="telefone">
 <label>E-MAIL</label><input id="email" type="email" style="text-transform:none">
 </div>
 
-<div class="card">
+<div class="box">
 <h2>ENDEREÇO</h2>
 <label>CEP</label><input id="cep">
 <label>RUA</label><input id="rua" class="readonly" readonly>
@@ -240,47 +109,197 @@ canvas{
 <label>UF</label><input id="uf" class="readonly" readonly>
 </div>
 
-<div class="card">
-<h2>EMERGÊNCIA & ACEITES</h2>
+<div class="box">
+<h2>EMERGÊNCIA & SAÚDE</h2>
 <label>NOME</label><input id="em_nome">
 <label>PARENTESCO</label><input id="em_parentesco">
 <label>TELEFONE</label><input id="em_telefone">
 
+<label>CONDIÇÃO DE SAÚDE</label><input id="saude_condicao">
+<label>MEDICAMENTOS</label><input id="saude_medicamentos">
+<label>ALERGIAS</label><input id="saude_alergias">
+<label>TIPO SANGUÍNEO</label>
+<select id="saude_sangue">
+  <option value=""></option>
+  <option>O+</option><option>O-</option>
+  <option>A+</option><option>A-</option>
+  <option>B+</option><option>B-</option>
+  <option>AB+</option><option>AB-</option>
+</select>
+
 <label class="switch" for="aceite_contrato">
   <span>ACEITO O CONTRATO</span>
-  <input type="checkbox" id="aceite_contrato">
-  <div class="switch-ui"></div>
+  <input type="checkbox" id="aceite_contrato"><div class="switch-ui"></div>
 </label>
 
 <label class="switch" for="aceite_risco">
   <span>CIÊNCIA DOS RISCOS</span>
-  <input type="checkbox" id="aceite_risco">
-  <div class="switch-ui"></div>
+  <input type="checkbox" id="aceite_risco"><div class="switch-ui"></div>
 </label>
 
 <label class="switch" for="aceite_lgpd">
   <span>AUTORIZO LGPD</span>
-  <input type="checkbox" id="aceite_lgpd">
-  <div class="switch-ui"></div>
+  <input type="checkbox" id="aceite_lgpd"><div class="switch-ui"></div>
 </label>
 
 </div>
 
 </div>
 
-<div class="actions">
-  <button type="button" id="btnAssinar" class="btn btn-primary">ASSINAR CONTRATO</button>
-  <button type="button" class="btn btn-secondary" onclick="limparTudo()">LIMPAR TUDO</button>
-</div>
+<button type="button" id="btnAssinar" class="btn btn-primary">ASSINAR CONTRATO</button>
+<button type="button" class="btn btn-secondary" onclick="limpar()">LIMPAR TUDO</button>
 
 </form>
 </div>
 
-<!-- MODAL ASSINATURA -->
+<!-- MODAL -->
 <div class="modal" id="modal">
   <div class="modal-box">
-    <h3>ASSINE ABAIXO</h3>
+    <h3>ASSINATURA</h3>
     <canvas id="canvas" width="300" height="140"></canvas>
-    <button class="btn btn-primary" onclick="finalizarContrato()">FINALIZAR CONTRATO</button>
+    <button class="btn btn-primary" onclick="finalizar()">FINALIZAR</button>
   </div>
 </div>
+
+<script>
+const $=id=>document.getElementById(id);
+
+/* SUPABASE */
+const sb=supabase.createClient(
+ "https://ghkfeobnrfvqwzuliqfz.supabase.co",
+ "sb_publishable_R-eenS9xurRgnrqDR9kz0Q_kJonEi7t"
+);
+
+/* PACOTE */
+const params=new URLSearchParams(location.search);
+const excursaoId=params.get("id");
+let pacote=null;
+
+(async()=>{
+  const {data}=await sb.from("excursoes").select("*").eq("id",excursaoId).single();
+  pacote=data;
+  localStorage.setItem("pacote",JSON.stringify(pacote));
+  pacoteBox.innerHTML=`
+    <h2>${pacote.titulo}</h2>
+    <p>${pacote.destino}</p>
+    <p>${pacote.data_saida} → ${pacote.data_retorno}</p>
+    <strong>R$ ${pacote.valor}</strong>
+  `;
+})();
+
+/* AUTOSAVE */
+document.querySelectorAll("input,select").forEach(i=>{
+  i.oninput=i.onchange=salvar;
+});
+
+/* RESTAURAR */
+const s=JSON.parse(localStorage.getItem("cadastro_savio")||"{}");
+Object.keys(s).forEach(k=>{
+  if($(k)) $(k).type==="checkbox"?$(k).checked=s[k]:$(k).value=s[k];
+});
+verificar();
+
+/* SALVAR */
+function salvar(){
+  const d={
+    nome:nome.value,cpf:cpf.value,rg:rg.value,telefone:telefone.value,email:email.value,
+    cep:cep.value,rua:rua.value,numero:numero.value,bairro:bairro.value,
+    cidade:cidade.value,uf:uf.value,
+    em_nome:em_nome.value,em_parentesco:em_parentesco.value,em_telefone:em_telefone.value,
+    saude_condicao:saude_condicao.value,
+    saude_medicamentos:saude_medicamentos.value,
+    saude_alergias:saude_alergias.value,
+    saude_sangue:saude_sangue.value,
+    aceite_contrato:aceite_contrato.checked,
+    aceite_risco:aceite_risco.checked,
+    aceite_lgpd:aceite_lgpd.checked
+  };
+  localStorage.setItem("cadastro_savio",JSON.stringify(d));
+  verificar();
+}
+
+/* VERIFICAR FLAGS */
+function verificar(){
+  btnAssinar.style.display=
+    aceite_contrato.checked&&aceite_risco.checked&&aceite_lgpd.checked
+    ?"block":"none";
+}
+
+/* CEP */
+cep.onblur=async()=>{
+  const c=cep.value.replace(/\D/g,"");
+  if(c.length!==8) return;
+  const r=await fetch(`https://viacep.com.br/ws/${c}/json/`).then(r=>r.json());
+  if(r.erro) return alert("CEP NÃO ENCONTRADO");
+  rua.value=r.logradouro;
+  bairro.value=r.bairro;
+  cidade.value=r.localidade;
+  uf.value=r.uf;
+};
+
+/* ASSINATURA */
+btnAssinar.onclick=()=>modal.classList.add("show");
+const ctx=canvas.getContext("2d");
+let draw=false;
+canvas.onmousedown=()=>draw=true;
+canvas.onmouseup=()=>{draw=false;ctx.beginPath()};
+canvas.onmousemove=e=>{
+  if(!draw) return;
+  ctx.lineTo(e.offsetX,e.offsetY);ctx.stroke();
+};
+
+/* FINALIZAR */
+async function finalizar(){
+  const assinatura=canvas.toDataURL();
+
+  const contrato=document.createElement("div");
+  contrato.innerHTML=`
+    <h2>CONTRATO</h2>
+    <p>${nome.value} CPF ${cpf.value}</p>
+    <img src="${assinatura}" width="200">
+  `;
+
+  const pdf=await html2pdf().from(contrato).outputPdf("blob");
+
+  const nomeArq=`CONTRATO_${pacote.id}_${cpf.value.replace(/\D/g,"")}_${Date.now()}.pdf`;
+  const path=`${new Date().getFullYear()}/${String(new Date().getMonth()+1).padStart(2,"0")}/${nomeArq}`;
+
+  await sb.storage.from("buffet_contratos").upload(path,pdf,{contentType:"application/pdf"});
+  const {data}=sb.storage.from("buffet_contratos").getPublicUrl(path);
+
+  await sb.from("contratos").insert({
+    excursao_id: pacote.id,
+    nome: nome.value,
+    cpf: cpf.value,
+    rg: rg.value,
+    telefone: telefone.value,
+    email: email.value,
+    endereco: `${rua.value}, Nº ${numero.value} - ${bairro.value} - ${cidade.value}/${uf.value}`,
+    emergencia_nome: em_nome.value,
+    emergencia_parentesco: em_parentesco.value,
+    emergencia_telefone: em_telefone.value,
+    info_saude: {
+      condicao: saude_condicao.value,
+      medicamentos: saude_medicamentos.value,
+      alergias: saude_alergias.value,
+      sangue: saude_sangue.value
+    },
+    valor: pacote.valor,
+    pdf_url: data.publicUrl,
+    status: "ASSINADO"
+  });
+
+  window.open(data.publicUrl,"_blank");
+}
+
+/* LIMPAR */
+function limpar(){
+  if(confirm("DESEJA LIMPAR TODOS OS DADOS?")){
+    localStorage.clear();
+    location.reload();
+  }
+}
+</script>
+
+</body>
+</html>
