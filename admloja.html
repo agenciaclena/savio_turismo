@@ -323,7 +323,7 @@ const payload={
   inclui_guia:!!inclui_guia.checked,
 
   roteiro:roteiro.value || null,
-  valor:Number(valor.value) || 0,
+valor: limparMoeda(valor.value),
   parcelas:Number(parcelas.value) || 0,
  observacoes:observacoes.value || null,
 
