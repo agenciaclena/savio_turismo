@@ -365,6 +365,28 @@ body{
   from{ transform:translateX(0) }
   to{ transform:translateX(-50%) }
 }
+.header-top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+
+.localizacao-top{
+  font-size:12px;
+  font-weight:700;
+  white-space:nowrap;
+}
+
+/* Ajuste fino no mobile */
+@media(max-width:480px){
+  .titulo{
+    font-size:20px;
+  }
+  .localizacao-top{
+    font-size:11px;
+  }
+}
 
 </style>
 </head>
