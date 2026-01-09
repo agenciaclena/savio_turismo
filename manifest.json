@@ -1,7 +1,7 @@
 {
-  "name": "Painel Administrativo",
-  "short_name": "Admin",
-  "start_url": "index-admin.html",
+  "name": "Painel de Excursões",
+  "short_name": "Excursões",
+  "start_url": "login.html",
   "display": "standalone",
   "background_color": "#f4f6fb",
   "theme_color": "#ff6a00",
