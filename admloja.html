@@ -208,7 +208,8 @@ body{background:#f4f6fb;color:#111}
   <label><input type="checkbox" id="pag_parcelado"> Parcelado</label>
 </div>
 <label>Roteiro</label><textarea id="roteiro"></textarea>
-<label>Valor</label><input id="valor">
+<label>Valor</label>
+<input id="valor" inputmode="numeric" placeholder="R$ 0,00">
 <label>Parcelas</label><input id="parcelas">
 <label>Observações</label><textarea id="observacoes"></textarea>
 
@@ -245,6 +246,14 @@ let userId, editId=null, blob=null, itens=[];
  userId = session.user.id;
  carregar();
 })();
+valor.addEventListener("input", ()=>{
+  let v = valor.value.replace(/\D/g,"");
+  v = (Number(v) / 100).toLocaleString("pt-BR", {
+    style:"currency",
+    currency:"BRL"
+  });
+  valor.value = v;
+});
 
 imagem.onchange = () =>{
  blob = imagem.files[0];
@@ -352,6 +361,23 @@ function formatarHora(hora){
   if(!hora) return "";
   return hora.slice(0,5); // hh:mm
 }
+function formatarMoeda(valor){
+  if(valor === null || valor === undefined) return "R$ 0,00";
+  return Number(valor).toLocaleString("pt-BR", {
+    style: "currency",
+    currency: "BRL"
+  });
+}
+
+function limparMoeda(valor){
+  if(!valor) return 0;
+  return Number(
+    valor
+      .replace(/\./g,"")
+      .replace(",",".")
+      .replace(/[^\d.]/g,"")
+  );
+}
 
 
 
@@ -396,7 +422,7 @@ async function carregar(){
   →
   ${formatarData(e.data_retorno)} ${formatarHora(e.hora_retorno)}
 </div>
-      <div class="price">R$ ${e.valor}</div>
+<div class="price">${formatarMoeda(e.valor)}</div>
       <div class="edit" onclick="editar('${e.id}')">Editar</div>
     </div>
   </div>`;
