@@ -227,6 +227,7 @@ body{background:#f4f6fb;color:#111}
 
 <div class="grid" id="lista"></div>
 <button class="fab" onclick="novo()">+</button>
+<button class="fab" style="bottom:90px" onclick="abrirConfig()">⚙️</button>
 
 <!-- MODAL -->
 <div class="modal" id="modal">
@@ -596,6 +597,78 @@ pag_parcelado.checked = !!e.pag_parcelado;
 
  modal.classList.add("show");
 }
+function abrirConfig(){
+  carregarConfig();
+  modalConfig.classList.add("show");
+}
+
+function fecharConfig(){
+  modalConfig.classList.remove("show");
+}
+
+async function carregarConfig(){
+  const { data } = await sb.from("loja_config").select("*").single();
+  if(!data) return;
+
+  cfg_ativo.checked = data.ultimas_vagas_ativo;
+  cfg_dias.value = data.ultimas_vagas_dias;
+  cfg_texto.value = data.ultimas_vagas_texto;
+  cfg_cor.value = data.ultimas_vagas_cor;
+  cfg_piscar.checked = data.ultimas_vagas_piscar;
+}
+
+function abrirConfig(){
+  carregarConfig();
+  modalConfig.classList.add("show");
+}
+
+function fecharConfig(){
+  modalConfig.classList.remove("show");
+}
+
+async function carregarConfig(){
+  const { data } = await sb.from("loja_config").select("*").single();
+  if(!data) return;
+
+  cfg_nome.value = data.nome_loja;
+  cfg_cor_primaria.value = data.cor_primaria;
+  cfg_cor_fundo.value = data.cor_fundo;
+  cfg_cor_card.value = data.cor_card;
+  cfg_cor_texto.value = data.cor_texto;
+
+  cfg_banners.value = (data.banners || []).join("\n");
+  cfg_banner_efeito.value = data.banner_efeito;
+  cfg_banner_intervalo.value = data.banner_intervalo;
+
+  cfg_uv_ativo.checked = data.ultimas_vagas_ativo;
+  cfg_uv_dias.value = data.ultimas_vagas_dias;
+  cfg_uv_texto.value = data.ultimas_vagas_texto;
+  cfg_uv_cor.value = data.ultimas_vagas_cor;
+  cfg_uv_piscar.checked = data.ultimas_vagas_piscar;
+}
+
+async function salvarConfig(){
+  const payload = {
+    nome_loja: cfg_nome.value,
+    cor_primaria: cfg_cor_primaria.value,
+    cor_fundo: cfg_cor_fundo.value,
+    cor_card: cfg_cor_card.value,
+    cor_texto: cfg_cor_texto.value,
+
+    banners: cfg_banners.value.split("\n").filter(Boolean),
+    banner_efeito: cfg_banner_efeito.value,
+    banner_intervalo: Number(cfg_banner_intervalo.value),
+
+    ultimas_vagas_ativo: cfg_uv_ativo.checked,
+    ultimas_vagas_dias: Number(cfg_uv_dias.value),
+    ultimas_vagas_texto: cfg_uv_texto.value,
+    ultimas_vagas_cor: cfg_uv_cor.value,
+    ultimas_vagas_piscar: cfg_uv_piscar.checked
+  };
+
+  await sb.from("loja_config").update(payload).eq("id", 1);
+  fecharConfig();
+}
 
 
 async function excluir(){
@@ -606,6 +679,87 @@ async function excluir(){
  }
 }
 </script>
+<div class="modal" id="modalConfig">
+  <div class="sheet">
+
+    <div class="sheet-header">
+      <span>Configurações da Loja</span>
+      <span onclick="fecharConfig()">✕</span>
+    </div>
+
+    <div class="sheet-body">
+
+      <!-- ABA: VISUAL -->
+      <h4>🎨 Visual</h4>
+
+      <label>Nome da loja</label>
+      <input id="cfg_nome">
+
+      <label>Cor primária</label>
+      <input type="color" id="cfg_cor_primaria">
+
+      <label>Cor de fundo</label>
+      <input type="color" id="cfg_cor_fundo">
+
+      <label>Cor dos cards</label>
+      <input type="color" id="cfg_cor_card">
+
+      <label>Cor do texto</label>
+      <input type="color" id="cfg_cor_texto">
+
+      <hr>
+
+      <!-- ABA: BANNERS -->
+      <h4>🖼️ Banners</h4>
+
+      <label>URLs (uma por linha)</label>
+      <textarea id="cfg_banners" placeholder="https://..."></textarea>
+
+      <label>Efeito</label>
+      <select id="cfg_banner_efeito">
+        <option value="slide">Slide</option>
+        <option value="fade">Fade</option>
+      </select>
+
+      <label>Intervalo (ms)</label>
+      <input type="number" id="cfg_banner_intervalo">
+
+      <hr>
+
+      <!-- ABA: ÚLTIMAS VAGAS -->
+      <h4>🚨 Últimas vagas</h4>
+
+      <label class="toggle">
+        <span>Ativar alerta</span>
+        <input type="checkbox" id="cfg_uv_ativo">
+        <div class="switch"></div>
+      </label>
+
+      <label>Dias antes da viagem</label>
+      <input type="number" id="cfg_uv_dias">
+
+      <label>Texto exibido</label>
+      <input id="cfg_uv_texto">
+
+      <label>Cor do alerta</label>
+      <input type="color" id="cfg_uv_cor">
+
+      <label class="toggle">
+        <span>Piscar alerta</span>
+        <input type="checkbox" id="cfg_uv_piscar">
+        <div class="switch"></div>
+      </label>
+
+    </div>
+
+    <div class="sheet-footer">
+      <button class="cancel" onclick="fecharConfig()">Cancelar</button>
+      <button class="save" onclick="salvarConfig()">Salvar</button>
+    </div>
+
+  </div>
+</div>
+
 
 </body>
 </html>
