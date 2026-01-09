@@ -289,10 +289,23 @@ function abrir(e){
  if(e.inclui_cafe)mInclusos.innerHTML+=`<div class="tag">☕ Café</div>`;
  if(e.inclui_seguro)mInclusos.innerHTML+=`<div class="tag">🛡 Seguro</div>`;
 
- mPagamentos.innerHTML="";
- ["PIX","Crédito","Débito","Dinheiro","Parcelado"].forEach(p=>{
-  mPagamentos.innerHTML+=`<div class="tag">${p}</div>`;
- });
+mPagamentos.innerHTML = "";
+
+if (e.pag_pix)
+  mPagamentos.innerHTML += `<div class="tag">💳 Pix</div>`;
+
+if (e.pag_credito)
+  mPagamentos.innerHTML += `<div class="tag">💳 Crédito</div>`;
+
+if (e.pag_debito)
+  mPagamentos.innerHTML += `<div class="tag">💳 Débito</div>`;
+
+if (e.pag_dinheiro)
+  mPagamentos.innerHTML += `<div class="tag">💵 Dinheiro</div>`;
+
+if (e.pag_parcelado)
+  mPagamentos.innerHTML += `<div class="tag">📆 Parcelado</div>`;
+
 
  modal.classList.add("show");
 }
