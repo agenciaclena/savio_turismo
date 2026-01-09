@@ -265,6 +265,14 @@ function dataHora(d,h){
  const [y,m,da]=d.split("-");
  return `${da}/${m}/${y} ${h||""}`;
 }
+function formatarMoeda(valor){
+  if(valor === null || valor === undefined) return "R$ 0,00";
+
+  return Number(valor).toLocaleString("pt-BR", {
+    style: "currency",
+    currency: "BRL"
+  });
+}
 
 function ultimasVagas(data_saida){
   if(!data_saida) return false;
