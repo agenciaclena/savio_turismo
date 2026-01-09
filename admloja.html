@@ -341,314 +341,311 @@ body{background:#f4f6fb;color:#111}
 
 <script>
 const sb = supabase.createClient(
- "https://ghkfeobnrfvqwzuliqfz.supabase.co",
- "sb_publishable_R-eenS9xurRgnrqDR9kz0Q_kJonEi7t"
+  "https://ghkfeobnrfvqwzuliqfz.supabase.co",
+  "sb_publishable_R-eenS9xurRgnrqDR9kz0Q_kJonEi7t"
 );
 
-let userId, editId=null, blob=null, itens=[];
+let userId;
+let editId = null;
+let blob = null;
+let itens = [];
+let lojaConfig = null;
 
-(async()=>{
- const {data:{session}} = await sb.auth.getSession();
- if(!session) location.href="login.html";
- userId = session.user.id;
- carregar();
+/* ================= INIT ================= */
+(async () => {
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) {
+    location.href = "login.html";
+    return;
+  }
+  userId = session.user.id;
+  await carregar();
 })();
-valor.addEventListener("input", ()=>{
-  let v = valor.value.replace(/\D/g,"");
+
+/* ================= EVENTOS ================= */
+valor.addEventListener("input", () => {
+  let v = valor.value.replace(/\D/g, "");
   v = (Number(v) / 100).toLocaleString("pt-BR", {
-    style:"currency",
-    currency:"BRL"
+    style: "currency",
+    currency: "BRL"
   });
   valor.value = v;
 });
 
-imagem.onchange = () =>{
- blob = imagem.files[0];
- preview.src = URL.createObjectURL(blob);
- preview.style.display="block";
-}
-
-function novo(){
- editId=null; blob=null;
- preview.style.display="none";
- btnExcluir.style.display="none";
- tituloForm.innerText="Nova excursão";
- modal.classList.add("show");
-document.querySelectorAll(".sheet-body input, .sheet-body textarea").forEach(el=>{
-  if(el.type==="checkbox") el.checked=false;
-  else el.value="";
-});
-
-status.value="Ativa";
-preview.style.display="none";
-blob=null;
-pag_pix.checked = false;
-pag_credito.checked = false;
-pag_debito.checked = false;
-pag_dinheiro.checked = false;
-pag_parcelado.checked = false;
-
-
-  
-}
-
-function fechar(){ modal.classList.remove("show"); }
-
-async function salvar(){
-let poster = editId
- ? itens.find(i=>i.id===editId)?.poster_url
- : null;
-
- if(blob){
-  poster = `${userId}/${Date.now()}.jpg`;
-  await sb.storage.from("buffet_excursoes").upload(poster, blob, { upsert:true });
- }
-
-const payload={
-  user_id:userId,
-  titulo:titulo.value || null,
-  destino:destino.value || null,
-  tipo:tipo.value || "Excursão",
-
-  data_saida:data_saida.value || null,
-  hora_saida:hora_saida.value || null,
-  data_retorno:data_retorno.value || null,
-  hora_retorno:hora_retorno.value || null,
-
-  duracao_dias:Number(duracao_dias.value) || null,
-  local_saida:local_saida.value || null,
-  transporte:transporte.value || null,
-  hospedagem:hospedagem.value || null,
-  alimentacao:alimentacao.value || null,
-
-  inclui_transporte:!!inclui_transporte.checked,
-  inclui_hospedagem:!!inclui_hospedagem.checked,
-  inclui_cafe:!!inclui_cafe.checked,
-  inclui_almoco:!!inclui_almoco.checked,
-  inclui_jantar:!!inclui_jantar.checked,
-  inclui_seguro:!!inclui_seguro.checked,
-  inclui_guia:!!inclui_guia.checked,
-
-  roteiro:roteiro.value || null,
-valor: limparMoeda(valor.value),
-  parcelas:Number(parcelas.value) || 0,
- observacoes:observacoes.value || null,
-
-pag_pix: !!pag_pix.checked,
-pag_credito: !!pag_credito.checked,
-pag_debito: !!pag_debito.checked,
-pag_dinheiro: !!pag_dinheiro.checked,
-pag_parcelado: !!pag_parcelado.checked,
-
-status:status.value || "Ativa",
-poster_url:poster
+imagem.onchange = () => {
+  blob = imagem.files[0];
+  preview.src = URL.createObjectURL(blob);
+  preview.style.display = "block";
 };
 
-const { error } = editId
- ? await sb.from("excursoes").update(payload).eq("id",editId)
- : await sb.from("excursoes").insert(payload);
+/* ================= MODAL EXCURSÃO ================= */
+function novo() {
+  editId = null;
+  blob = null;
 
-if(error){
- alert("Erro ao salvar: " + error.message);
- return;
+  preview.style.display = "none";
+  btnExcluir.style.display = "none";
+  tituloForm.innerText = "Nova excursão";
+
+  document
+    .querySelectorAll(".sheet-body input, .sheet-body textarea")
+    .forEach(el => {
+      if (el.type === "checkbox") el.checked = false;
+      else el.value = "";
+    });
+
+  status.value = "Ativa";
+
+  pag_pix.checked = false;
+  pag_credito.checked = false;
+  pag_debito.checked = false;
+  pag_dinheiro.checked = false;
+  pag_parcelado.checked = false;
+
+  modal.classList.add("show");
 }
 
- fechar();
- carregar();
+function fechar() {
+  modal.classList.remove("show");
+}
+
+/* ================= SALVAR EXCURSÃO ================= */
+async function salvar() {
+  let poster = editId
+    ? itens.find(i => i.id === editId)?.poster_url
+    : null;
+
+  if (blob) {
+    poster = `${userId}/${Date.now()}.jpg`;
+    await sb.storage
+      .from("buffet_excursoes")
+      .upload(poster, blob, { upsert: true });
+  }
+
+  const payload = {
+    user_id: userId,
+    titulo: titulo.value || null,
+    destino: destino.value || null,
+    tipo: tipo.value || "Excursão",
+
+    data_saida: data_saida.value || null,
+    hora_saida: hora_saida.value || null,
+    data_retorno: data_retorno.value || null,
+    hora_retorno: hora_retorno.value || null,
+
+    duracao_dias: Number(duracao_dias.value) || null,
+    local_saida: local_saida.value || null,
+    transporte: transporte.value || null,
+    hospedagem: hospedagem.value || null,
+    alimentacao: alimentacao.value || null,
+
+    inclui_transporte: !!inclui_transporte.checked,
+    inclui_hospedagem: !!inclui_hospedagem.checked,
+    inclui_cafe: !!inclui_cafe.checked,
+    inclui_almoco: !!inclui_almoco.checked,
+    inclui_jantar: !!inclui_jantar.checked,
+    inclui_seguro: !!inclui_seguro.checked,
+    inclui_guia: !!inclui_guia.checked,
+
+    roteiro: roteiro.value || null,
+    valor: limparMoeda(valor.value),
+    parcelas: Number(parcelas.value) || 0,
+    observacoes: observacoes.value || null,
+
+    pag_pix: !!pag_pix.checked,
+    pag_credito: !!pag_credito.checked,
+    pag_debito: !!pag_debito.checked,
+    pag_dinheiro: !!pag_dinheiro.checked,
+    pag_parcelado: !!pag_parcelado.checked,
+
+    status: status.value || "Ativa",
+    poster_url: poster
+  };
+
+  const { error } = editId
+    ? await sb.from("excursoes").update(payload).eq("id", editId)
+    : await sb.from("excursoes").insert(payload);
+
+  if (error) {
+    alert("Erro ao salvar: " + error.message);
+    return;
+  }
+
+  fechar();
+  carregar();
 }
 
 /* ================= FORMATADORES ================= */
-function formatarData(data){
-  if(!data) return "";
+function formatarData(data) {
+  if (!data) return "";
   const [ano, mes, dia] = data.split("-");
   return `${dia}/${mes}/${ano}`;
 }
 
-function formatarHora(hora){
-  if(!hora) return "";
-  return hora.slice(0,5); // hh:mm
+function formatarHora(hora) {
+  if (!hora) return "";
+  return hora.slice(0, 5);
 }
-function formatarMoeda(valor){
-  if(valor === null || valor === undefined) return "R$ 0,00";
+
+function formatarMoeda(valor) {
+  if (valor === null || valor === undefined) return "R$ 0,00";
   return Number(valor).toLocaleString("pt-BR", {
     style: "currency",
     currency: "BRL"
   });
 }
 
-function limparMoeda(valor){
-  if(!valor) return 0;
+function limparMoeda(valor) {
+  if (!valor) return 0;
   return Number(
     valor
-      .replace(/\./g,"")
-      .replace(",",".")
-      .replace(/[^\d.]/g,"")
+      .replace(/\./g, "")
+      .replace(",", ".")
+      .replace(/[^\d.]/g, "")
   );
 }
 
+/* ================= LISTAGEM ================= */
+async function carregar() {
+  const { data } = await sb
+    .from("excursoes")
+    .select("*")
+    .eq("user_id", userId);
 
+  itens = data || [];
+  lista.innerHTML = "";
 
-  
-async function carregar(){
- const {data} = await sb.from("excursoes").select("*").eq("user_id",userId);
- itens = data || [];
- lista.innerHTML="";
+  itens.forEach(e => {
+    const img = e.poster_url
+      ? sb.storage
+          .from("buffet_excursoes")
+          .getPublicUrl(e.poster_url).data.publicUrl
+      : "";
 
- itens.forEach(e=>{
-  const img = e.poster_url
-   ? sb.storage.from("buffet_excursoes").getPublicUrl(e.poster_url).data.publicUrl
-   : "";
+    lista.innerHTML += `
+      <div class="card">
+        <div class="poster">${img ? `<img src="${img}">` : ``}</div>
+        <div class="card-body">
+          <h4>${e.titulo}</h4>
 
-  lista.innerHTML += `
-  <div class="card">
-    <div class="poster">${img?`<img src="${img}">`:``}</div>
-    <div class="card-body">
-      <h4>${e.titulo}</h4>
+          <div class="tags">
+            ${e.inclui_transporte ? `<span class="tag">Transporte</span>` : ``}
+            ${e.inclui_hospedagem ? `<span class="tag">Hospedagem</span>` : ``}
+            ${e.inclui_cafe ? `<span class="tag">Café</span>` : ``}
+            ${e.inclui_almoco ? `<span class="tag">Almoço</span>` : ``}
+            ${e.inclui_jantar ? `<span class="tag">Jantar</span>` : ``}
+          </div>
 
+          <div class="tags">
+            ${e.pag_pix ? `<span class="tag">Pix</span>` : ``}
+            ${e.pag_credito ? `<span class="tag">Crédito</span>` : ``}
+            ${e.pag_debito ? `<span class="tag">Débito</span>` : ``}
+            ${e.pag_dinheiro ? `<span class="tag">Dinheiro</span>` : ``}
+            ${e.pag_parcelado ? `<span class="tag">Parcelado</span>` : ``}
+          </div>
 
+          <div class="meta">${e.destino || ""}</div>
+          <div class="meta">
+            ${formatarData(e.data_saida)} ${formatarHora(e.hora_saida)}
+            →
+            ${formatarData(e.data_retorno)} ${formatarHora(e.hora_retorno)}
+          </div>
 
-      
-      <div class="tags">
-  ${e.inclui_transporte ? `<span class="tag">Transporte</span>` : ``}
-  ${e.inclui_hospedagem ? `<span class="tag">Hospedagem</span>` : ``}
-  ${e.inclui_cafe ? `<span class="tag">Café</span>` : ``}
-  ${e.inclui_almoco ? `<span class="tag">Almoço</span>` : ``}
-  ${e.inclui_jantar ? `<span class="tag">Jantar</span>` : ``}
-</div>
-
-<div class="tags">
-  ${e.pag_pix ? `<span class="tag">Pix</span>` : ``}
-  ${e.pag_credito ? `<span class="tag">Crédito</span>` : ``}
-  ${e.pag_debito ? `<span class="tag">Débito</span>` : ``}
-  ${e.pag_dinheiro ? `<span class="tag">Dinheiro</span>` : ``}
-  ${e.pag_parcelado ? `<span class="tag">Parcelado</span>` : ``}
-</div>
-
-
-
-
-      
-      <div class="meta">${e.destino}</div>
-<div class="meta">
-  ${formatarData(e.data_saida)} ${formatarHora(e.hora_saida)}
-  →
-  ${formatarData(e.data_retorno)} ${formatarHora(e.hora_retorno)}
-</div>
-<div class="price">${formatarMoeda(e.valor)}</div>
-      <div class="edit" onclick="editar('${e.id}')">Editar</div>
-    </div>
-  </div>`;
- });
+          <div class="price">${formatarMoeda(e.valor)}</div>
+          <div class="edit" onclick="editar('${e.id}')">Editar</div>
+        </div>
+      </div>
+    `;
+  });
 }
 
-function editar(id){
- const e = itens.find(i => i.id === id);
- if(!e) return;
+/* ================= EDITAR ================= */
+function editar(id) {
+  const e = itens.find(i => i.id === id);
+  if (!e) return;
 
- editId = id;
- btnExcluir.style.display = "block";
- tituloForm.innerText = "Editar excursão";
+  editId = id;
+  btnExcluir.style.display = "block";
+  tituloForm.innerText = "Editar excursão";
 
- // TEXTOS
- titulo.value = e.titulo || "";
- destino.value = e.destino || "";
- tipo.value = e.tipo || "Excursão";
- data_saida.value = e.data_saida || "";
- hora_saida.value = e.hora_saida || "";
- data_retorno.value = e.data_retorno || "";
- hora_retorno.value = e.hora_retorno || "";
- duracao_dias.value = e.duracao_dias || "";
- local_saida.value = e.local_saida || "";
- transporte.value = e.transporte || "";
- hospedagem.value = e.hospedagem || "";
- alimentacao.value = e.alimentacao || "";
- roteiro.value = e.roteiro || "";
-valor.value = formatarMoeda(e.valor);
- parcelas.value = e.parcelas || "";
- observacoes.value = e.observacoes || "";
+  titulo.value = e.titulo || "";
+  destino.value = e.destino || "";
+  tipo.value = e.tipo || "Excursão";
+  data_saida.value = e.data_saida || "";
+  hora_saida.value = e.hora_saida || "";
+  data_retorno.value = e.data_retorno || "";
+  hora_retorno.value = e.hora_retorno || "";
+  duracao_dias.value = e.duracao_dias || "";
+  local_saida.value = e.local_saida || "";
+  transporte.value = e.transporte || "";
+  hospedagem.value = e.hospedagem || "";
+  alimentacao.value = e.alimentacao || "";
+  roteiro.value = e.roteiro || "";
+  valor.value = formatarMoeda(e.valor);
+  parcelas.value = e.parcelas || "";
+  observacoes.value = e.observacoes || "";
 
- // ✅ STATUS (AQUI ESTÁ A CORREÇÃO)
- status.value = e.status || "Ativa";
+  status.value = e.status || "Ativa";
 
- // CHECKBOX
- inclui_transporte.checked = !!e.inclui_transporte;
- inclui_hospedagem.checked = !!e.inclui_hospedagem;
- inclui_cafe.checked = !!e.inclui_cafe;
- inclui_almoco.checked = !!e.inclui_almoco;
- inclui_jantar.checked = !!e.inclui_jantar;
- inclui_seguro.checked = !!e.inclui_seguro;
- inclui_guia.checked = !!e.inclui_guia;
+  inclui_transporte.checked = !!e.inclui_transporte;
+  inclui_hospedagem.checked = !!e.inclui_hospedagem;
+  inclui_cafe.checked = !!e.inclui_cafe;
+  inclui_almoco.checked = !!e.inclui_almoco;
+  inclui_jantar.checked = !!e.inclui_jantar;
+  inclui_seguro.checked = !!e.inclui_seguro;
+  inclui_guia.checked = !!e.inclui_guia;
+
   pag_pix.checked = !!e.pag_pix;
-pag_credito.checked = !!e.pag_credito;
-pag_debito.checked = !!e.pag_debito;
-pag_dinheiro.checked = !!e.pag_dinheiro;
-pag_parcelado.checked = !!e.pag_parcelado;
+  pag_credito.checked = !!e.pag_credito;
+  pag_debito.checked = !!e.pag_debito;
+  pag_dinheiro.checked = !!e.pag_dinheiro;
+  pag_parcelado.checked = !!e.pag_parcelado;
 
+  if (e.poster_url) {
+    preview.src = sb.storage
+      .from("buffet_excursoes")
+      .getPublicUrl(e.poster_url).data.publicUrl;
+    preview.style.display = "block";
+  } else {
+    preview.style.display = "none";
+  }
 
- // IMAGEM
- if(e.poster_url){
-  preview.src = sb.storage
-    .from("buffet_excursoes")
-    .getPublicUrl(e.poster_url).data.publicUrl;
-  preview.style.display = "block";
- } else {
-  preview.style.display = "none";
- }
-
- modal.classList.add("show");
+  modal.classList.add("show");
 }
 
-
-async function carregarConfig(){
-await sb
-  .from("loja_config")
-  .update(payload)
-  .eq("id", config.id);
-  if(!data) return;
-
-  cfg_ativo.checked = data.ultimas_vagas_ativo;
-  cfg_dias.value = data.ultimas_vagas_dias;
-  cfg_texto.value = data.ultimas_vagas_texto;
-  cfg_cor.value = data.ultimas_vagas_cor;
-  cfg_piscar.checked = data.ultimas_vagas_piscar;
-}
-
-function abrirConfig(){
+/* ================= CONFIG LOJA ================= */
+function abrirConfig() {
   carregarConfig();
   modalConfig.classList.add("show");
 }
 
-function fecharConfig(){
+function fecharConfig() {
   modalConfig.classList.remove("show");
 }
-let lojaConfig = null;
 
-async function carregarConfig(){
+async function carregarConfig() {
   const { data, error } = await sb
     .from("loja_config")
     .select("*")
     .single();
 
-  if(error){
+  if (error) {
     alert("Erro ao carregar configurações");
     return;
   }
 
   lojaConfig = data;
 
-  // VISUAL
   cfg_nome.value = data.nome_loja || "";
   cfg_cor_primaria.value = data.cor_primaria || "#ff6a00";
   cfg_cor_fundo.value = data.cor_fundo || "#f4f6fb";
   cfg_cor_card.value = data.cor_card || "#ffffff";
   cfg_cor_texto.value = data.cor_texto || "#111827";
 
-  // BANNERS
   cfg_banners.value = (data.banners || []).join("\n");
   cfg_banner_efeito.value = data.banner_efeito || "slide";
   cfg_banner_intervalo.value = data.banner_intervalo || 2000;
 
-  // ÚLTIMAS VAGAS
   cfg_uv_ativo.checked = !!data.ultimas_vagas_ativo;
   cfg_uv_dias.value = data.ultimas_vagas_dias || 7;
   cfg_uv_texto.value = data.ultimas_vagas_texto || "Últimas vagas";
@@ -656,9 +653,8 @@ async function carregarConfig(){
   cfg_uv_piscar.checked = !!data.ultimas_vagas_piscar;
 }
 
-
-async function salvarConfig(){
-  if(!lojaConfig) return;
+async function salvarConfig() {
+  if (!lojaConfig) return;
 
   const payload = {
     nome_loja: cfg_nome.value,
@@ -683,7 +679,7 @@ async function salvarConfig(){
     .update(payload)
     .eq("id", lojaConfig.id);
 
-  if(error){
+  if (error) {
     alert("Erro ao salvar configurações");
     return;
   }
@@ -691,15 +687,15 @@ async function salvarConfig(){
   fecharConfig();
 }
 
-
-async function excluir(){
- if(confirm("Excluir excursão?")){
-  await sb.from("excursoes").delete().eq("id",editId);
+/* ================= EXCLUIR ================= */
+async function excluir() {
+  if (!confirm("Excluir excursão?")) return;
+  await sb.from("excursoes").delete().eq("id", editId);
   fechar();
   carregar();
- }
 }
 </script>
+
 <div class="modal" id="modalConfig">
   <div class="sheet">
 
