@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <title>SÁVIO TURISMO • CADASTRO</title>
 
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -13,10 +13,9 @@
 :root{
   --primary:#ff6a00;
   --bg:#f4f6f8;
-  --card:#ffffff;
+  --card:#fff;
   --border:#e5e7eb;
   --text:#111;
-  --muted:#6b7280;
 }
 *{box-sizing:border-box;font-family:Inter;text-transform:uppercase}
 body{margin:0;background:var(--bg);color:var(--text)}
@@ -28,159 +27,103 @@ header img{height:54px}
 @media(min-width:1200px){.grid{grid-template-columns:repeat(3,1fr)}}
 .card{background:#fff;border-radius:18px;padding:18px;box-shadow:0 10px 24px rgba(0,0,0,.06)}
 .card h2{margin:0 0 12px;font-size:14px;font-weight:800;border-bottom:1px solid var(--border);padding-bottom:8px}
-label{font-size:12px;font-weight:700;display:block;margin-top:10px}
+label{font-size:12px;font-weight:700;margin-top:10px;display:block}
 input{width:100%;padding:14px;border-radius:14px;border:1px solid #d1d5db;margin-top:6px;font-size:16px}
 input:focus{outline:none;border-color:var(--primary)}
 .readonly{background:#f1f1f1}
 .actions{margin-top:20px;display:flex;flex-direction:column;gap:12px}
 .btn{padding:18px;border:none;border-radius:999px;font-weight:800;cursor:pointer}
 .btn-primary{background:linear-gradient(135deg,#ff6a00,#ff9a57);color:#fff}
-.btn-clear{background:#e5e7eb}
-.excursoes-box{background:#fff;border-radius:18px;padding:18px;margin-bottom:16px;box-shadow:0 10px 24px rgba(0,0,0,.06)}
-.excursoes-box h3{margin:0 0 6px;font-size:16px;font-weight:900}
-.excursoes-box p{margin:4px 0;font-size:13px;color:var(--muted)}
-.valor{font-size:18px;font-weight:900;color:#16a34a}
-.switch-row{display:flex;justify-content:space-between;align-items:center;margin-top:12px}
-.switch-row input{display:none}
-.switch-ui{width:48px;height:28px;background:#d1d5db;border-radius:999px;position:relative}
-.switch-ui::after{content:"";width:22px;height:22px;background:#fff;border-radius:50%;position:absolute;top:3px;left:3px;transition:.25s}
-.switch-row input:checked+.switch-ui{background:var(--primary)}
-.switch-row input:checked+.switch-ui::after{transform:translateX(20px)}
 </style>
 </head>
 
 <body>
 
 <header>
-  <img src="logo.png" alt="SÁVIO TURISMO">
+  <img src="logo.png">
 </header>
 
 <div class="container">
-
-<!-- RESUMO DA EXCURSÃO -->
-<div class="excursoes-box" id="boxExcursao" style="display:none">
-  <h3 id="exTitulo"></h3>
-  <p id="exDestino"></p>
-  <p id="exDatas"></p>
-  <div class="valor" id="exValor"></div>
-</div>
 
 <form id="formCadastro">
 <div class="grid">
 
 <div class="card">
 <h2>DADOS DO PASSAGEIRO</h2>
-<label>NOME</label><input id="nome" required>
-<label>CPF</label><input id="cpf" required>
-<label>RG</label><input id="rg" required>
-<label>NASCIMENTO</label><input id="nascimento" type="date" required>
+<label>NOME</label><input id="nome">
+<label>CPF</label><input id="cpf">
+<label>RG</label><input id="rg">
+<label>NASCIMENTO</label><input id="nascimento" type="date">
 <label>PROFISSÃO</label><input id="profissao">
-<label>WHATSAPP</label><input id="telefone" required>
-<label>E-MAIL</label><input id="email" type="email" style="text-transform:none" required>
+<label>WHATSAPP</label><input id="telefone">
+<label>E-MAIL</label><input id="email" type="email" style="text-transform:none">
 </div>
 
 <div class="card">
 <h2>ENDEREÇO</h2>
-<label>CEP</label><input id="cep" required>
+<label>CEP</label><input id="cep">
 <label>RUA</label><input id="rua" class="readonly" readonly>
-<label>NÚMERO</label><input id="numero" required>
+<label>NÚMERO</label><input id="numero">
 <label>BAIRRO</label><input id="bairro" class="readonly" readonly>
 <label>CIDADE</label><input id="cidade" class="readonly" readonly>
 <label>UF</label><input id="uf" class="readonly" readonly>
 </div>
 
 <div class="card">
-<h2>CONTATO DE EMERGÊNCIA</h2>
-<label>NOME</label><input id="em_nome" required>
-<label>PARENTESCO</label><input id="em_parentesco" required>
-<label>TELEFONE</label><input id="em_telefone" required>
-
-<div class="switch-row">
-<span>ACEITO CONTRATO</span>
-<input type="checkbox" id="aceite_contrato">
-<div class="switch-ui"></div>
-</div>
-
-<div class="switch-row">
-<span>CIÊNCIA DOS RISCOS</span>
-<input type="checkbox" id="aceite_risco">
-<div class="switch-ui"></div>
-</div>
-
-<div class="switch-row">
-<span>AUTORIZO LGPD</span>
-<input type="checkbox" id="aceite_lgpd">
-<div class="switch-ui"></div>
-</div>
+<h2>EMERGÊNCIA</h2>
+<label>NOME</label><input id="em_nome">
+<label>PARENTESCO</label><input id="em_parentesco">
+<label>TELEFONE</label><input id="em_telefone">
 </div>
 
 </div>
 
 <div class="actions">
-<button class="btn btn-primary">CONFIRMAR DADOS</button>
-<button type="button" class="btn btn-clear" onclick="localStorage.clear();location.reload()">LIMPAR</button>
+<button class="btn btn-primary">CONFIRMAR</button>
 </div>
 </form>
 </div>
 
 <script>
-const sb = supabase.createClient(
- "https://ghkfeobnrfvqwzuliqfz.supabase.co",
- "sb_publishable_R-eenS9xurRgnrqDR9kz0Q_kJonEi7t"
-);
+/* ================= ELEMENTOS ================= */
+const el = id => document.getElementById(id);
 
-const params = new URLSearchParams(location.search);
-const excursaoId = params.get("id");
-let excursao = null;
+const form = el("formCadastro");
+const campos = [
+ "nome","cpf","rg","nascimento","profissao","telefone","email",
+ "cep","rua","numero","bairro","cidade","uf",
+ "em_nome","em_parentesco","em_telefone"
+];
 
-/* ===== CARREGAR EXCURSÃO E MOSTRAR ===== */
-async function carregarExcursao(){
-  if(!excursaoId) return;
-  const {data} = await sb.from("excursoes").select("*").eq("id",excursaoId).single();
-  if(!data) return;
-
-  excursao = data;
-  boxExcursao.style.display = "block";
-  exTitulo.innerText = data.titulo;
-  exDestino.innerText = "Destino: " + data.destino;
-  exDatas.innerText = "Saída: " + data.data_saida + " • Retorno: " + data.data_retorno;
-  exValor.innerText = Number(data.valor).toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
+/* ================= RESTAURAR STORAGE ================= */
+const salvo = localStorage.getItem("cadastro_savio");
+if(salvo){
+  const d = JSON.parse(salvo);
+  campos.forEach(c=>{
+    if(d[c] !== undefined) el(c).value = d[c];
+  });
 }
-carregarExcursao();
 
-/* ===== CEP (VIACEP) ===== */
-cep.addEventListener("blur", async ()=>{
-  const c = cep.value.replace(/\D/g,"");
+/* ================= CEP ================= */
+el("cep").addEventListener("blur", async ()=>{
+  const c = el("cep").value.replace(/\D/g,"");
   if(c.length !== 8) return;
   const r = await fetch(`https://viacep.com.br/ws/${c}/json/`).then(r=>r.json());
   if(r.erro) return alert("CEP não encontrado");
-  rua.value = r.logradouro;
-  bairro.value = r.bairro;
-  cidade.value = r.localidade;
-  uf.value = r.uf;
+  el("rua").value = r.logradouro;
+  el("bairro").value = r.bairro;
+  el("cidade").value = r.localidade;
+  el("uf").value = r.uf;
 });
 
-/* ===== SUBMIT ===== */
-formCadastro.onsubmit = e =>{
+/* ================= SUBMIT ================= */
+form.addEventListener("submit", e=>{
   e.preventDefault();
-  if(!aceite_contrato.checked || !aceite_risco.checked || !aceite_lgpd.checked){
-    alert("Aceite todas as declarações");
-    return;
-  }
-
-  const dados = {
-    excursao,
-    passageiro:{
-      nome:nome.value,cpf:cpf.value,rg:rg.value,nascimento:nascimento.value,
-      profissao:profissao.value,telefone:telefone.value,email:email.value,
-      endereco:{cep:cep.value,rua:rua.value,numero:numero.value,bairro:bairro.value,cidade:cidade.value,uf:uf.value},
-      emergencia:{nome:em_nome.value,parentesco:em_parentesco.value,telefone:em_telefone.value}
-    }
-  };
-
-  localStorage.setItem("cadastro_savio",JSON.stringify(dados));
-  location.href="resumo.html";
-};
+  const dados = {};
+  campos.forEach(c=>dados[c] = el(c).value);
+  localStorage.setItem("cadastro_savio", JSON.stringify(dados));
+  alert("DADOS SALVOS COM SUCESSO");
+});
 </script>
 
 </body>
