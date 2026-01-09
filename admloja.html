@@ -3,314 +3,122 @@
 <head>
 <meta charset="UTF-8">
 <title>Painel Admin • Excursões</title>
-
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-/* ================= RESET ================= */
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family:Inter, system-ui, Arial, sans-serif;
-}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Inter}
+body{background:#f4f6fb;color:#111}
 
-body{
-  background:#f4f6fb;
-  color:#111827;
-}
-
-/* ================= VARIÁVEIS ================= */
 :root{
   --primary:#ff6a00;
-  --primary-soft:rgba(255,106,0,.12);
   --border:#e5e7eb;
   --muted:#6b7280;
-  --card:#ffffff;
-  --success:#16a34a;
-  --danger:#dc2626;
 }
 
-/* ================= HEADER ================= */
-.header{
-  padding:20px 16px 12px;
-}
-.header h1{
-  font-size:22px;
-  font-weight:800;
-}
+/* HEADER */
+.header{padding:20px}
+.header h1{font-size:22px;font-weight:800}
 .header span{color:var(--primary)}
-.header p{
-  font-size:13px;
-  color:var(--muted);
-}
+.header p{font-size:13px;color:var(--muted)}
 
-/* ================= GRID ================= */
+/* GRID */
 .grid{
   display:grid;
   grid-template-columns:repeat(4,1fr);
   gap:18px;
-  padding:0 16px 140px;
+  padding:0 20px 140px;
 }
+@media(max-width:1024px){.grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:768px){.grid{grid-template-columns:repeat(2,1fr)}}
 
-@media(max-width:1024px){
-  .grid{grid-template-columns:repeat(3,1fr)}
-}
-@media(max-width:768px){
-  .grid{grid-template-columns:repeat(2,1fr)}
-}
-
-/* ================= CARD ================= */
+/* CARD */
 .card{
-  background:var(--card);
+  background:#fff;
   border-radius:20px;
   overflow:hidden;
   box-shadow:0 12px 30px rgba(0,0,0,.12);
-  display:flex;
-  flex-direction:column;
-  transition:.2s;
 }
-.card:hover{
-  transform:translateY(-4px);
-}
+.poster{aspect-ratio:1/1.414;background:#eee}
+.poster img{width:100%;height:100%;object-fit:contain}
 
-/* Poster A4 */
-.poster{
-  width:100%;
-  aspect-ratio:1 / 1.414;
-  background:#f1f1f1;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-.poster img{
-  width:100%;
-  height:100%;
-  object-fit:contain;
-}
+.card-body{padding:14px;display:flex;flex-direction:column;gap:8px}
+.card-body h4{font-size:15px;font-weight:800}
 
-/* Corpo do card */
-.card-body{
-  padding:14px;
-  display:flex;
-  flex-direction:column;
-  gap:8px;
+/* FLAGS */
+.flags{display:flex;gap:6px;flex-wrap:wrap}
+.flag{
+  width:10px;height:10px;border-radius:50%;
+  background:#cbd5e1;
 }
+.flag.on{background:var(--primary)}
 
-.card-body h4{
-  font-size:15px;
-  font-weight:800;
-  line-height:1.2;
-}
+.meta{font-size:12px;color:var(--muted)}
+.price{font-size:15px;font-weight:900}
+.edit{color:var(--primary);font-weight:800;cursor:pointer}
 
-/* ================= BADGES / FLAGS ================= */
-.badges{
-  display:flex;
-  flex-wrap:wrap;
-  gap:6px;
-}
-
-.badge{
-  font-size:11px;
-  font-weight:800;
-  padding:5px 12px;
-  border-radius:999px;
-  background:#f1f5f9;
-  color:#334155;
-}
-
-/* status */
-.badge.ativa{
-  background:#dcfce7;
-  color:#166534;
-}
-.badge.inativa{
-  background:#fee2e2;
-  color:#991b1b;
-}
-.badge.esgotada{
-  background:#fff7ed;
-  color:#c2410c;
-}
-
-/* inclusos */
-.badge.incluso{
-  background:#e0f2fe;
-  color:#0369a1;
-}
-
-/* ================= META ================= */
-.meta{
-  font-size:12px;
-  color:var(--muted);
-  line-height:1.3;
-}
-
-.price{
-  font-size:15px;
-  font-weight:900;
-  color:#111;
-}
-
-/* ================= ACTION ================= */
-.actions{
-  margin-top:8px;
-  font-size:13px;
-  font-weight:800;
-  color:var(--primary);
-  cursor:pointer;
-}
-
-/* ================= FAB ================= */
+/* FAB */
 .fab{
-  position:fixed;
-  right:18px;
-  bottom:18px;
-  width:60px;
-  height:60px;
-  border-radius:50%;
+  position:fixed;right:20px;bottom:20px;
+  width:60px;height:60px;border-radius:50%;
   background:linear-gradient(135deg,#ff6a00,#ff9a57);
-  color:#fff;
-  border:none;
-  font-size:30px;
-  box-shadow:0 18px 40px rgba(0,0,0,.35);
+  color:#fff;font-size:30px;border:none;
   cursor:pointer;
 }
 
-/* ================= MODAL ================= */
+/* MODAL */
 .modal{
-  position:fixed;
-  inset:0;
+  position:fixed;inset:0;
   background:rgba(0,0,0,.55);
-  display:none;
-  align-items:flex-end;
-  z-index:9999;
+  display:none;align-items:flex-end;
 }
 .modal.show{display:flex}
 
-/* ================= SHEET ================= */
 .sheet{
-  width:100%;
-  height:95vh;
-  background:#fff;
+  background:#fff;width:100%;height:95vh;
   border-radius:28px 28px 0 0;
-  display:flex;
-  flex-direction:column;
+  display:flex;flex-direction:column;
 }
-
-/* header */
 .sheet-header{
-  padding:18px;
-  border-bottom:1px solid var(--border);
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  font-weight:800;
-  font-size:16px;
+  padding:18px;border-bottom:1px solid var(--border);
+  font-weight:800;display:flex;justify-content:space-between
 }
-
-/* body */
 .sheet-body{
-  flex:1;
-  overflow-y:auto;
-  padding:18px;
-  display:grid;
-  gap:14px;
+  flex:1;overflow:auto;padding:18px;
+  display:grid;gap:12px
 }
+.sheet-body label{font-size:12px;font-weight:700;color:#555}
+.sheet-body input,.sheet-body select,.sheet-body textarea{
+  height:44px;border-radius:14px;border:1px solid var(--border);
+  padding:0 14px
+}
+.sheet-body textarea{min-height:90px;padding:10px}
 
-.sheet-body label{
-  font-size:12px;
-  font-weight:700;
-  color:var(--muted);
-}
-
-/* inputs */
-.sheet-body input,
-.sheet-body textarea,
-.sheet-body select{
-  width:100%;
-  height:44px;
-  border-radius:14px;
-  border:1px solid var(--border);
-  padding:0 14px;
-  font-size:14px;
-}
-.sheet-body textarea{
-  min-height:100px;
-  padding:12px 14px;
-}
-
-/* ================= IMAGE UPLOAD ================= */
 .image-box{
-  height:220px;
-  border-radius:18px;
-  background:#f1f1f1;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  cursor:pointer;
-  overflow:hidden;
+  height:220px;border-radius:18px;background:#eee;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer
 }
-.image-box img{
-  width:100%;
-  height:100%;
-  object-fit:contain;
-}
+.image-box img{width:100%;height:100%;object-fit:contain}
 
-/* ================= CHECKBOX / FLAGS ================= */
 .checks{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:10px;
+  display:grid;grid-template-columns:repeat(2,1fr);gap:10px
 }
-.checks label{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  font-size:13px;
-  font-weight:700;
-  color:#111;
-}
+.checks label{display:flex;gap:8px;font-size:13px;font-weight:700}
 
-.checks input{
-  width:18px;
-  height:18px;
-}
-
-/* ================= FOOTER ================= */
 .sheet-footer{
-  padding:16px;
-  border-top:1px solid var(--border);
-  display:flex;
-  gap:12px;
-  background:#fff;
+  padding:16px;border-top:1px solid var(--border);
+  display:flex;gap:12px
 }
-
 .sheet-footer button{
-  flex:1;
-  height:48px;
-  border-radius:999px;
-  border:none;
-  font-weight:900;
-  font-size:14px;
-  cursor:pointer;
+  flex:1;height:48px;border-radius:999px;
+  border:none;font-weight:900;cursor:pointer
 }
-
-.save{
-  background:var(--primary);
-  color:#fff;
-}
-.cancel{
-  background:#e5e7eb;
-}
-.delete{
-  background:transparent;
-  color:var(--danger);
-  font-size:12px;
-}
-
+.save{background:var(--primary);color:#fff}
+.cancel{background:#e5e7eb}
+.delete{background:transparent;color:#dc2626}
 </style>
 </head>
 
@@ -357,33 +165,27 @@ body{
 <label>Data retorno</label><input type="date" id="data_retorno">
 <label>Hora retorno</label><input type="time" id="hora_retorno">
 
-<label>Duração (dias)</label><input type="number" id="duracao_dias">
-
-<label>Local de saída</label><input id="local_saida">
+<label>Duração (dias)</label><input id="duracao_dias">
+<label>Local saída</label><input id="local_saida">
 <label>Transporte</label><input id="transporte">
 <label>Hospedagem</label><input id="hospedagem">
-
 <label>Alimentação</label><input id="alimentacao">
 
 <label>Inclusos</label>
 <div class="checks">
-  <label><input type="checkbox" id="inclui_transporte"> Transporte</label>
-  <label><input type="checkbox" id="inclui_hospedagem"> Hospedagem</label>
-  <label><input type="checkbox" id="inclui_cafe"> Café</label>
-  <label><input type="checkbox" id="inclui_almoco"> Almoço</label>
-  <label><input type="checkbox" id="inclui_jantar"> Jantar</label>
-  <label><input type="checkbox" id="inclui_seguro"> Seguro</label>
-  <label><input type="checkbox" id="inclui_guia"> Guia</label>
+<label><input type="checkbox" id="inclui_transporte"> Transporte</label>
+<label><input type="checkbox" id="inclui_hospedagem"> Hospedagem</label>
+<label><input type="checkbox" id="inclui_cafe"> Café</label>
+<label><input type="checkbox" id="inclui_almoco"> Almoço</label>
+<label><input type="checkbox" id="inclui_jantar"> Jantar</label>
+<label><input type="checkbox" id="inclui_seguro"> Seguro</label>
+<label><input type="checkbox" id="inclui_guia"> Guia</label>
 </div>
 
-<label>Roteiro completo</label>
-<textarea id="roteiro"></textarea>
-
+<label>Roteiro</label><textarea id="roteiro"></textarea>
 <label>Valor</label><input id="valor">
 <label>Parcelas</label><input id="parcelas">
-
-<label>Observações</label>
-<textarea id="observacoes"></textarea>
+<label>Observações</label><textarea id="observacoes"></textarea>
 
 <label>Status</label>
 <select id="status">
@@ -409,36 +211,40 @@ const sb = supabase.createClient(
  "sb_publishable_R-eenS9xurRgnrqDR9kz0Q_kJonEi7t"
 );
 
-let userId,editId=null,blob=null,itens=[];
+let userId, editId=null, blob=null, itens=[];
 
 (async()=>{
- const {data:{session}}=await sb.auth.getSession();
+ const {data:{session}} = await sb.auth.getSession();
  if(!session) location.href="login.html";
- userId=session.user.id;
+ userId = session.user.id;
  carregar();
 })();
 
-imagem.onchange=()=>{
- blob=imagem.files[0];
- preview.src=URL.createObjectURL(blob);
+imagem.onchange = () =>{
+ blob = imagem.files[0];
+ preview.src = URL.createObjectURL(blob);
  preview.style.display="block";
-};
+}
 
 function novo(){
- editId=null;blob=null;preview.style.display="none";
+ editId=null; blob=null;
+ preview.style.display="none";
  btnExcluir.style.display="none";
+ tituloForm.innerText="Nova excursão";
  modal.classList.add("show");
 }
 
-function fechar(){modal.classList.remove("show")}
+function fechar(){ modal.classList.remove("show"); }
 
 async function salvar(){
- let poster=null;
+ let poster = null;
+
  if(blob){
-  poster=`${userId}/${Date.now()}.jpg`;
-  await sb.storage.from("buffet_excursoes").upload(poster,blob,{upsert:true});
+  poster = `${userId}/${Date.now()}.jpg`;
+  await sb.storage.from("buffet_excursoes").upload(poster, blob, { upsert:true });
  }
- const payload={
+
+ const payload = {
   user_id:userId,
   titulo:titulo.value,
   destino:destino.value,
@@ -452,6 +258,11 @@ async function salvar(){
   transporte:transporte.value,
   hospedagem:hospedagem.value,
   alimentacao:alimentacao.value,
+  roteiro:roteiro.value,
+  valor:valor.value,
+  parcelas:parcelas.value,
+  observacoes:observacoes.value,
+  status:status.value,
   inclui_transporte:inclui_transporte.checked,
   inclui_hospedagem:inclui_hospedagem.checked,
   inclui_cafe:inclui_cafe.checked,
@@ -459,103 +270,76 @@ async function salvar(){
   inclui_jantar:inclui_jantar.checked,
   inclui_seguro:inclui_seguro.checked,
   inclui_guia:inclui_guia.checked,
-  roteiro:roteiro.value,
-  valor:valor.value,
-  parcelas:parcelas.value,
-  observacoes:observacoes.value,
-  status:status.value,
-  poster_url:poster
+  poster_url: poster
  };
+
  editId
   ? await sb.from("excursoes").update(payload).eq("id",editId)
   : await sb.from("excursoes").insert(payload);
- fechar();carregar();
+
+ fechar();
+ carregar();
 }
 
 async function carregar(){
- const {data}=await sb.from("excursoes").select("*").eq("user_id",userId);
+ const {data} = await sb.from("excursoes").select("*").eq("user_id",userId);
+ itens = data || [];
  lista.innerHTML="";
-itens = data || [];
-itens.forEach(e=>{
-  const img=e.poster_url
+
+ itens.forEach(e=>{
+  const img = e.poster_url
    ? sb.storage.from("buffet_excursoes").getPublicUrl(e.poster_url).data.publicUrl
    : "";
-  lista.innerHTML+=`
+
+  lista.innerHTML += `
   <div class="card">
     <div class="poster">${img?`<img src="${img}">`:``}</div>
     <div class="card-body">
       <h4>${e.titulo}</h4>
-      <span class="badge">${e.status}</span>
+      <div class="flags">
+        <span class="flag ${e.inclui_transporte?'on':''}"></span>
+        <span class="flag ${e.inclui_hospedagem?'on':''}"></span>
+        <span class="flag ${e.inclui_cafe?'on':''}"></span>
+        <span class="flag ${e.inclui_almoco?'on':''}"></span>
+        <span class="flag ${e.inclui_jantar?'on':''}"></span>
+      </div>
       <div class="meta">${e.destino}</div>
       <div class="meta">${e.data_saida} → ${e.data_retorno}</div>
       <div class="price">R$ ${e.valor}</div>
-      <div class="actions" onclick="editar('${e.id}')">Editar</div>
+      <div class="edit" onclick="editar('${e.id}')">Editar</div>
     </div>
   </div>`;
  });
 }
 
-
 function editar(id){
-  const e = itens.find(item => item.id === id);
-  if(!e) return;
+ const e = itens.find(i=>i.id===id);
+ if(!e) return;
 
-  editId = id;
-  tituloForm.innerText = "Editar excursão";
-  btnExcluir.style.display = "block";
+ editId = id;
+ btnExcluir.style.display="block";
+ tituloForm.innerText="Editar excursão";
 
-  // Campos simples
-  titulo.value = e.titulo || "";
-  destino.value = e.destino || "";
-  tipo.value = e.tipo || "Excursão";
-  data_saida.value = e.data_saida || "";
-  hora_saida.value = e.hora_saida || "";
-  data_retorno.value = e.data_retorno || "";
-  hora_retorno.value = e.hora_retorno || "";
-  duracao_dias.value = e.duracao_dias || "";
-  local_saida.value = e.local_saida || "";
-  transporte.value = e.transporte || "";
-  hospedagem.value = e.hospedagem || "";
-  alimentacao.value = e.alimentacao || "";
-  roteiro.value = e.roteiro || "";
-  valor.value = e.valor || "";
-  parcelas.value = e.parcelas || "";
-  observacoes.value = e.observacoes || "";
-  status.value = e.status || "Ativa";
+ Object.keys(e).forEach(k=>{
+  const el = document.getElementById(k);
+  if(!el) return;
+  el.type==="checkbox" ? el.checked=!!e[k] : el.value=e[k]||"";
+ });
 
-  // Inclusos (checkbox)
-  inclui_transporte.checked = !!e.inclui_transporte;
-  inclui_hospedagem.checked = !!e.inclui_hospedagem;
-  inclui_cafe.checked = !!e.inclui_cafe;
-  inclui_almoco.checked = !!e.inclui_almoco;
-  inclui_jantar.checked = !!e.inclui_jantar;
-  inclui_seguro.checked = !!e.inclui_seguro;
-  inclui_guia.checked = !!e.inclui_guia;
+ if(e.poster_url){
+  preview.src = sb.storage.from("buffet_excursoes")
+    .getPublicUrl(e.poster_url).data.publicUrl;
+  preview.style.display="block";
+ }
 
-  // Imagem
-  if(e.poster_url){
-    preview.src = sb
-      .storage
-      .from("buffet_excursoes")
-      .getPublicUrl(e.poster_url)
-      .data.publicUrl;
-    preview.style.display = "block";
-  } else {
-    preview.style.display = "none";
-  }
-
-  modal.classList.add("show");
+ modal.classList.add("show");
 }
 
-
-
-
-
-  
 async function excluir(){
  if(confirm("Excluir excursão?")){
   await sb.from("excursoes").delete().eq("id",editId);
-  fechar();carregar();
+  fechar();
+  carregar();
  }
 }
 </script>
