@@ -13,7 +13,7 @@
 :root{
   --primary:#ff6a00;
   --bg:#f4f6f8;
-  --card:#fff;
+  --card:#ffffff;
   --border:#e5e7eb;
   --text:#111;
 }
@@ -34,96 +34,187 @@ input:focus{outline:none;border-color:var(--primary)}
 .actions{margin-top:20px;display:flex;flex-direction:column;gap:12px}
 .btn{padding:18px;border:none;border-radius:999px;font-weight:800;cursor:pointer}
 .btn-primary{background:linear-gradient(135deg,#ff6a00,#ff9a57);color:#fff}
+.btn-clear{background:#e5e7eb}
+.excursoes-box{background:#fff;border-radius:18px;padding:18px;margin-bottom:16px;box-shadow:0 10px 24px rgba(0,0,0,.06)}
+.excursoes-box h3{margin:0 0 6px;font-size:16px;font-weight:900}
+.excursoes-box p{margin:4px 0;font-size:13px;color:#555}
+.valor{font-size:18px;font-weight:900;color:#16a34a}
+.switch-row{display:flex;justify-content:space-between;align-items:center;margin-top:12px}
+.switch-row input{display:none}
+.switch-ui{width:48px;height:28px;background:#d1d5db;border-radius:999px;position:relative}
+.switch-ui::after{content:"";width:22px;height:22px;background:#fff;border-radius:50%;position:absolute;top:3px;left:3px;transition:.25s}
+.switch-row input:checked+.switch-ui{background:var(--primary)}
+.switch-row input:checked+.switch-ui::after{transform:translateX(20px)}
 </style>
 </head>
 
 <body>
 
 <header>
-  <img src="logo.png">
+  <img src="logo.png" alt="SÁVIO TURISMO">
 </header>
 
 <div class="container">
+
+<!-- RESUMO DA EXCURSÃO -->
+<div class="excursoes-box" id="boxExcursao" style="display:none">
+  <h3 id="exTitulo"></h3>
+  <p id="exDestino"></p>
+  <p id="exDatas"></p>
+  <div class="valor" id="exValor"></div>
+</div>
 
 <form id="formCadastro">
 <div class="grid">
 
 <div class="card">
 <h2>DADOS DO PASSAGEIRO</h2>
-<label>NOME</label><input id="nome">
-<label>CPF</label><input id="cpf">
-<label>RG</label><input id="rg">
-<label>NASCIMENTO</label><input id="nascimento" type="date">
+<label>NOME</label><input id="nome" required>
+<label>CPF</label><input id="cpf" required>
+<label>RG</label><input id="rg" required>
+<label>NASCIMENTO</label><input id="nascimento" type="date" required>
 <label>PROFISSÃO</label><input id="profissao">
-<label>WHATSAPP</label><input id="telefone">
-<label>E-MAIL</label><input id="email" type="email" style="text-transform:none">
+<label>WHATSAPP</label><input id="telefone" required>
+<label>E-MAIL</label><input id="email" type="email" style="text-transform:none" required>
 </div>
 
 <div class="card">
 <h2>ENDEREÇO</h2>
-<label>CEP</label><input id="cep">
+<label>CEP</label><input id="cep" required>
 <label>RUA</label><input id="rua" class="readonly" readonly>
-<label>NÚMERO</label><input id="numero">
+<label>NÚMERO</label><input id="numero" required>
 <label>BAIRRO</label><input id="bairro" class="readonly" readonly>
 <label>CIDADE</label><input id="cidade" class="readonly" readonly>
 <label>UF</label><input id="uf" class="readonly" readonly>
 </div>
 
 <div class="card">
-<h2>EMERGÊNCIA</h2>
-<label>NOME</label><input id="em_nome">
-<label>PARENTESCO</label><input id="em_parentesco">
-<label>TELEFONE</label><input id="em_telefone">
+<h2>CONTATO DE EMERGÊNCIA</h2>
+<label>NOME</label><input id="em_nome" required>
+<label>PARENTESCO</label><input id="em_parentesco" required>
+<label>TELEFONE</label><input id="em_telefone" required>
+
+<div class="switch-row">
+<span>ACEITO O CONTRATO</span>
+<input type="checkbox" id="aceite_contrato">
+<div class="switch-ui"></div>
+</div>
+
+<div class="switch-row">
+<span>CIÊNCIA DOS RISCOS</span>
+<input type="checkbox" id="aceite_risco">
+<div class="switch-ui"></div>
+</div>
+
+<div class="switch-row">
+<span>AUTORIZO LGPD</span>
+<input type="checkbox" id="aceite_lgpd">
+<div class="switch-ui"></div>
+</div>
 </div>
 
 </div>
 
 <div class="actions">
-<button class="btn btn-primary">CONFIRMAR</button>
+<button class="btn btn-primary">CONFIRMAR DADOS</button>
+<button type="button" class="btn btn-clear" onclick="limpar()">LIMPAR</button>
 </div>
 </form>
 </div>
 
 <script>
-/* ================= ELEMENTOS ================= */
-const el = id => document.getElementById(id);
+/* ================= SUPABASE ================= */
+const sb = supabase.createClient(
+ "https://ghkfeobnrfvqwzuliqfz.supabase.co",
+ "sb_publishable_R-eenS9xurRgnrqDR9kz0Q_kJonEi7t"
+);
 
-const form = el("formCadastro");
-const campos = [
- "nome","cpf","rg","nascimento","profissao","telefone","email",
- "cep","rua","numero","bairro","cidade","uf",
- "em_nome","em_parentesco","em_telefone"
-];
+/* ================= ELEMENTOS ================= */
+const $ = id => document.getElementById(id);
+
+/* ================= CARREGAR EXCURSÃO ================= */
+const params = new URLSearchParams(location.search);
+const excursaoId = params.get("id");
+let pacote = null;
+
+async function carregarExcursao(){
+  if(!excursaoId) return;
+  const {data} = await sb.from("excursoes").select("*").eq("id",excursaoId).single();
+  if(!data) return;
+  pacote = data;
+
+  $("boxExcursao").style.display = "block";
+  $("exTitulo").innerText = data.titulo;
+  $("exDestino").innerText = "DESTINO: " + data.destino;
+  $("exDatas").innerText = `SAÍDA ${data.data_saida} • RETORNO ${data.data_retorno}`;
+  $("exValor").innerText =
+    Number(data.valor).toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
+}
+carregarExcursao();
 
 /* ================= RESTAURAR STORAGE ================= */
 const salvo = localStorage.getItem("cadastro_savio");
 if(salvo){
   const d = JSON.parse(salvo);
-  campos.forEach(c=>{
-    if(d[c] !== undefined) el(c).value = d[c];
+  Object.keys(d).forEach(k=>{
+    if($(k)) $(k).value = d[k];
   });
 }
 
-/* ================= CEP ================= */
-el("cep").addEventListener("blur", async ()=>{
-  const c = el("cep").value.replace(/\D/g,"");
+/* ================= CEP (VIACEP) ================= */
+$("cep").addEventListener("blur", async ()=>{
+  const c = $("cep").value.replace(/\D/g,"");
   if(c.length !== 8) return;
   const r = await fetch(`https://viacep.com.br/ws/${c}/json/`).then(r=>r.json());
   if(r.erro) return alert("CEP não encontrado");
-  el("rua").value = r.logradouro;
-  el("bairro").value = r.bairro;
-  el("cidade").value = r.localidade;
-  el("uf").value = r.uf;
+  $("rua").value = r.logradouro;
+  $("bairro").value = r.bairro;
+  $("cidade").value = r.localidade;
+  $("uf").value = r.uf;
 });
 
 /* ================= SUBMIT ================= */
-form.addEventListener("submit", e=>{
+$("formCadastro").addEventListener("submit", e=>{
   e.preventDefault();
-  const dados = {};
-  campos.forEach(c=>dados[c] = el(c).value);
+
+  if(!$("aceite_contrato").checked || !$("aceite_risco").checked || !$("aceite_lgpd").checked){
+    alert("Aceite todas as declarações");
+    return;
+  }
+
+  const dados = {
+    nome:$("nome").value,
+    cpf:$("cpf").value,
+    rg:$("rg").value,
+    nascimento:$("nascimento").value,
+    profissao:$("profissao").value,
+    telefone:$("telefone").value,
+    email:$("email").value,
+
+    cep:$("cep").value,
+    rua:$("rua").value,
+    numero:$("numero").value,
+    bairro:$("bairro").value,
+    cidade:$("cidade").value,
+    uf:$("uf").value,
+
+    em_nome:$("em_nome").value,
+    em_parentesco:$("em_parentesco").value,
+    em_telefone:$("em_telefone").value
+  };
+
   localStorage.setItem("cadastro_savio", JSON.stringify(dados));
-  alert("DADOS SALVOS COM SUCESSO");
+  localStorage.setItem("pacote", JSON.stringify(pacote));
+
+  location.href = "contrato.html";
 });
+
+/* ================= LIMPAR ================= */
+function limpar(){
+  localStorage.removeItem("cadastro_savio");
+  localStorage.removeItem("pacote");
+  location.reload();
+}
 </script>
 
 </body>
