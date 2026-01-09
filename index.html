@@ -321,6 +321,9 @@ const sb = supabase.createClient(
  "https://ghkfeobnrfvqwzuliqfz.supabase.co",
  "sb_publishable_R-eenS9xurRgnrqDR9kz0Q_kJonEi7t"
 );
+const storyModal = document.getElementById("storyModal");
+const storyTitulo = document.getElementById("storyTitulo");
+const storyBody = document.getElementById("storyBody");
 
 function pub(path){
   if(!path) return "";
@@ -523,7 +526,8 @@ async function carregarStories(){
     .from("stories")
     .select("*")
     .eq("ativo", true)
-    .order("ordem", { ascending:true })
+.order("linha", { ascending:true })
+.order("ordem", { ascending:true })
     .limit(5);
 
   const box = document.getElementById("stories");
@@ -532,7 +536,7 @@ async function carregarStories(){
   (data || []).forEach(s=>{
     box.innerHTML += `
       <div class="story" onclick="abrirStory('${s.instagram_url}','${s.titulo||""}')">
-        <img src="${s.thumbnail_url}">
+<img src="${s.thumbnail_url || 'https://via.placeholder.com/150'}">
         <span>${s.titulo||""}</span>
       </div>
     `;
