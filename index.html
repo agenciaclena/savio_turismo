@@ -166,6 +166,29 @@ body{
   background:linear-gradient(135deg,#ff6a00,#ff9a57);
   color:#fff;
 }
+.ultimas-vagas{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  font-size:11px;
+  font-weight:900;
+  color:#dc2626;
+}
+
+.pulse{
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  background:#dc2626;
+  animation:pulse 1.2s infinite;
+}
+
+@keyframes pulse{
+  0%{transform:scale(1);opacity:1}
+  50%{transform:scale(1.4);opacity:.6}
+  100%{transform:scale(1);opacity:1}
+}
+
 </style>
 </head>
 
@@ -243,6 +266,24 @@ function dataHora(d,h){
  return `${da}/${m}/${y} ${h||""}`;
 }
 
+function ultimasVagas(data_saida){
+  if(!data_saida) return false;
+
+  const hoje = new Date();
+  const saida = new Date(data_saida + "T00:00:00");
+
+  const diff = Math.ceil(
+    (saida - hoje) / (1000 * 60 * 60 * 24)
+  );
+
+  return diff >= 0 && diff <= 7; // até 7 dias
+}
+
+
+
+
+
+  
 /* LOAD */
 async function carregar(){
  const {data:cfg}=await sb.from("loja_config").select("*").single();
@@ -255,21 +296,26 @@ async function carregar(){
 
  lista.innerHTML="";
  data.forEach(e=>{
-  lista.innerHTML+=`
-  <div class="card" onclick='abrir(${JSON.stringify(e)})'>
-    <img src="${pub(e.poster_url)}">
-    <div class="card-body">
-      <h4>${e.titulo}</h4>
-      <div class="flags">
-        <span class="flag ${e.inclui_transporte?'on':''}"></span>
-        <span class="flag ${e.inclui_hospedagem?'on':''}"></span>
-        <span class="flag ${e.inclui_cafe?'on':''}"></span>
-      </div>
-      <div class="price">R$ ${e.valor}</div>
-    </div>
-  </div>`;
- });
-}
+
+   
+ lista.innerHTML += `
+<div class="card" onclick='abrir(${JSON.stringify(e)})'>
+  <img src="${pub(e.poster_url)}">
+  <div class="card-body">
+    <h4>${e.titulo}</h4>
+
+    ${
+      ultimasVagas(e.data_saida)
+      ? `<div class="ultimas-vagas">
+           <span class="pulse"></span>
+           Últimas vagas
+         </div>`
+      : ``
+    }
+
+    <div class="price">R$ ${e.valor}</div>
+  </div>
+</div>`;
 
 /* MODAL */
 function abrir(e){
