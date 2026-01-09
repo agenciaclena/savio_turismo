@@ -2,13 +2,12 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>SÁVIO TURISMO • CADASTRO</title>
+<title>Sávio Turismo • Cadastro</title>
 
 <meta name="viewport"
 content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 :root{
@@ -24,8 +23,6 @@ content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no,
   box-sizing:border-box;
   font-family:Inter,system-ui,-apple-system,sans-serif;
   text-transform:uppercase;
-  -webkit-tap-highlight-color:transparent;
-  touch-action:manipulation;
 }
 
 html,body{
@@ -34,39 +31,64 @@ html,body{
   background:var(--bg);
   color:var(--text);
   -webkit-text-size-adjust:100%;
-  overscroll-behavior:contain;
 }
 
-/* ================= HEADER ================= */
+/* HEADER */
 header{
   background:#fff;
-  padding:16px;
+  padding:14px;
   display:flex;
   justify-content:center;
-  align-items:center;
   border-bottom:1px solid var(--border);
-  position:sticky;
-  top:0;
-  z-index:10;
 }
-header img{
-  height:52px;
-}
+header img{height:46px}
 
-/* ================= CONTAINER ================= */
+/* CONTAINER */
 .container{
-  max-width:1200px;
+  max-width:1100px;
   margin:auto;
-  padding:16px 14px 120px;
+  padding:14px 14px 120px;
 }
 
-/* ================= GRID ================= */
+/* RESUMO PACOTE */
+.pacote{
+  background:#fff;
+  border-radius:18px;
+  overflow:hidden;
+  box-shadow:0 8px 20px rgba(0,0,0,.08);
+  margin-bottom:18px;
+}
+.pacote img{
+  width:100%;
+  height:170px;
+  object-fit:cover;
+}
+.pacote-body{
+  padding:14px;
+}
+.pacote-body h3{
+  margin:0 0 6px;
+  font-size:16px;
+  font-weight:800;
+}
+.pacote-body p{
+  margin:0;
+  font-size:13px;
+  color:var(--muted);
+}
+.pacote-body strong{
+  display:block;
+  margin-top:6px;
+  font-size:17px;
+  color:var(--primary);
+}
+
+/* GRID */
 .grid{
   display:grid;
   grid-template-columns:1fr;
   gap:16px;
 }
-
 @media(min-width:900px){
   .grid{grid-template-columns:repeat(2,1fr)}
 }
@@ -74,134 +96,75 @@ header img{
   .grid{grid-template-columns:repeat(3,1fr)}
 }
 
-/* ================= CARD ================= */
+/* CARD */
 .card{
-  background:var(--card);
-  border-radius:20px;
-  padding:18px;
-  box-shadow:0 10px 24px rgba(0,0,0,.06);
+  background:#fff;
+  border-radius:18px;
+  padding:16px;
+  box-shadow:0 8px 20px rgba(0,0,0,.06);
 }
-
 .card h2{
-  margin:0 0 14px;
+  margin:0 0 12px;
   font-size:13px;
   font-weight:800;
-  letter-spacing:.04em;
-  color:#111;
   border-bottom:1px solid var(--border);
-  padding-bottom:10px;
+  padding-bottom:8px;
 }
 
-/* ================= INPUTS ================= */
+/* INPUTS */
 label{
-  font-size:11px;
-  font-weight:800;
-  margin-top:12px;
   display:block;
-  color:#111;
+  margin-top:12px;
+  font-size:12px;
+  font-weight:700;
 }
 
 input{
   width:100%;
   margin-top:6px;
-  padding:16px 14px;
-  border-radius:14px;
+  padding:14px;
+  border-radius:12px;
   border:1px solid #d1d5db;
-  font-size:16px; /* evita zoom */
-  background:#fff;
+  font-size:16px;
 }
-
 input:focus{
   outline:none;
   border-color:var(--primary);
-  box-shadow:0 0 0 2px rgba(255,106,0,.15);
 }
 
 .readonly{
   background:#f1f5f9;
 }
 
-/* ================= SWITCH ================= */
-.switch-row{
+/* CHECKBOX NATIVO */
+.checkbox{
   display:flex;
   align-items:center;
-  justify-content:space-between;
-  gap:14px;
-  padding:14px 0;
-}
-
-.switch-row span{
+  gap:10px;
+  margin-top:14px;
   font-size:13px;
   font-weight:700;
-  line-height:1.3;
 }
 
-.switch-row input{
-  display:none;
-}
-
-.switch-ui{
-  width:50px;
-  height:28px;
-  background:#d1d5db;
-  border-radius:999px;
-  position:relative;
-  transition:.25s;
-  flex-shrink:0;
-}
-
-.switch-ui::after{
-  content:"";
-  position:absolute;
-  width:22px;
-  height:22px;
-  background:#fff;
-  border-radius:50%;
-  top:3px;
-  left:3px;
-  transition:.25s;
-  box-shadow:0 2px 6px rgba(0,0,0,.25);
-}
-
-.switch-row input:checked + .switch-ui{
-  background:var(--primary);
-}
-.switch-row input:checked + .switch-ui::after{
-  transform:translateX(22px);
-}
-
-/* ================= ACTIONS ================= */
+/* ACTIONS */
 .actions{
   position:fixed;
   bottom:0;
   left:0;
   right:0;
   background:#fff;
-  padding:14px;
   border-top:1px solid var(--border);
-  display:flex;
-  gap:12px;
-  z-index:20;
+  padding:14px;
 }
-
-.btn{
-  flex:1;
+.actions button{
+  width:100%;
   padding:16px;
   border:none;
   border-radius:999px;
   font-size:14px;
   font-weight:800;
-  cursor:pointer;
-}
-
-.btn-primary{
   background:linear-gradient(135deg,#ff6a00,#ff9a57);
   color:#fff;
-}
-
-.btn-clear{
-  background:#e5e7eb;
-  color:#111;
 }
 </style>
 </head>
@@ -209,146 +172,122 @@ input:focus{
 <body>
 
 <header>
-  <img src="logo.png" alt="SÁVIO TURISMO">
+  <img src="logo.png" alt="Sávio Turismo">
 </header>
 
 <div class="container">
+
+<!-- RESUMO DO PACOTE -->
+<div class="pacote" id="boxPacote" style="display:none">
+  <img id="pFoto">
+  <div class="pacote-body">
+    <h3 id="pTitulo"></h3>
+    <p id="pDatas"></p>
+    <strong id="pValor"></strong>
+  </div>
+</div>
+
 <form id="formCadastro">
 
 <div class="grid">
 
-<!-- DADOS -->
 <div class="card">
 <h2>DADOS DO PASSAGEIRO</h2>
-
-<label>NOME COMPLETO</label>
-<input id="nome" required>
-
-<label>CPF</label>
-<input id="cpf" inputmode="numeric" placeholder="000.000.000-00" required>
-
-<label>RG</label>
-<input id="rg" inputmode="numeric" placeholder="00.000.000-0" required>
-
-<label>DATA DE NASCIMENTO</label>
-<input id="nascimento" type="date" required>
-
-<label>PROFISSÃO</label>
-<input id="profissao">
-
-<label>WHATSAPP</label>
-<input id="telefone" inputmode="numeric" placeholder="(00) 00000-0000" required>
-
-<label>E-MAIL</label>
-<input id="email" type="email" style="text-transform:none" required>
+<label>NOME COMPLETO</label><input id="nome" required>
+<label>CPF</label><input id="cpf" required>
+<label>RG</label><input id="rg" required>
+<label>DATA DE NASCIMENTO</label><input id="nascimento" type="date" required>
+<label>PROFISSÃO</label><input id="profissao">
+<label>WHATSAPP</label><input id="telefone" required>
+<label>E-MAIL</label><input id="email" type="email" style="text-transform:none" required>
 </div>
 
-<!-- ENDEREÇO -->
 <div class="card">
 <h2>ENDEREÇO</h2>
-
-<label>CEP</label>
-<input id="cep" inputmode="numeric" placeholder="00000-000" required>
-
-<label>RUA</label>
-<input id="rua" class="readonly" readonly>
-
-<label>NÚMERO</label>
-<input id="numero" inputmode="numeric" required>
-
-<label>BAIRRO</label>
-<input id="bairro" class="readonly" readonly>
-
-<label>CIDADE</label>
-<input id="cidade" class="readonly" readonly>
-
-<label>UF</label>
-<input id="uf" class="readonly" readonly>
+<label>CEP</label><input id="cep" required>
+<label>RUA</label><input id="rua" class="readonly" readonly>
+<label>NÚMERO</label><input id="numero" required>
+<label>BAIRRO</label><input id="bairro" class="readonly" readonly>
+<label>CIDADE</label><input id="cidade" class="readonly" readonly>
+<label>UF</label><input id="uf" class="readonly" readonly>
 </div>
 
-<!-- EMERGÊNCIA -->
 <div class="card">
 <h2>CONTATO DE EMERGÊNCIA</h2>
-
-<label>NOME</label>
-<input id="em_nome" required>
-
-<label>PARENTESCO</label>
-<input id="em_parentesco" required>
-
-<label>TELEFONE</label>
-<input id="em_telefone" inputmode="numeric" placeholder="(00) 00000-0000" required>
+<label>NOME</label><input id="em_nome" required>
+<label>PARENTESCO</label><input id="em_parentesco" required>
+<label>TELEFONE</label><input id="em_telefone" required>
 </div>
 
-<!-- DECLARAÇÕES -->
 <div class="card">
 <h2>DECLARAÇÕES</h2>
 
-<label class="switch-row">
-  <span>ACEITO O CONTRATO</span>
+<label class="checkbox">
   <input type="checkbox" required>
-  <div class="switch-ui"></div>
+  ACEITO O CONTRATO
 </label>
 
-<label class="switch-row">
-  <span>CIÊNCIA DOS RISCOS</span>
+<label class="checkbox">
   <input type="checkbox" required>
-  <div class="switch-ui"></div>
+  CIÊNCIA DOS RISCOS
 </label>
 
-<label class="switch-row">
-  <span>AUTORIZO LGPD</span>
+<label class="checkbox">
   <input type="checkbox" required>
-  <div class="switch-ui"></div>
+  AUTORIZO LGPD
 </label>
+
 </div>
 
 </div>
 
 <div class="actions">
-  <button type="submit" class="btn btn-primary">CONFIRMAR DADOS</button>
-  <button type="button" class="btn btn-clear" onclick="limparTudo()">LIMPAR</button>
+  <button type="submit">CONTINUAR PARA CONTRATO</button>
 </div>
 
 </form>
 </div>
 
 <script>
-function mask(el, fn){
-  el.addEventListener("input", ()=>el.value = fn(el.value));
+/* PACOTE */
+const pacote = JSON.parse(localStorage.getItem("pacoteSelecionado")||"null");
+if(pacote){
+  boxPacote.style.display="block";
+  pFoto.src = pacote.foto;
+  pTitulo.innerText = pacote.titulo;
+  pDatas.innerText = pacote.datas;
+  pValor.innerText = pacote.valor;
 }
 
-mask(cpf, v=>v.replace(/\D/g,"")
-  .replace(/(\d{3})(\d)/,"$1.$2")
-  .replace(/(\d{3})(\d)/,"$1.$2")
-  .replace(/(\d{3})(\d{1,2})$/,"$1-$2"));
-
-mask(rg, v=>v.replace(/\D/g,"")
-  .replace(/(\d{2})(\d)/,"$1.$2")
-  .replace(/(\d{3})(\d)/,"$1.$2")
-  .replace(/(\d{3})(\d)$/,"$1-$2"));
-
-mask(telefone, v=>v.replace(/\D/g,"")
-  .replace(/(\d{2})(\d)/,"($1) $2")
-  .replace(/(\d{5})(\d)/,"$1-$2"));
-
-mask(em_telefone, v=>v.replace(/\D/g,"")
-  .replace(/(\d{2})(\d)/,"($1) $2")
-  .replace(/(\d{5})(\d)/,"$1-$2"));
-
-mask(cep, v=>v.replace(/\D/g,"")
-  .replace(/(\d{5})(\d)/,"$1-$2"));
-
-function limparTudo(){
-  if(confirm("DESEJA LIMPAR TODOS OS DADOS?")){
-    localStorage.clear();
-    location.reload();
-  }
-}
-
-formCadastro.onsubmit=e=>{
+/* SUBMIT */
+formCadastro.onsubmit = e=>{
   e.preventDefault();
-  location.href="resumo.html";
+
+  const cadastro = {
+    nome:nome.value,
+    cpf:cpf.value,
+    rg:rg.value,
+    nascimento:nascimento.value,
+    profissao:profissao.value,
+    telefone:telefone.value,
+    email:email.value,
+    endereco:{
+      cep:cep.value,
+      rua:rua.value,
+      numero:numero.value,
+      bairro:bairro.value,
+      cidade:cidade.value,
+      uf:uf.value
+    },
+    emergencia:{
+      nome:em_nome.value,
+      parentesco:em_parentesco.value,
+      telefone:em_telefone.value
+    }
+  };
+
+  localStorage.setItem("cadastro", JSON.stringify(cadastro));
+  location.href = "contrato.html";
 };
 </script>
 
