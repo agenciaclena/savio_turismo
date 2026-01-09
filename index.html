@@ -27,13 +27,22 @@ body{
   color:var(--text);
   opacity:0;
   transition:opacity .2s ease;
+  padding-top:96px; /* altura do header no desktop */
 }
 
 
-/* HEADER */
 .header{
+  position:fixed;
+  top:0;
+  left:0;
+  right:0;
+  z-index:999;
+  background:var(--bg);
   padding:20px 16px 10px;
+  border-bottom:1px solid rgba(0,0,0,.05);
+  backdrop-filter:saturate(180%) blur(8px);
 }
+
 .header h1{font-size:22px;font-weight:800}
 .header span{color:var(--primary)}
 .header p{font-size:13px;color:var(--muted)}
@@ -385,6 +394,11 @@ body{
   }
   .localizacao-top{
     font-size:11px;
+  }
+}
+@media(max-width:480px){
+  body{
+    padding-top:80px;
   }
 }
 
