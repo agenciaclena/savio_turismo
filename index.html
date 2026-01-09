@@ -288,10 +288,16 @@ if(efeito === "slide" && imgs.length > 1){
   idx = 1;
 }
 
-  // estilo base
-  track.style.transition = "none";
+track.style.transition = "none";
+track.style.display = "flex";
+
+/* posição inicial correta para loop */
+if (efeito === "slide" && imgs.length > 1) {
+  track.style.transform = "translateX(-100%)";
+} else {
   track.style.transform = "translateX(0)";
-  track.style.display = "flex";
+}
+
 
   // cria imagens
   imgs.forEach((src, i) => {
@@ -485,6 +491,11 @@ startBanner(
 const parcelasTxt = textoParcelas(e.valor, e.parcelas);
 
 lista.innerHTML += `
+
+
+
+
+
   <div class="card">
     <img src="${pub(e.poster_url)}">
 
@@ -511,6 +522,8 @@ lista.innerHTML += `
     </div>
   </div>
 `;
+  }); // fecha forEach
+} // fecha carregar()
 
 
  
