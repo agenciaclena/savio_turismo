@@ -365,8 +365,21 @@ function mostrar(novo){
 }
 
 
-  function proximo(){ mostrar(idx + 1); }
-  function anterior(){ mostrar(idx - 1); }
+ function proximo(){
+  if (efeito === "slide") {
+    mostrar(idx + 1);
+  } else {
+    mostrar((idx + 1) % imgs.length);
+  }
+}
+
+function anterior(){
+  if (efeito === "slide") {
+    mostrar(idx - 1);
+  } else {
+    mostrar((idx - 1 + imgs.length) % imgs.length);
+  }
+}
 
   // loop automático
   function iniciarLoop(){
