@@ -4,9 +4,7 @@
 <meta charset="UTF-8">
 <title>Painel Admin • Excursões</title>
 
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#ff6a00">
-
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -17,80 +15,71 @@ body{background:#f4f6fb}
 :root{
   --primary:#ff6a00;
   --border:#e5e7eb;
-  --text:#111827;
   --muted:#6b7280;
   --card:#fff;
 }
 
 /* HEADER */
-.header{
-  padding:16px;
-}
-.header h1{
-  font-size:18px;
-  font-weight:800;
-}
+.header{padding:16px}
+.header h1{font-size:20px;font-weight:800}
 .header span{color:var(--primary)}
-.header p{
-  font-size:12px;
-  color:var(--muted);
-}
+.header p{font-size:12px;color:var(--muted)}
 
 /* GRID */
 .grid{
   display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:10px;
+  grid-template-columns:repeat(4,1fr);
+  gap:16px;
   padding:0 16px 120px;
 }
 @media(max-width:900px){
   .grid{grid-template-columns:repeat(2,1fr)}
 }
-@media(max-width:520px){
-  .grid{grid-template-columns:1fr}
-}
 
 /* CARD */
 .card{
-  background:#fff;
-  border-radius:16px;
+  background:var(--card);
+  border-radius:18px;
   overflow:hidden;
-  box-shadow:0 6px 18px rgba(0,0,0,.08);
+  box-shadow:0 8px 24px rgba(0,0,0,.12);
+  display:flex;
+  flex-direction:column;
 }
-.card img{
+.poster{
   width:100%;
-  height:120px;
-  object-fit:cover;
+  aspect-ratio:1 / 1.414;
+  background:#eee;
+}
+.poster img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
 }
 .card-body{
-  padding:10px;
+  padding:12px;
   display:flex;
   flex-direction:column;
   gap:6px;
 }
 .card-body h4{
-  font-size:13px;
+  font-size:14px;
   font-weight:800;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
 }
 .badge{
-  font-size:10px;
+  font-size:11px;
   font-weight:800;
-  padding:3px 10px;
+  padding:4px 10px;
   border-radius:999px;
   background:#fff7ed;
   color:#c2410c;
   width:fit-content;
 }
-.price{
-  font-size:13px;
-  font-weight:800;
-}
+.meta{font-size:12px;color:var(--muted)}
+.price{font-size:14px;font-weight:800}
 .actions{
+  margin-top:6px;
   font-size:12px;
-  font-weight:700;
+  font-weight:800;
   color:var(--primary);
   cursor:pointer;
 }
@@ -103,10 +92,10 @@ body{background:#f4f6fb}
   width:56px;
   height:56px;
   border-radius:50%;
+  background:linear-gradient(135deg,#ff6a00,#ff9a57);
+  color:#fff;
   border:none;
   font-size:28px;
-  color:#fff;
-  background:linear-gradient(135deg,#ff6a00,#ff9a57);
   box-shadow:0 14px 34px rgba(0,0,0,.35);
 }
 
@@ -117,14 +106,13 @@ body{background:#f4f6fb}
   background:rgba(0,0,0,.55);
   display:none;
   align-items:flex-end;
-  z-index:9999;
 }
 .modal.show{display:flex}
 
 /* SHEET */
 .sheet{
   width:100%;
-  height:92vh;
+  height:95vh;
   background:#fff;
   border-radius:24px 24px 0 0;
   display:flex;
@@ -139,83 +127,38 @@ body{background:#f4f6fb}
 }
 .sheet-body{
   flex:1;
-  padding:16px;
   overflow-y:auto;
+  padding:16px;
 }
 .sheet-body label{
   font-size:12px;
-  font-weight:600;
+  font-weight:700;
   color:var(--muted);
-  margin-bottom:4px;
-  display:block;
 }
 .sheet-body input,
-.sheet-body textarea{
+.sheet-body textarea,
+.sheet-body select{
   width:100%;
   height:42px;
+  margin-bottom:12px;
   border-radius:12px;
   border:1px solid var(--border);
   padding:0 12px;
-  margin-bottom:12px;
-  font-size:14px;
 }
-.sheet-body textarea{
-  height:auto;
-  min-height:80px;
-  padding:10px;
-}
-
-/* TOGGLE */
-.sheet-body label:has(input[type="checkbox"]){
-  display:flex;
-  gap:10px;
-  align-items:center;
-  font-size:13px;
-  font-weight:700;
-  color:var(--text);
-}
-.sheet-body input[type="checkbox"]{
-  appearance:none;
-  width:42px;
-  height:24px;
-  background:#e5e7eb;
-  border-radius:999px;
-  position:relative;
-}
-.sheet-body input[type="checkbox"]::after{
-  content:"";
-  width:18px;
-  height:18px;
-  background:#fff;
-  border-radius:50%;
-  position:absolute;
-  top:3px;
-  left:3px;
-  transition:.25s;
-}
-.sheet-body input[type="checkbox"]:checked{
-  background:var(--primary);
-}
-.sheet-body input[type="checkbox"]:checked::after{
-  transform:translateX(18px);
-}
+.sheet-body textarea{min-height:80px;padding:10px}
 
 /* IMAGE */
 .image-box{
-  height:140px;
+  height:180px;
   border-radius:16px;
-  background:#f1f1f1;
+  background:#eee;
+  margin-bottom:12px;
   display:flex;
   align-items:center;
   justify-content:center;
-  margin-bottom:16px;
   cursor:pointer;
 }
-.image-box img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-}
+.image-box img{width:100%;height:100%;object-fit:contain}
 
 /* FOOTER */
 .sheet-footer{
@@ -227,17 +170,13 @@ body{background:#f4f6fb}
 .sheet-footer button{
   flex:1;
   height:46px;
-  border:none;
   border-radius:999px;
+  border:none;
   font-weight:800;
 }
 .save{background:var(--primary);color:#fff}
 .cancel{background:#e5e7eb}
-.delete{
-  background:transparent;
-  color:#dc2626;
-  font-size:12px;
-}
+.delete{background:transparent;color:#dc2626}
 </style>
 </head>
 
@@ -245,7 +184,7 @@ body{background:#f4f6fb}
 
 <div class="header">
   <h1>Excursões <span>Admin</span></h1>
-  <p>Cadastro e gestão</p>
+  <p>Cadastro completo das viagens</p>
 </div>
 
 <div class="grid" id="lista"></div>
@@ -261,32 +200,30 @@ body{background:#f4f6fb}
 
 <div class="sheet-body">
 
-<label>Imagem</label>
+<label>Poster (A4)</label>
 <div class="image-box" onclick="imagem.click()">
   <img id="preview" style="display:none">
   <input type="file" id="imagem" hidden accept="image/*">
 </div>
 
-<label>Título</label>
-<input id="titulo">
+<label>Título</label><input id="titulo">
+<label>Destino</label><input id="destino">
+<label>Tipo</label>
+<select id="tipo">
+  <option>Excursão</option>
+  <option>Luau</option>
+  <option>Acampamento</option>
+  <option>Sorteio</option>
+</select>
 
-<label>Destino</label>
-<input id="destino">
+<label>Data saída</label><input type="date" id="data_saida">
+<label>Data retorno</label><input type="date" id="data_retorno">
 
-<label>Descrição</label>
+<label>Valor</label><input id="valor">
+<label>Parcelas</label><input id="parcelas">
+
+<label>Roteiro / Descrição</label>
 <textarea id="descricao"></textarea>
-
-<label>Data saída</label>
-<input type="date" id="data_saida">
-
-<label>Data retorno</label>
-<input type="date" id="data_retorno">
-
-<label>Valor por pessoa</label>
-<input id="valor" oninput="moeda(this)">
-
-<label>Parcelas</label>
-<input id="parcelas">
 
 </div>
 
@@ -307,45 +244,28 @@ const sb = supabase.createClient(
 
 let userId=null,editId=null,blob=null,itens=[];
 
-/* 🔐 PROTEÇÃO */
+/* AUTH */
 (async()=>{
- const {data:{session}} = await sb.auth.getSession();
- if(!session){
-   location.href="login.html";
-   return;
- }
+ const {data:{session}}=await sb.auth.getSession();
+ if(!session) return location.href="login.html";
  userId=session.user.id;
  carregar();
 })();
 
-function moeda(i){
- let v=i.value.replace(/\D/g,'');
- i.value=(Number(v)/100).toLocaleString("pt-BR",{minimumFractionDigits:2});
-}
-function moedaNum(v){
- return Number(v.replace(/\./g,'').replace(',','.'));
-}
-
 imagem.onchange=()=>{
  const f=imagem.files[0];
- if(!f) return;
  blob=f;
  preview.src=URL.createObjectURL(f);
  preview.style.display="block";
 }
 
 function novo(){
- editId=null;
- preview.style.display="none";
- blob=null;
+ editId=null;blob=null;preview.style.display="none";
  btnExcluir.style.display="none";
  tituloForm.innerText="Nova excursão";
  modal.classList.add("show");
 }
-
-function fechar(){
- modal.classList.remove("show");
-}
+function fechar(){modal.classList.remove("show")}
 
 async function salvar(){
  let poster=null;
@@ -353,43 +273,39 @@ async function salvar(){
   poster=`${userId}/${Date.now()}.jpg`;
   await sb.storage.from("buffet_excursoes").upload(poster,blob,{upsert:true});
  }
-
  const payload={
   user_id:userId,
   titulo:titulo.value,
   destino:destino.value,
-  descricao:descricao.value,
+  tipo:tipo.value,
   data_saida:data_saida.value,
   data_retorno:data_retorno.value,
-  valor:moedaNum(valor.value),
+  valor:valor.value,
   parcelas:parcelas.value,
+  descricao:descricao.value,
   poster_url:poster
  };
-
- if(editId){
-  await sb.from("excursoes").update(payload).eq("id",editId);
- }else{
-  await sb.from("excursoes").insert(payload);
- }
- fechar();
- carregar();
+ editId
+  ? await sb.from("excursoes").update(payload).eq("id",editId)
+  : await sb.from("excursoes").insert(payload);
+ fechar();carregar();
 }
 
 async function carregar(){
  const {data}=await sb.from("excursoes").select("*").eq("user_id",userId);
- itens=data||[];
  lista.innerHTML="";
- itens.forEach(e=>{
+ (data||[]).forEach(e=>{
   const img=e.poster_url
    ? sb.storage.from("buffet_excursoes").getPublicUrl(e.poster_url).data.publicUrl
    : "";
   lista.innerHTML+=`
   <div class="card">
-    ${img?`<img src="${img}">`:""}
+    <div class="poster">${img?`<img src="${img}">`:``}</div>
     <div class="card-body">
       <h4>${e.titulo}</h4>
       <span class="badge">${e.destino}</span>
-      <div class="price">R$ ${Number(e.valor).toLocaleString("pt-BR",{minimumFractionDigits:2})}</div>
+      <div class="meta">${e.data_saida} → ${e.data_retorno}</div>
+      <div class="price">R$ ${e.valor}</div>
       <div class="actions" onclick="editar('${e.id}')">Editar</div>
     </div>
   </div>`;
@@ -397,29 +313,17 @@ async function carregar(){
 }
 
 function editar(id){
- const e=itens.find(i=>i.id===id);
+ const e=[...document.querySelectorAll('.actions')].find(()=>true);
  editId=id;
  btnExcluir.style.display="block";
- tituloForm.innerText="Editar excursão";
- titulo.value=e.titulo;
- destino.value=e.destino;
- descricao.value=e.descricao;
- data_saida.value=e.data_saida;
- data_retorno.value=e.data_retorno;
- valor.value=Number(e.valor).toLocaleString("pt-BR",{minimumFractionDigits:2});
- parcelas.value=e.parcelas;
- if(e.poster_url){
-  preview.src=sb.storage.from("buffet_excursoes").getPublicUrl(e.poster_url).data.publicUrl;
-  preview.style.display="block";
- }
  modal.classList.add("show");
 }
 
 async function excluir(){
- if(!confirm("Excluir excursão?")) return;
- await sb.from("excursoes").delete().eq("id",editId);
- fechar();
- carregar();
+ if(confirm("Excluir excursão?")){
+  await sb.from("excursoes").delete().eq("id",editId);
+  fechar();carregar();
+ }
 }
 </script>
 
