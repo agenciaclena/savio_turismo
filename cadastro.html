@@ -9,69 +9,158 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
+:root{
+  --primary:#ff6a00;
+  --bg:#f4f6f8;
+  --card:#ffffff;
+  --border:#e5e7eb;
+  --text:#111;
+}
+
 *{box-sizing:border-box;font-family:Inter;text-transform:uppercase}
-body{margin:0;background:#f4f6f8;color:#111}
+body{margin:0;background:var(--bg);color:var(--text)}
+
 header{
   background:#fff;
-  padding:16px;
+  padding:14px;
   display:flex;
   justify-content:center;
-  border-bottom:1px solid #e5e7eb
+  border-bottom:1px solid var(--border);
 }
-header img{height:60px}
-.container{max-width:1200px;margin:auto;padding:20px}
+header img{height:56px}
+
+.container{
+  max-width:1200px;
+  margin:auto;
+  padding:16px;
+}
+
 .grid{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
-  gap:20px
+  grid-template-columns:1fr;
+  gap:16px;
 }
+
+@media(min-width:900px){
+  .grid{grid-template-columns:repeat(2,1fr)}
+}
+
+@media(min-width:1200px){
+  .grid{grid-template-columns:repeat(3,1fr)}
+}
+
 .card{
-  background:#fff;
+  background:var(--card);
   border-radius:18px;
-  padding:20px;
-  box-shadow:0 10px 24px rgba(0,0,0,.06)
+  padding:18px;
+  box-shadow:0 10px 24px rgba(0,0,0,.06);
 }
+
 .card h2{
   margin:0 0 12px;
-  font-size:15px;
-  border-bottom:1px solid #eee;
-  padding-bottom:8px
+  font-size:14px;
+  font-weight:800;
+  border-bottom:1px solid var(--border);
+  padding-bottom:8px;
 }
-label{font-size:12px;font-weight:700}
+
+label{
+  font-size:11px;
+  font-weight:700;
+  display:block;
+  margin-top:8px;
+}
+
 input{
   width:100%;
-  padding:11px;
-  border-radius:10px;
+  padding:12px;
+  border-radius:12px;
   border:1px solid #d1d5db;
-  margin:6px 0 12px;
-  font-size:14px
+  margin-top:4px;
+  font-size:14px;
 }
-input:focus{outline:none;border-color:#ff6a00}
-.readonly{background:#f1f1f1}
-.checks label{
+
+input:focus{
+  outline:none;
+  border-color:var(--primary);
+}
+
+.readonly{
+  background:#f1f1f1;
+}
+
+/* ===== SWITCH BONITO ===== */
+.switch{
   display:flex;
   align-items:center;
-  gap:8px;
+  justify-content:space-between;
+  gap:12px;
+  margin:12px 0;
   font-size:13px;
-  margin-bottom:10px
+  font-weight:700;
 }
+
+.switch input{
+  display:none;
+}
+
+.slider{
+  width:52px;
+  height:30px;
+  background:#d1d5db;
+  border-radius:999px;
+  position:relative;
+  transition:.3s;
+  cursor:pointer;
+}
+
+.slider::before{
+  content:"";
+  position:absolute;
+  width:24px;
+  height:24px;
+  background:#fff;
+  border-radius:50%;
+  top:3px;
+  left:3px;
+  transition:.3s;
+  box-shadow:0 2px 6px rgba(0,0,0,.25);
+}
+
+.switch input:checked + .slider{
+  background:var(--primary);
+}
+
+.switch input:checked + .slider::before{
+  transform:translateX(22px);
+}
+
+/* ===== BOTÕES ===== */
+.actions{
+  margin-top:20px;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
 .btn{
   width:100%;
-  padding:15px;
+  padding:16px;
   border:none;
   border-radius:999px;
-  font-size:16px;
+  font-size:15px;
   font-weight:800;
-  cursor:pointer
+  cursor:pointer;
 }
+
 .btn-primary{
   background:linear-gradient(135deg,#ff6a00,#ff9a57);
   color:#fff;
 }
+
 .btn-clear{
   background:#e5e7eb;
   color:#111;
-  margin-top:10px;
 }
 </style>
 </head>
@@ -87,7 +176,7 @@ input:focus{outline:none;border-color:#ff6a00}
 
 <div class="grid">
 
-<!-- DADOS DO PASSAGEIRO -->
+<!-- DADOS -->
 <div class="card">
 <h2>DADOS DO PASSAGEIRO</h2>
 
@@ -136,7 +225,7 @@ input:focus{outline:none;border-color:#ff6a00}
 <input id="uf" class="readonly" readonly>
 </div>
 
-<!-- CONTATO DE EMERGÊNCIA -->
+<!-- EMERGÊNCIA -->
 <div class="card">
 <h2>CONTATO DE EMERGÊNCIA</h2>
 
@@ -152,9 +241,9 @@ input:focus{outline:none;border-color:#ff6a00}
 
 <!-- SAÚDE -->
 <div class="card">
-<h2>INFORMAÇÕES DE SAÚDE (OPCIONAL)</h2>
+<h2>INFORMAÇÕES DE SAÚDE</h2>
 
-<label>CONDIÇÃO DE SAÚDE</label>
+<label>CONDIÇÃO</label>
 <input id="saude_condicao">
 
 <label>MEDICAMENTOS</label>
@@ -184,128 +273,126 @@ input:focus{outline:none;border-color:#ff6a00}
 <!-- ACEITES -->
 <div class="card">
 <h2>DECLARAÇÕES</h2>
-<div class="checks">
-<label><input type="checkbox" id="aceite_contrato" required> LI E ACEITO O CONTRATO</label>
-<label><input type="checkbox" id="aceite_risco" required> CIÊNCIA DOS RISCOS</label>
-<label><input type="checkbox" id="aceite_lgpd" required> AUTORIZO LGPD</label>
+
+<div class="switch">
+  <span>ACEITO O CONTRATO</span>
+  <label>
+    <input type="checkbox" id="aceite_contrato" required>
+    <span class="slider"></span>
+  </label>
 </div>
+
+<div class="switch">
+  <span>CIÊNCIA DOS RISCOS</span>
+  <label>
+    <input type="checkbox" id="aceite_risco" required>
+    <span class="slider"></span>
+  </label>
+</div>
+
+<div class="switch">
+  <span>AUTORIZO LGPD</span>
+  <label>
+    <input type="checkbox" id="aceite_lgpd" required>
+    <span class="slider"></span>
+  </label>
 </div>
 
 </div>
 
-<button type="submit" class="btn btn-primary">CONFIRMAR DADOS</button>
-<button type="button" class="btn btn-clear" onclick="limparTudo()">LIMPAR TUDO</button>
+</div>
+
+<div class="actions">
+  <button type="submit" class="btn btn-primary">CONFIRMAR DADOS</button>
+  <button type="button" class="btn btn-clear" onclick="limparTudo()">LIMPAR TUDO</button>
+</div>
 
 </form>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <script>
-/* ================= SUPABASE ================= */
+/* ===== SUPABASE ===== */
 const sb = window.supabase.createClient(
   "https://ghkfeobnrfvqwzuliqfz.supabase.co",
   "sb_publishable_R-eenS9xurRgnrqDR9kz0Q_kJonEi7t"
 );
 
-/* ================= STORAGE ================= */
 const STORAGE_KEY = "cadastro_savio";
 
-/* ================= HELPERS ================= */
+/* ===== HELPERS ===== */
 function getId(){
   return new URLSearchParams(location.search).get("id");
 }
 function formatarData(d){
   if(!d) return "";
-  const [y,m,da] = d.split("-");
+  const [y,m,da]=d.split("-");
   return `${da}/${m}/${y}`;
 }
 
-/* ================= CARREGAR PACOTE ================= */
+/* ===== PACOTE ===== */
 async function carregarPacote(){
   const id = getId();
-  if(!id){
-    alert("ID DA EXCURSÃO NÃO INFORMADO");
-    return;
-  }
-
-  const { data, error } = await sb
-    .from("excursoes")
-    .select("*")
-    .eq("id", id)
-    .single();
-
-  if(error || !data){
-    console.error(error);
-    alert("EXCURSÃO NÃO ENCONTRADA");
-    return;
-  }
+  const { data } = await sb.from("excursoes").select("*").eq("id",id).single();
+  if(!data) return;
 
   pacote_nome.value = data.titulo;
-  pacote_periodo.value =
-    formatarData(data.data_saida) + " A " + formatarData(data.data_retorno);
-  pacote_valor.value =
-    Number(data.valor).toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
-
-  localStorage.setItem("pacote", JSON.stringify(data));
+  pacote_periodo.value = formatarData(data.data_saida)+" A "+formatarData(data.data_retorno);
+  pacote_valor.value = Number(data.valor).toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
+  localStorage.setItem("pacote",JSON.stringify(data));
 }
 
-/* ================= CEP ================= */
+/* ===== CEP ===== */
 cep.onblur = ()=>{
   const c = cep.value.replace(/\D/g,"");
-  if(c.length !== 8) return;
+  if(c.length!==8) return;
   fetch(`https://viacep.com.br/ws/${c}/json/`)
     .then(r=>r.json())
     .then(d=>{
       if(!d.erro){
-        rua.value = d.logradouro;
-        bairro.value = d.bairro;
-        cidade.value = d.localidade;
-        uf.value = d.uf;
+        rua.value=d.logradouro;
+        bairro.value=d.bairro;
+        cidade.value=d.localidade;
+        uf.value=d.uf;
       }
     });
 };
 
-/* ================= STORAGE AUTO ================= */
+/* ===== STORAGE ===== */
 function salvar(){
-  const dados = {};
+  const dados={};
   document.querySelectorAll("input").forEach(i=>{
-    dados[i.id] = i.type==="checkbox" ? i.checked : i.value;
+    dados[i.id]=i.type==="checkbox"?i.checked:i.value;
   });
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(dados));
+  localStorage.setItem(STORAGE_KEY,JSON.stringify(dados));
 }
 function restaurar(){
-  const dados = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+  const dados=JSON.parse(localStorage.getItem(STORAGE_KEY)||"{}");
   Object.keys(dados).forEach(k=>{
-    const el = document.getElementById(k);
+    const el=document.getElementById(k);
     if(el){
-      if(el.type==="checkbox") el.checked = dados[k];
-      else el.value = dados[k];
+      el.type==="checkbox"?el.checked=dados[k]:el.value=dados[k];
     }
   });
 }
 function limparTudo(){
   if(confirm("DESEJA LIMPAR TODOS OS DADOS?")){
-    localStorage.removeItem(STORAGE_KEY);
-    localStorage.removeItem("pacote");
+    localStorage.clear();
     location.reload();
   }
 }
 
-/* ================= SUBMIT ================= */
-formCadastro.onsubmit = e=>{
+/* ===== SUBMIT ===== */
+formCadastro.onsubmit=e=>{
   e.preventDefault();
   salvar();
-  location.href = "resumo.html";
+  location.href="resumo.html";
 };
 
-/* ================= INIT ================= */
-window.addEventListener("DOMContentLoaded", ()=>{
+window.addEventListener("DOMContentLoaded",()=>{
   restaurar();
   carregarPacote();
 });
 </script>
-
 
 </body>
 </html>
