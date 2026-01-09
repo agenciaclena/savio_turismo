@@ -199,111 +199,113 @@ input:focus{outline:none;border-color:#ff6a00}
 </form>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script>
 /* ================= SUPABASE ================= */
-const supabase = window.supabase.createClient(
- "https://ghkfeobnrfvqwzuliqfz.supabase.co",
- "sb_publishable_R-eenS9xurRgnrqDR9kz0Q_kJonEi7t"
+const sb = window.supabase.createClient(
+  "https://ghkfeobnrfvqwzuliqfz.supabase.co",
+  "sb_publishable_R-eenS9xurRgnrqDR9kz0Q_kJonEi7t"
 );
 
 /* ================= STORAGE ================= */
 const STORAGE_KEY = "cadastro_savio";
 
-/* ================= PACOTE ================= */
+/* ================= HELPERS ================= */
 function getId(){
   return new URLSearchParams(location.search).get("id");
 }
-
-async function carregarPacote(){
-  const id = getId();
-  if(!id) return alert("PACOTE NÃO INFORMADO");
-
-  const {data,error} = await supabase
-    .from("excursoes")
-    .select("*")
-    .eq("id",id)
-    .single();
-
-  if(error) return alert("PACOTE NÃO ENCONTRADO");
-
-  pacote_nome.value = data.titulo;
-  pacote_periodo.value = formatarData(data.data_saida)+" A "+formatarData(data.data_retorno);
-  pacote_valor.value = Number(data.valor).toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
-
-  localStorage.setItem("pacote",JSON.stringify(data));
-}
-
 function formatarData(d){
-  const [y,m,da]=d.split("-");
+  if(!d) return "";
+  const [y,m,da] = d.split("-");
   return `${da}/${m}/${y}`;
 }
 
-/* ================= MÁSCARAS ================= */
-function mask(el,p){
-  let i=0,v=el.value.replace(/\D/g,"");
-  el.value=p.replace(/#/g,_=>v[i++]||"");
+/* ================= CARREGAR PACOTE ================= */
+async function carregarPacote(){
+  const id = getId();
+  if(!id){
+    alert("ID DA EXCURSÃO NÃO INFORMADO");
+    return;
+  }
+
+  const { data, error } = await sb
+    .from("excursoes")
+    .select("*")
+    .eq("id", id)
+    .single();
+
+  if(error || !data){
+    console.error(error);
+    alert("EXCURSÃO NÃO ENCONTRADA");
+    return;
+  }
+
+  pacote_nome.value = data.titulo;
+  pacote_periodo.value =
+    formatarData(data.data_saida) + " A " + formatarData(data.data_retorno);
+  pacote_valor.value =
+    Number(data.valor).toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
+
+  localStorage.setItem("pacote", JSON.stringify(data));
 }
-cpf.oninput=()=>mask(cpf,"###.###.###-##");
-telefone.oninput=()=>mask(telefone,"(##) #####-####");
-em_telefone.oninput=()=>mask(em_telefone,"(##) #####-####");
-cep.oninput=()=>mask(cep,"#####-###");
 
 /* ================= CEP ================= */
-cep.onblur=()=>{
-  const c=cep.value.replace(/\D/g,"");
-  if(c.length!==8) return;
+cep.onblur = ()=>{
+  const c = cep.value.replace(/\D/g,"");
+  if(c.length !== 8) return;
   fetch(`https://viacep.com.br/ws/${c}/json/`)
     .then(r=>r.json())
     .then(d=>{
       if(!d.erro){
-        rua.value=d.logradouro;
-        bairro.value=d.bairro;
-        cidade.value=d.localidade;
-        uf.value=d.uf;
+        rua.value = d.logradouro;
+        bairro.value = d.bairro;
+        cidade.value = d.localidade;
+        uf.value = d.uf;
       }
     });
 };
 
-/* ================= LOCAL STORAGE ================= */
+/* ================= STORAGE AUTO ================= */
 function salvar(){
   const dados = {};
   document.querySelectorAll("input").forEach(i=>{
     dados[i.id] = i.type==="checkbox" ? i.checked : i.value;
   });
-  localStorage.setItem(STORAGE_KEY,JSON.stringify(dados));
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(dados));
 }
-
 function restaurar(){
-  const dados = JSON.parse(localStorage.getItem(STORAGE_KEY)||"{}");
+  const dados = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
   Object.keys(dados).forEach(k=>{
-    const el=document.getElementById(k);
+    const el = document.getElementById(k);
     if(el){
-      if(el.type==="checkbox") el.checked=dados[k];
-      else el.value=dados[k];
+      if(el.type==="checkbox") el.checked = dados[k];
+      else el.value = dados[k];
     }
   });
 }
-
 function limparTudo(){
   if(confirm("DESEJA LIMPAR TODOS OS DADOS?")){
-    localStorage.clear();
+    localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem("pacote");
     location.reload();
   }
 }
 
-document.addEventListener("input",salvar);
-window.addEventListener("DOMContentLoaded",()=>{
+/* ================= SUBMIT ================= */
+formCadastro.onsubmit = e=>{
+  e.preventDefault();
+  salvar();
+  location.href = "resumo.html";
+};
+
+/* ================= INIT ================= */
+window.addEventListener("DOMContentLoaded", ()=>{
   restaurar();
   carregarPacote();
 });
-
-/* ================= SUBMIT ================= */
-formCadastro.onsubmit=e=>{
-  e.preventDefault();
-  salvar();
-  location.href="resumo.html";
-};
 </script>
+
 
 </body>
 </html>
