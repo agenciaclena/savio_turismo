@@ -191,6 +191,8 @@ body{background:#f4f6fb;color:#111}
 
 <label>Inclusos</label>
 <div class="checks">
+<label>Formas de pagamento</label>
+<div class="checks">
 <label><input type="checkbox" id="inclui_transporte"> Transporte</label>
 <label><input type="checkbox" id="inclui_hospedagem"> Hospedagem</label>
 <label><input type="checkbox" id="inclui_cafe"> Café</label>
@@ -199,7 +201,12 @@ body{background:#f4f6fb;color:#111}
 <label><input type="checkbox" id="inclui_seguro"> Seguro</label>
 <label><input type="checkbox" id="inclui_guia"> Guia</label>
 </div>
-
+  <label><input type="checkbox" id="pag_pix"> Pix</label>
+  <label><input type="checkbox" id="pag_credito"> Crédito</label>
+  <label><input type="checkbox" id="pag_debito"> Débito</label>
+  <label><input type="checkbox" id="pag_dinheiro"> Dinheiro</label>
+  <label><input type="checkbox" id="pag_parcelado"> Parcelado</label>
+</div>
 <label>Roteiro</label><textarea id="roteiro"></textarea>
 <label>Valor</label><input id="valor">
 <label>Parcelas</label><input id="parcelas">
@@ -259,6 +266,11 @@ document.querySelectorAll(".sheet-body input, .sheet-body textarea").forEach(el=
 status.value="Ativa";
 preview.style.display="none";
 blob=null;
+pag_pix.checked = false;
+pag_credito.checked = false;
+pag_debito.checked = false;
+pag_dinheiro.checked = false;
+pag_parcelado.checked = false;
 
 
   
@@ -304,10 +316,16 @@ const payload={
   roteiro:roteiro.value || null,
   valor:Number(valor.value) || 0,
   parcelas:Number(parcelas.value) || 0,
-  observacoes:observacoes.value || null,
+ observacoes:observacoes.value || null,
 
-  status:status.value || "Ativa",
-  poster_url:poster
+pag_pix: !!pag_pix.checked,
+pag_credito: !!pag_credito.checked,
+pag_debito: !!pag_debito.checked,
+pag_dinheiro: !!pag_dinheiro.checked,
+pag_parcelado: !!pag_parcelado.checked,
+
+status:status.value || "Ativa",
+poster_url:poster
 };
 
 const { error } = editId
@@ -360,6 +378,18 @@ async function carregar(){
         <span class="flag ${e.inclui_almoco?'on':''}"></span>
         <span class="flag ${e.inclui_jantar?'on':''}"></span>
       </div>
+<div class="flags">
+  <span class="flag ${e.pag_pix?'on':''}" title="Pix"></span>
+  <span class="flag ${e.pag_credito?'on':''}" title="Crédito"></span>
+  <span class="flag ${e.pag_debito?'on':''}" title="Débito"></span>
+  <span class="flag ${e.pag_dinheiro?'on':''}" title="Dinheiro"></span>
+  <span class="flag ${e.pag_parcelado?'on':''}" title="Parcelado"></span>
+</div>
+
+
+
+
+      
       <div class="meta">${e.destino}</div>
 <div class="meta">
   ${formatarData(e.data_saida)} ${formatarHora(e.hora_saida)}
