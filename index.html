@@ -273,34 +273,30 @@ const sb = supabase.createClient(
 );
 
 function pub(path){
- return sb.storage.from("buffet_excursoes").getPublicUrl(path).data.publicUrl;
+  if(!path) return "";
+  return sb.storage.from("buffet_excursoes").getPublicUrl(path).data.publicUrl;
 }
 
-/* BANNER */
-let idx=0;
+/* ===================== BANNER ===================== */
+let idx = 0;
+
 function startBanner(imgs, efeito = "slide", intervalo = 3000){
   const track = document.getElementById("bannerTrack");
   track.innerHTML = "";
   idx = 0;
-// loop visual (clona primeiro e último)
-if(efeito === "slide" && imgs.length > 1){
-  imgs = [imgs[imgs.length - 1], ...imgs, imgs[0]];
-  idx = 1;
-}
 
-track.style.transition = "none";
-track.style.display = "flex";
+  if(!imgs || imgs.length === 0) return;
 
-/* posição inicial correta para loop */
-if (efeito === "slide" && imgs.length > 1) {
-  track.style.transform = "translateX(-100%)";
-} else {
-  track.style.transform = "translateX(0)";
-}
+  if(efeito === "slide" && imgs.length > 1){
+    imgs = [imgs[imgs.length - 1], ...imgs, imgs[0]];
+    idx = 1;
+  }
 
+  track.style.display = "flex";
+  track.style.transition = "none";
+  track.style.transform = efeito === "slide" ? "translateX(-100%)" : "translateX(0)";
 
-  // cria imagens
-  imgs.forEach((src, i) => {
+  imgs.forEach((src, i)=>{
     const img = document.createElement("img");
     img.src = src;
 
@@ -321,67 +317,55 @@ if (efeito === "slide" && imgs.length > 1) {
 
   let timer = null;
 
-function mostrar(novo){
-  const total = imgs.length;
+  function mostrar(novo){
+    const total = imgs.length;
 
-  if(efeito === "slide"){
-    track.style.transition = "transform .6s ease";
-    track.style.transform = `translateX(-${novo * 100}%)`;
+    if(efeito === "slide"){
+      track.style.transition = "transform .6s ease";
+      track.style.transform = `translateX(-${novo * 100}%)`;
 
-    // loop visual
-    if(novo === 0){
-      setTimeout(()=>{
-        track.style.transition = "none";
-        idx = total - 2;
-        track.style.transform = `translateX(-${idx * 100}%)`;
-      },600);
+      if(novo === 0){
+        setTimeout(()=>{
+          track.style.transition = "none";
+          idx = total - 2;
+          track.style.transform = `translateX(-${idx * 100}%)`;
+        },600);
+        return;
+      }
+
+      if(novo === total - 1){
+        setTimeout(()=>{
+          track.style.transition = "none";
+          idx = 1;
+          track.style.transform = `translateX(-${idx * 100}%)`;
+        },600);
+        return;
+      }
+
+      idx = novo;
       return;
     }
 
-    if(novo === total - 1){
-      setTimeout(()=>{
-        track.style.transition = "none";
-        idx = 1;
-        track.style.transform = `translateX(-${idx * 100}%)`;
-      },600);
-      return;
+    if(efeito === "fade"){
+      if(novo < 0) novo = total - 1;
+      if(novo >= total) novo = 0;
+
+      [...track.children].forEach((img, i)=>{
+        img.style.opacity = i === novo ? "1" : "0";
+      });
+
+      idx = novo;
     }
-
-    idx = novo;
-    return;
   }
 
-  // ===== FADE =====
-  if(efeito === "fade"){
-    if(novo < 0) novo = total - 1;
-    if(novo >= total) novo = 0;
-
-    [...track.children].forEach((img, i)=>{
-      img.style.opacity = i === novo ? "1" : "0";
-    });
-
-    idx = novo;
-  }
-}
-
-
- function proximo(){
-  if (efeito === "slide") {
+  function proximo(){
     mostrar(idx + 1);
-  } else {
-    mostrar((idx + 1) % imgs.length);
   }
-}
 
-function anterior(){
-  if (efeito === "slide") {
+  function anterior(){
     mostrar(idx - 1);
-  } else {
-    mostrar((idx - 1 + imgs.length) % imgs.length);
   }
-}
 
-  // loop automático
   function iniciarLoop(){
     clearInterval(timer);
     timer = setInterval(proximo, intervalo);
@@ -389,15 +373,12 @@ function anterior(){
 
   iniciarLoop();
 
-  /* ===== SWIPE TOUCH ===== */
   let startX = 0;
 
-track.addEventListener("touchstart", e=>{
-  startX = e.touches[0].clientX;
-  track.style.transition = "none";
-  clearInterval(timer);
-}, { passive:true });
-
+  track.addEventListener("touchstart", e=>{
+    startX = e.touches[0].clientX;
+    clearInterval(timer);
+  }, { passive:true });
 
   track.addEventListener("touchend", e=>{
     const endX = e.changedTouches[0].clientX;
@@ -411,179 +392,129 @@ track.addEventListener("touchstart", e=>{
   });
 }
 
-
-/* DATA */
+/* ===================== FORMATADORES ===================== */
 function dataHora(d,h){
- if(!d) return "";
- const [y,m,da]=d.split("-");
- return `${da}/${m}/${y} ${h||""}`;
-}
-function formatarMoeda(valor){
-  if(valor === null || valor === undefined) return "R$ 0,00";
-
-  return Number(valor).toLocaleString("pt-BR", {
-    style: "currency",
-    currency: "BRL"
-  });
+  if(!d) return "";
+  const [y,m,da] = d.split("-");
+  return `${da}/${m}/${y}${h ? " " + h.slice(0,5) : ""}`;
 }
 
-function ultimasVagas(data_saida){
-  if(!data_saida) return false;
-
-  const hoje = new Date();
-  const saida = new Date(data_saida + "T00:00:00");
-
-  const diff = Math.ceil(
-    (saida - hoje) / (1000 * 60 * 60 * 24)
-  );
-
-  return diff >= 0 && diff <= 7; // até 7 dias
+function formatarMoeda(v){
+  if(v === null || v === undefined) return "R$ 0,00";
+  return Number(v).toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
 }
-/* ===== AUXILIARES DO CARD ===== */
 
 function textoParcelas(valor, parcelas){
   if(!parcelas || parcelas <= 1) return "";
-  const v = valor / parcelas;
-  return `${parcelas}x de ${formatarMoeda(v)}`;
+  return `${parcelas}x de ${formatarMoeda(valor/parcelas)}`;
 }
 
 function ufPorCep(cep){
   if(!cep || cep.length !== 8) return "";
-
-  const faixa = Number(cep.substring(0,2));
-
-  if(faixa >= 40 && faixa <= 49) return "BA";
-  if(faixa >= 10 && faixa <= 19) return "SP";
-  if(faixa >= 20 && faixa <= 28) return "RJ";
-  if(faixa >= 30 && faixa <= 39) return "MG";
-  if(faixa >= 50 && faixa <= 56) return "PE";
-  if(faixa >= 57 && faixa <= 57) return "AL";
-  if(faixa >= 58 && faixa <= 58) return "PB";
-  if(faixa >= 59 && faixa <= 59) return "RN";
-  if(faixa >= 60 && faixa <= 62) return "CE";
-  if(faixa >= 70 && faixa <= 72) return "DF";
-  if(faixa >= 73 && faixa <= 73) return "BA";
-  if(faixa >= 80 && faixa <= 87) return "PR";
-  if(faixa >= 88 && faixa <= 88) return "SC";
-  if(faixa >= 90 && faixa <= 99) return "RS";
-
+  const f = Number(cep.substring(0,2));
+  if(f>=40 && f<=49) return "BA";
+  if(f>=10 && f<=19) return "SP";
+  if(f>=20 && f<=28) return "RJ";
+  if(f>=30 && f<=39) return "MG";
+  if(f>=50 && f<=56) return "PE";
+  if(f==57) return "AL";
+  if(f==58) return "PB";
+  if(f==59) return "RN";
+  if(f>=60 && f<=62) return "CE";
+  if(f>=70 && f<=72) return "DF";
+  if(f>=80 && f<=87) return "PR";
+  if(f==88) return "SC";
+  if(f>=90) return "RS";
   return "";
 }
 
-
+/* ===================== CARREGAR ===================== */
+let itens = [];
 
 async function carregar(){
-  const {data:cfg}=await sb.from("loja_config").select("*").single();
-  const {data}=await sb.from("excursoes").select("*").eq("status","Ativa");
+  const {data:cfg} = await sb.from("loja_config").select("*").single();
+  const {data} = await sb.from("excursoes").select("*").eq("status","Ativa");
 
-if(cfg){
-  const root = document.documentElement;
+  if(cfg){
+    const r = document.documentElement;
+    r.style.setProperty("--primary", cfg.cor_primaria);
+    r.style.setProperty("--bg", cfg.cor_fundo);
+    r.style.setProperty("--card", cfg.cor_card);
+    r.style.setProperty("--text", cfg.cor_texto);
+    document.querySelector('meta[name="theme-color"]').setAttribute("content", cfg.cor_primaria);
+    document.body.style.opacity = "1";
 
-  root.style.setProperty("--primary", cfg.cor_primaria);
-  root.style.setProperty("--bg", cfg.cor_fundo);
-  root.style.setProperty("--card", cfg.cor_card);
-  root.style.setProperty("--text", cfg.cor_texto);
-  document
-    .querySelector('meta[name="theme-color"]')
-    .setAttribute("content", cfg.cor_primaria);
+    startBanner(cfg.banners, cfg.banner_efeito, cfg.banner_intervalo);
+  }
 
-  document.body.style.opacity = "1";
+  itens = data || [];
+  lista.innerHTML = "";
 
-startBanner(
-  cfg.banners,
-  cfg.banner_efeito || "slide",
-  cfg.banner_intervalo || 3000
-);
-}
+  itens.forEach(e=>{
+    const uf = ufPorCep(e.cep || "");
+    const parcelasTxt = textoParcelas(e.valor, e.parcelas);
 
-
-  lista.innerHTML="";
-
-  data.forEach(e=>{
-   const uf = ufPorCep(e.cep || "");
-const parcelasTxt = textoParcelas(e.valor, e.parcelas);
-
-lista.innerHTML += `
-
-
-
-
-
-  <div class="card">
-    <img src="${pub(e.poster_url)}">
-
-    <div class="card-body">
-      <h4>${e.titulo}</h4>
-
-      <div class="meta">
-        📅 ${dataHora(e.data_saida, e.hora_saida)}
+    lista.innerHTML += `
+      <div class="card" onclick='abrir("${e.id}")'>
+        <img src="${pub(e.poster_url)}">
+        <div class="card-body">
+          <h4>${e.titulo}</h4>
+          <div class="meta">📅 ${dataHora(e.data_saida,e.hora_saida)}</div>
+          ${uf ? `<div class="meta">📍 ${uf}</div>` : ``}
+          <div class="price">${formatarMoeda(e.valor)}</div>
+          ${parcelasTxt ? `<div class="meta">💳 ${parcelasTxt}</div>` : ``}
+        </div>
       </div>
-
-      ${uf ? `<div class="meta">📍 ${uf}</div>` : ``}
-
-      <div class="price">${formatarMoeda(e.valor)}</div>
-
-      ${parcelasTxt ? `<div class="meta">💳 ${parcelasTxt}</div>` : ``}
-
-      <a
-        class="btn-whats"
-        href="https://wa.me/55${e.whatsapp || ''}?text=Quero%20informações%20sobre%20${encodeURIComponent(e.titulo)}"
-        target="_blank"
-      >
-        💬 WhatsApp
-      </a>
-    </div>
-  </div>
-`;
-  }); // fecha forEach
-} // fecha carregar()
-
-
- 
-
-/* MODAL */
-function abrir(e){
- mTitulo.innerText=e.titulo;
- mDestino.innerText=e.destino;
- mDatas.innerText=dataHora(e.data_saida,e.hora_saida)+" → "+dataHora(e.data_retorno,e.hora_retorno);
- mHero.innerHTML=`<img src="${pub(e.poster_url)}">`;
- mDetalhes.innerText=
- `Transporte: ${e.transporte}
- Hospedagem: ${e.hospedagem}
- Alimentação: ${e.alimentacao}
- Observações: ${e.observacoes||""}`;
-
- mInclusos.innerHTML="";
- if(e.inclui_transporte)mInclusos.innerHTML+=`<div class="tag">🚌 Transporte</div>`;
- if(e.inclui_hospedagem)mInclusos.innerHTML+=`<div class="tag">🏨 Hospedagem</div>`;
- if(e.inclui_cafe)mInclusos.innerHTML+=`<div class="tag">☕ Café</div>`;
- if(e.inclui_seguro)mInclusos.innerHTML+=`<div class="tag">🛡 Seguro</div>`;
-
-mPagamentos.innerHTML = "";
-
-if (e.pag_pix)
-  mPagamentos.innerHTML += `<div class="tag">💳 Pix</div>`;
-
-if (e.pag_credito)
-  mPagamentos.innerHTML += `<div class="tag">💳 Crédito</div>`;
-
-if (e.pag_debito)
-  mPagamentos.innerHTML += `<div class="tag">💳 Débito</div>`;
-
-if (e.pag_dinheiro)
-  mPagamentos.innerHTML += `<div class="tag">💵 Dinheiro</div>`;
-
-if (e.pag_parcelado)
-  mPagamentos.innerHTML += `<div class="tag">📆 Parcelado</div>`;
-
-
- modal.classList.add("show");
+    `;
+  });
 }
 
-function fechar(){modal.classList.remove("show")}
+/* ===================== MODAL ===================== */
+function abrir(id){
+  const e = itens.find(i=>i.id===id);
+  if(!e) return;
+
+  mTitulo.innerText = e.titulo;
+  mDestino.innerText = e.destino;
+  mDatas.innerText = dataHora(e.data_saida,e.hora_saida)+" → "+dataHora(e.data_retorno,e.hora_retorno);
+  mHero.innerHTML = `<img src="${pub(e.poster_url)}">`;
+
+  mDetalhes.innerText =
+`Transporte: ${e.transporte}
+Hospedagem: ${e.hospedagem}
+Alimentação: ${e.alimentacao}
+Observações: ${e.observacoes||""}`;
+
+  mInclusos.innerHTML = "";
+  if(e.inclui_transporte) mInclusos.innerHTML += `<div class="tag">🚌 Transporte</div>`;
+  if(e.inclui_hospedagem) mInclusos.innerHTML += `<div class="tag">🏨 Hospedagem</div>`;
+  if(e.inclui_cafe) mInclusos.innerHTML += `<div class="tag">☕ Café</div>`;
+  if(e.inclui_seguro) mInclusos.innerHTML += `<div class="tag">🛡 Seguro</div>`;
+
+  mPagamentos.innerHTML = "";
+  if(e.pag_pix) mPagamentos.innerHTML += `<div class="tag">💳 Pix</div>`;
+  if(e.pag_credito) mPagamentos.innerHTML += `<div class="tag">💳 Crédito</div>`;
+  if(e.pag_debito) mPagamentos.innerHTML += `<div class="tag">💳 Débito</div>`;
+  if(e.pag_dinheiro) mPagamentos.innerHTML += `<div class="tag">💵 Dinheiro</div>`;
+  if(e.pag_parcelado) mPagamentos.innerHTML += `<div class="tag">📆 Parcelado</div>`;
+
+  document.getElementById("btnWhats").href =
+    `https://wa.me/55${e.whatsapp||""}?text=Quero%20informações%20sobre%20${encodeURIComponent(e.titulo)}`;
+
+  document.getElementById("btnComprar").onclick = ()=>{
+    location.href = "cadastro.html?id="+e.id;
+  };
+
+  modal.classList.add("show");
+}
+
+function fechar(){
+  modal.classList.remove("show");
+}
 
 carregar();
 </script>
+
 
 </body>
 </html>
