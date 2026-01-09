@@ -32,7 +32,6 @@ html,body{
   padding:0;
   background:var(--bg);
   color:var(--text);
-  -webkit-text-size-adjust:100%;
 }
 
 /* HEADER */
@@ -94,7 +93,7 @@ input{
   border-radius:14px;
   border:1px solid #d1d5db;
   margin-top:6px;
-  font-size:16px; /* evita zoom */
+  font-size:16px;
 }
 
 input:focus{
@@ -106,7 +105,7 @@ input:focus{
   background:#f1f1f1;
 }
 
-/* ===== SWITCHES PROFISSIONAIS ===== */
+/* SWITCH */
 .switch-row{
   display:flex;
   align-items:center;
@@ -115,44 +114,30 @@ input:focus{
   padding:14px 0;
   cursor:pointer;
 }
-
 .switch-row span{
   font-size:14px;
   font-weight:700;
-  line-height:1.2;
 }
-
-/* ESCONDE CHECKBOX */
-.switch-row input{
-  display:none;
-}
-
-/* SWITCH VISUAL */
+.switch-row input{display:none}
 .switch-ui{
   width:48px;
   height:28px;
   background:#d1d5db;
   border-radius:999px;
   position:relative;
-  transition:background .25s ease;
-  flex-shrink:0;
+  transition:.25s;
 }
-
-/* BOLA */
 .switch-ui::after{
   content:"";
-  position:absolute;
   width:22px;
   height:22px;
   background:#fff;
   border-radius:50%;
+  position:absolute;
   top:3px;
   left:3px;
-  transition:transform .25s ease;
-  box-shadow:0 2px 6px rgba(0,0,0,.25);
+  transition:.25s;
 }
-
-/* ATIVO */
 .switch-row input:checked + .switch-ui{
   background:var(--primary);
 }
@@ -167,7 +152,6 @@ input:focus{
   flex-direction:column;
   gap:12px;
 }
-
 .btn{
   width:100%;
   padding:18px;
@@ -177,12 +161,10 @@ input:focus{
   font-weight:800;
   cursor:pointer;
 }
-
 .btn-primary{
   background:linear-gradient(135deg,#ff6a00,#ff9a57);
   color:#fff;
 }
-
 .btn-clear{
   background:#e5e7eb;
   color:#111;
@@ -299,31 +281,45 @@ input:focus{
 </div>
 
 <script>
+/* ===== SUPABASE ===== */
+const sb = supabase.createClient(
+ "https://ghkfeobnrfvqwzuliqfz.supabase.co",
+ "sb_publishable_R-eenS9xurRgnrqDR9kz0Q_kJonEi7t"
+);
+
+/* ===== PEGAR ID DA EXCURSÃO ===== */
+const params = new URLSearchParams(window.location.search);
+const excursaoId = params.get("id");
+let excursaoSelecionada = null;
+
+async function carregarExcursao(){
+  if(!excursaoId) return;
+
+  const { data, error } = await sb
+    .from("excursoes")
+    .select("*")
+    .eq("id", excursaoId)
+    .single();
+
+  if(error){
+    alert("Erro ao carregar excursão.");
+    return;
+  }
+
+  excursaoSelecionada = data;
+}
+carregarExcursao();
+
 /* ===== MÁSCARAS ===== */
 function mask(el, fn){
   el.addEventListener("input", ()=>el.value = fn(el.value));
 }
 
-mask(cpf, v=>v.replace(/\D/g,"")
-  .replace(/(\d{3})(\d)/,"$1.$2")
-  .replace(/(\d{3})(\d)/,"$1.$2")
-  .replace(/(\d{3})(\d{1,2})$/,"$1-$2"));
-
-mask(rg, v=>v.replace(/\D/g,"")
-  .replace(/(\d{2})(\d)/,"$1.$2")
-  .replace(/(\d{3})(\d)/,"$1.$2")
-  .replace(/(\d{3})(\d)$/,"$1-$2"));
-
-mask(telefone, v=>v.replace(/\D/g,"")
-  .replace(/(\d{2})(\d)/,"($1) $2")
-  .replace(/(\d{5})(\d)/,"$1-$2"));
-
-mask(em_telefone, v=>v.replace(/\D/g,"")
-  .replace(/(\d{2})(\d)/,"($1) $2")
-  .replace(/(\d{5})(\d)/,"$1-$2"));
-
-mask(cep, v=>v.replace(/\D/g,"")
-  .replace(/(\d{5})(\d)/,"$1-$2"));
+mask(cpf, v=>v.replace(/\D/g,"").replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d{1,2})$/,"$1-$2"));
+mask(rg, v=>v.replace(/\D/g,"").replace(/(\d{2})(\d)/,"$1.$2").replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d)$/,"$1-$2"));
+mask(telefone, v=>v.replace(/\D/g,"").replace(/(\d{2})(\d)/,"($1) $2").replace(/(\d{5})(\d)/,"$1-$2"));
+mask(em_telefone, v=>v.replace(/\D/g,"").replace(/(\d{2})(\d)/,"($1) $2").replace(/(\d{5})(\d)/,"$1-$2"));
+mask(cep, v=>v.replace(/\D/g,"").replace(/(\d{5})(\d)/,"$1-$2"));
 
 /* ===== STORAGE ===== */
 function limparTudo(){
@@ -332,10 +328,14 @@ function limparTudo(){
     location.reload();
   }
 }
+
 formCadastro.onsubmit = e => {
   e.preventDefault();
 
   const dados = {
+    excursao_id: excursaoId,
+    excursao: excursaoSelecionada,
+
     nome: nome.value,
     cpf: cpf.value,
     rg: rg.value,
@@ -360,16 +360,12 @@ formCadastro.onsubmit = e => {
     aceite_lgpd: aceite_lgpd.checked
   };
 
-  // 🔒 Validação extra (segurança)
   if(!dados.aceite_contrato || !dados.aceite_risco || !dados.aceite_lgpd){
     alert("É necessário aceitar todas as declarações.");
     return;
   }
 
-  // 💾 SALVA NO LOCAL STORAGE
   localStorage.setItem("cadastro_savio", JSON.stringify(dados));
-
-  // ➜ VAI PARA O RESUMO
   location.href = "resumo.html";
 };
 </script>
