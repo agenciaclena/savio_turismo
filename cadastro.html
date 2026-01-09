@@ -94,7 +94,7 @@ input{
   border-radius:14px;
   border:1px solid #d1d5db;
   margin-top:6px;
-  font-size:16px; /* EVITA ZOOM */
+  font-size:16px; /* evita zoom */
 }
 
 input:focus{
@@ -106,51 +106,57 @@ input:focus{
   background:#f1f1f1;
 }
 
-/* SWITCH PREMIUM */
-.switch{
+/* ===== SWITCHES PROFISSIONAIS ===== */
+.switch-row{
   display:flex;
   align-items:center;
   justify-content:space-between;
-  gap:12px;
-  margin:14px 0;
+  gap:16px;
+  padding:14px 0;
+  cursor:pointer;
 }
 
-.switch span{
-  font-size:13px;
+.switch-row span{
+  font-size:14px;
   font-weight:700;
+  line-height:1.2;
 }
 
-.switch input{
+/* ESCONDE CHECKBOX */
+.switch-row input{
   display:none;
 }
 
-.toggle{
-  width:46px;
-  height:26px;
+/* SWITCH VISUAL */
+.switch-ui{
+  width:48px;
+  height:28px;
   background:#d1d5db;
   border-radius:999px;
   position:relative;
-  cursor:pointer;
-  transition:.3s;
+  transition:background .25s ease;
+  flex-shrink:0;
 }
 
-.toggle::after{
+/* BOLA */
+.switch-ui::after{
   content:"";
   position:absolute;
   width:22px;
   height:22px;
   background:#fff;
   border-radius:50%;
-  top:2px;
-  left:2px;
-  transition:.3s;
+  top:3px;
+  left:3px;
+  transition:transform .25s ease;
   box-shadow:0 2px 6px rgba(0,0,0,.25);
 }
 
-.switch input:checked + .toggle{
+/* ATIVO */
+.switch-row input:checked + .switch-ui{
   background:var(--primary);
 }
-.switch input:checked + .toggle::after{
+.switch-row input:checked + .switch-ui::after{
   transform:translateX(20px);
 }
 
@@ -195,6 +201,7 @@ input:focus{
 
 <div class="grid">
 
+<!-- DADOS -->
 <div class="card">
 <h2>DADOS DO PASSAGEIRO</h2>
 
@@ -220,6 +227,7 @@ input:focus{
 <input id="email" type="email" style="text-transform:none" required>
 </div>
 
+<!-- ENDEREÇO -->
 <div class="card">
 <h2>ENDEREÇO</h2>
 
@@ -242,6 +250,7 @@ input:focus{
 <input id="uf" class="readonly" readonly>
 </div>
 
+<!-- EMERGÊNCIA -->
 <div class="card">
 <h2>CONTATO DE EMERGÊNCIA</h2>
 
@@ -255,32 +264,27 @@ input:focus{
 <input id="em_telefone" inputmode="numeric" placeholder="(00) 00000-0000" required>
 </div>
 
+<!-- DECLARAÇÕES -->
 <div class="card">
 <h2>DECLARAÇÕES</h2>
 
-<div class="switch">
+<label class="switch-row">
   <span>ACEITO O CONTRATO</span>
-  <label>
-    <input type="checkbox" id="aceite_contrato" required>
-    <span class="toggle"></span>
-  </label>
-</div>
+  <input type="checkbox" id="aceite_contrato" required>
+  <div class="switch-ui"></div>
+</label>
 
-<div class="switch">
+<label class="switch-row">
   <span>CIÊNCIA DOS RISCOS</span>
-  <label>
-    <input type="checkbox" id="aceite_risco" required>
-    <span class="toggle"></span>
-  </label>
-</div>
+  <input type="checkbox" id="aceite_risco" required>
+  <div class="switch-ui"></div>
+</label>
 
-<div class="switch">
+<label class="switch-row">
   <span>AUTORIZO LGPD</span>
-  <label>
-    <input type="checkbox" id="aceite_lgpd" required>
-    <span class="toggle"></span>
-  </label>
-</div>
+  <input type="checkbox" id="aceite_lgpd" required>
+  <div class="switch-ui"></div>
+</label>
 
 </div>
 
@@ -299,19 +303,75 @@ input:focus{
 function mask(el, fn){
   el.addEventListener("input", ()=>el.value = fn(el.value));
 }
-mask(cpf, v=>v.replace(/\D/g,"").replace(/(\d{3})(\d)/,"$1.$2")
-.replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d{1,2})$/,"$1-$2"));
 
-mask(rg, v=>v.replace(/\D/g,"").replace(/(\d{2})(\d)/,"$1.$2")
-.replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d)$/,"$1-$2"));
+mask(cpf, v=>v.replace(/\D/g,"")
+  .replace(/(\d{3})(\d)/,"$1.$2")
+  .replace(/(\d{3})(\d)/,"$1.$2")
+  .replace(/(\d{3})(\d{1,2})$/,"$1-$2"));
 
-mask(telefone, v=>v.replace(/\D/g,"").replace(/(\d{2})(\d)/,"($1) $2")
-.replace(/(\d{5})(\d)/,"$1-$2"));
+mask(rg, v=>v.replace(/\D/g,"")
+  .replace(/(\d{2})(\d)/,"$1.$2")
+  .replace(/(\d{3})(\d)/,"$1.$2")
+  .replace(/(\d{3})(\d)$/,"$1-$2"));
 
-mask(em_telefone, v=>v.replace(/\D/g,"").replace(/(\d{2})(\d)/,"($1) $2")
-.replace(/(\d{5})(\d)/,"$1-$2"));
+mask(telefone, v=>v.replace(/\D/g,"")
+  .replace(/(\d{2})(\d)/,"($1) $2")
+  .replace(/(\d{5})(\d)/,"$1-$2"));
 
-mask(cep, v=>v.replace(/\D/g,"").replace(/(\d{5})(\d)/,"$1-$2"));
+mask(em_telefone, v=>v.replace(/\D/g,"")
+  .replace(/(\d{2})(\d)/,"($1) $2")
+  .replace(/(\d{5})(\d)/,"$1-$2"));
+
+mask(cep, v=>v.replace(/\D/g,"")
+  .replace(/(\d{5})(\d)/,"$1-$2"));
+
+/* ===== STORAGE ===== */
+function limparTudo(){
+  if(confirm("DESEJA LIMPAR TODOS OS DADOS?")){
+    localStorage.clear();
+    location.reload();
+  }
+}
+formCadastro.onsubmit = e => {
+  e.preventDefault();
+
+  const dados = {
+    nome: nome.value,
+    cpf: cpf.value,
+    rg: rg.value,
+    nascimento: nascimento.value,
+    profissao: profissao.value,
+    telefone: telefone.value,
+    email: email.value,
+
+    cep: cep.value,
+    rua: rua.value,
+    numero: numero.value,
+    bairro: bairro.value,
+    cidade: cidade.value,
+    uf: uf.value,
+
+    em_nome: em_nome.value,
+    em_parentesco: em_parentesco.value,
+    em_telefone: em_telefone.value,
+
+    aceite_contrato: aceite_contrato.checked,
+    aceite_risco: aceite_risco.checked,
+    aceite_lgpd: aceite_lgpd.checked
+  };
+
+  // 🔒 Validação extra (segurança)
+  if(!dados.aceite_contrato || !dados.aceite_risco || !dados.aceite_lgpd){
+    alert("É necessário aceitar todas as declarações.");
+    return;
+  }
+
+  // 💾 SALVA NO LOCAL STORAGE
+  localStorage.setItem("cadastro_savio", JSON.stringify(dados));
+
+  // ➜ VAI PARA O RESUMO
+  location.href = "resumo.html";
+};
 </script>
 
 </body>
