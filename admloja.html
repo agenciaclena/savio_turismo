@@ -226,8 +226,10 @@ body{background:#f4f6fb;color:#111}
 </div>
 
 <div class="grid" id="lista"></div>
+  
 <button class="fab" onclick="novo()">+</button>
 <button class="fab" style="bottom:90px" onclick="abrirConfig()">⚙️</button>
+<button class="fab" style="bottom:160px" onclick="abrirParcerias()">🤝</button>
 
 <!-- MODAL -->
 <div class="modal" id="modal">
@@ -349,6 +351,7 @@ let editId = null;
 let blob = null;
 let itens = [];
 let lojaConfig = null;
+let blobParceiro = null;
 
 /* ================= INIT ================= */
 (async () => {
@@ -375,6 +378,11 @@ imagem.onchange = () => {
   blob = imagem.files[0];
   preview.src = URL.createObjectURL(blob);
   preview.style.display = "block";
+};
+logoParceiro.onchange = () => {
+  blobParceiro = logoParceiro.files[0];
+  previewParceiro.src = URL.createObjectURL(blobParceiro);
+  previewParceiro.style.display = "block";
 };
 
 /* ================= MODAL EXCURSÃO ================= */
@@ -693,6 +701,59 @@ async function excluir() {
   fechar();
   carregar();
 }
+
+function abrirParcerias(){
+  modalParcerias.classList.add("show");
+}
+
+function fecharParcerias(){
+  modalParcerias.classList.remove("show");
+
+  blobParceiro = null;
+  logoParceiro.value = ""; // 🔥 LIMPA FILE INPUT
+
+  previewParceiro.style.display = "none";
+  parc_nome.value = "";
+  parc_cidade.value = "";
+  parc_ativo.checked = true;
+}
+
+async function salvarParceria(){
+  if(!blobParceiro){
+    alert("Selecione a logo");
+    return;
+  }
+
+  const path = `${userId}/${Date.now()}.png`;
+
+  const { error:uploadError } = await sb.storage
+    .from("buffet_parceirias")
+    .upload(path, blobParceiro, { upsert:true });
+
+  if(uploadError){
+    alert("Erro ao enviar logo");
+    return;
+  }
+
+  const payload = {
+    user_id: userId,
+    nome: parc_nome.value || null,
+    cidade: parc_cidade.value || null,
+    logo_url: path,
+    ativo: parc_ativo.checked
+  };
+
+  const { error } = await sb.from("parcerias").insert(payload);
+
+  if(error){
+    alert("Erro ao salvar parceria");
+    return;
+  }
+
+  fecharParcerias();
+  alert("Parceria salva com sucesso ✅");
+}
+
 </script>
 
 <div class="modal" id="modalConfig">
@@ -771,6 +832,43 @@ async function excluir() {
     <div class="sheet-footer">
       <button class="cancel" onclick="fecharConfig()">Cancelar</button>
       <button class="save" onclick="salvarConfig()">Salvar</button>
+    </div>
+
+  </div>
+</div>
+<div class="modal" id="modalParcerias">
+  <div class="sheet">
+
+    <div class="sheet-header">
+      <span>Parcerias</span>
+      <span onclick="fecharParcerias()">✕</span>
+    </div>
+
+    <div class="sheet-body">
+
+      <label>Logo da parceria</label>
+      <div class="image-box" onclick="logoParceiro.click()">
+        <img id="previewParceiro" style="display:none">
+        <input type="file" id="logoParceiro" hidden accept="image/*">
+      </div>
+
+      <label>Nome</label>
+      <input id="parc_nome">
+
+      <label>Cidade</label>
+      <input id="parc_cidade" placeholder="Ex: Barreiras - BA">
+
+      <label class="toggle">
+        <span>Ativo</span>
+        <input type="checkbox" id="parc_ativo" checked>
+        <div class="switch"></div>
+      </label>
+
+    </div>
+
+    <div class="sheet-footer">
+      <button class="cancel" onclick="fecharParcerias()">Cancelar</button>
+      <button class="save" onclick="salvarParceria()">Salvar</button>
     </div>
 
   </div>
