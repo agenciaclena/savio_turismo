@@ -4,8 +4,7 @@
 <meta charset="UTF-8">
 <title>SÁVIO TURISMO • CADASTRO</title>
 
-<meta name="viewport"
-content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -19,156 +18,34 @@ content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no,
   --text:#111;
   --muted:#6b7280;
 }
-
-*{
-  box-sizing:border-box;
-  font-family:Inter;
-  text-transform:uppercase;
-  touch-action:manipulation;
-}
-
-html,body{
-  margin:0;
-  padding:0;
-  background:var(--bg);
-  color:var(--text);
-}
-
-/* HEADER */
-header{
-  background:#fff;
-  padding:14px;
-  display:flex;
-  justify-content:center;
-  border-bottom:1px solid var(--border);
-}
+*{box-sizing:border-box;font-family:Inter;text-transform:uppercase}
+body{margin:0;background:var(--bg);color:var(--text)}
+header{background:#fff;padding:14px;display:flex;justify-content:center;border-bottom:1px solid var(--border)}
 header img{height:54px}
-
-/* CONTAINER */
-.container{
-  max-width:1200px;
-  margin:auto;
-  padding:16px;
-}
-
-/* GRID */
-.grid{
-  display:grid;
-  grid-template-columns:1fr;
-  gap:16px;
-}
-@media(min-width:900px){
-  .grid{grid-template-columns:repeat(2,1fr)}
-}
-@media(min-width:1200px){
-  .grid{grid-template-columns:repeat(3,1fr)}
-}
-
-/* CARD */
-.card{
-  background:var(--card);
-  border-radius:18px;
-  padding:18px;
-  box-shadow:0 10px 24px rgba(0,0,0,.06);
-}
-.card h2{
-  margin:0 0 12px;
-  font-size:14px;
-  font-weight:800;
-  border-bottom:1px solid var(--border);
-  padding-bottom:8px;
-}
-
-/* INPUTS */
-label{
-  font-size:12px;
-  font-weight:700;
-  display:block;
-  margin-top:10px;
-}
-
-input{
-  width:100%;
-  padding:14px;
-  border-radius:14px;
-  border:1px solid #d1d5db;
-  margin-top:6px;
-  font-size:16px;
-}
-
-input:focus{
-  outline:none;
-  border-color:var(--primary);
-}
-
-.readonly{
-  background:#f1f1f1;
-}
-
-/* SWITCH */
-.switch-row{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:16px;
-  padding:14px 0;
-  cursor:pointer;
-}
-.switch-row span{
-  font-size:14px;
-  font-weight:700;
-}
+.container{max-width:1200px;margin:auto;padding:16px}
+.grid{display:grid;grid-template-columns:1fr;gap:16px}
+@media(min-width:900px){.grid{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:1200px){.grid{grid-template-columns:repeat(3,1fr)}}
+.card{background:#fff;border-radius:18px;padding:18px;box-shadow:0 10px 24px rgba(0,0,0,.06)}
+.card h2{margin:0 0 12px;font-size:14px;font-weight:800;border-bottom:1px solid var(--border);padding-bottom:8px}
+label{font-size:12px;font-weight:700;display:block;margin-top:10px}
+input{width:100%;padding:14px;border-radius:14px;border:1px solid #d1d5db;margin-top:6px;font-size:16px}
+input:focus{outline:none;border-color:var(--primary)}
+.readonly{background:#f1f1f1}
+.actions{margin-top:20px;display:flex;flex-direction:column;gap:12px}
+.btn{padding:18px;border:none;border-radius:999px;font-weight:800;cursor:pointer}
+.btn-primary{background:linear-gradient(135deg,#ff6a00,#ff9a57);color:#fff}
+.btn-clear{background:#e5e7eb}
+.excursoes-box{background:#fff;border-radius:18px;padding:18px;margin-bottom:16px;box-shadow:0 10px 24px rgba(0,0,0,.06)}
+.excursoes-box h3{margin:0 0 6px;font-size:16px;font-weight:900}
+.excursoes-box p{margin:4px 0;font-size:13px;color:var(--muted)}
+.valor{font-size:18px;font-weight:900;color:#16a34a}
+.switch-row{display:flex;justify-content:space-between;align-items:center;margin-top:12px}
 .switch-row input{display:none}
-.switch-ui{
-  width:48px;
-  height:28px;
-  background:#d1d5db;
-  border-radius:999px;
-  position:relative;
-  transition:.25s;
-}
-.switch-ui::after{
-  content:"";
-  width:22px;
-  height:22px;
-  background:#fff;
-  border-radius:50%;
-  position:absolute;
-  top:3px;
-  left:3px;
-  transition:.25s;
-}
-.switch-row input:checked + .switch-ui{
-  background:var(--primary);
-}
-.switch-row input:checked + .switch-ui::after{
-  transform:translateX(20px);
-}
-
-/* BOTÕES */
-.actions{
-  margin-top:20px;
-  display:flex;
-  flex-direction:column;
-  gap:12px;
-}
-.btn{
-  width:100%;
-  padding:18px;
-  border:none;
-  border-radius:999px;
-  font-size:15px;
-  font-weight:800;
-  cursor:pointer;
-}
-.btn-primary{
-  background:linear-gradient(135deg,#ff6a00,#ff9a57);
-  color:#fff;
-}
-.btn-clear{
-  background:#e5e7eb;
-  color:#111;
-}
+.switch-ui{width:48px;height:28px;background:#d1d5db;border-radius:999px;position:relative}
+.switch-ui::after{content:"";width:22px;height:22px;background:#fff;border-radius:50%;position:absolute;top:3px;left:3px;transition:.25s}
+.switch-row input:checked+.switch-ui{background:var(--primary)}
+.switch-row input:checked+.switch-ui::after{transform:translateX(20px)}
 </style>
 </head>
 
@@ -179,194 +56,130 @@ input:focus{
 </header>
 
 <div class="container">
-<form id="formCadastro">
 
+<!-- RESUMO DA EXCURSÃO -->
+<div class="excursoes-box" id="boxExcursao" style="display:none">
+  <h3 id="exTitulo"></h3>
+  <p id="exDestino"></p>
+  <p id="exDatas"></p>
+  <div class="valor" id="exValor"></div>
+</div>
+
+<form id="formCadastro">
 <div class="grid">
 
-<!-- DADOS -->
 <div class="card">
 <h2>DADOS DO PASSAGEIRO</h2>
-
-<label>NOME COMPLETO</label>
-<input id="nome" required>
-
-<label>CPF</label>
-<input id="cpf" inputmode="numeric" placeholder="000.000.000-00" required>
-
-<label>RG</label>
-<input id="rg" inputmode="numeric" placeholder="00.000.000-0" required>
-
-<label>DATA DE NASCIMENTO</label>
-<input id="nascimento" type="date" required>
-
-<label>PROFISSÃO</label>
-<input id="profissao">
-
-<label>WHATSAPP</label>
-<input id="telefone" inputmode="numeric" placeholder="(00) 00000-0000" required>
-
-<label>E-MAIL</label>
-<input id="email" type="email" style="text-transform:none" required>
+<label>NOME</label><input id="nome" required>
+<label>CPF</label><input id="cpf" required>
+<label>RG</label><input id="rg" required>
+<label>NASCIMENTO</label><input id="nascimento" type="date" required>
+<label>PROFISSÃO</label><input id="profissao">
+<label>WHATSAPP</label><input id="telefone" required>
+<label>E-MAIL</label><input id="email" type="email" style="text-transform:none" required>
 </div>
 
-<!-- ENDEREÇO -->
 <div class="card">
 <h2>ENDEREÇO</h2>
-
-<label>CEP</label>
-<input id="cep" inputmode="numeric" placeholder="00000-000" required>
-
-<label>RUA</label>
-<input id="rua" class="readonly" readonly>
-
-<label>NÚMERO</label>
-<input id="numero" inputmode="numeric" required>
-
-<label>BAIRRO</label>
-<input id="bairro" class="readonly" readonly>
-
-<label>CIDADE</label>
-<input id="cidade" class="readonly" readonly>
-
-<label>UF</label>
-<input id="uf" class="readonly" readonly>
+<label>CEP</label><input id="cep" required>
+<label>RUA</label><input id="rua" class="readonly" readonly>
+<label>NÚMERO</label><input id="numero" required>
+<label>BAIRRO</label><input id="bairro" class="readonly" readonly>
+<label>CIDADE</label><input id="cidade" class="readonly" readonly>
+<label>UF</label><input id="uf" class="readonly" readonly>
 </div>
 
-<!-- EMERGÊNCIA -->
 <div class="card">
 <h2>CONTATO DE EMERGÊNCIA</h2>
+<label>NOME</label><input id="em_nome" required>
+<label>PARENTESCO</label><input id="em_parentesco" required>
+<label>TELEFONE</label><input id="em_telefone" required>
 
-<label>NOME</label>
-<input id="em_nome" required>
-
-<label>PARENTESCO</label>
-<input id="em_parentesco" required>
-
-<label>TELEFONE</label>
-<input id="em_telefone" inputmode="numeric" placeholder="(00) 00000-0000" required>
+<div class="switch-row">
+<span>ACEITO CONTRATO</span>
+<input type="checkbox" id="aceite_contrato">
+<div class="switch-ui"></div>
 </div>
 
-<!-- DECLARAÇÕES -->
-<div class="card">
-<h2>DECLARAÇÕES</h2>
+<div class="switch-row">
+<span>CIÊNCIA DOS RISCOS</span>
+<input type="checkbox" id="aceite_risco">
+<div class="switch-ui"></div>
+</div>
 
-<label class="switch-row">
-  <span>ACEITO O CONTRATO</span>
-  <input type="checkbox" id="aceite_contrato" required>
-  <div class="switch-ui"></div>
-</label>
-
-<label class="switch-row">
-  <span>CIÊNCIA DOS RISCOS</span>
-  <input type="checkbox" id="aceite_risco" required>
-  <div class="switch-ui"></div>
-</label>
-
-<label class="switch-row">
-  <span>AUTORIZO LGPD</span>
-  <input type="checkbox" id="aceite_lgpd" required>
-  <div class="switch-ui"></div>
-</label>
-
+<div class="switch-row">
+<span>AUTORIZO LGPD</span>
+<input type="checkbox" id="aceite_lgpd">
+<div class="switch-ui"></div>
+</div>
 </div>
 
 </div>
 
 <div class="actions">
-  <button type="submit" class="btn btn-primary">CONFIRMAR DADOS</button>
-  <button type="button" class="btn btn-clear" onclick="limparTudo()">LIMPAR TUDO</button>
+<button class="btn btn-primary">CONFIRMAR DADOS</button>
+<button type="button" class="btn btn-clear" onclick="localStorage.clear();location.reload()">LIMPAR</button>
 </div>
-
 </form>
 </div>
 
 <script>
-/* ===== SUPABASE ===== */
 const sb = supabase.createClient(
  "https://ghkfeobnrfvqwzuliqfz.supabase.co",
  "sb_publishable_R-eenS9xurRgnrqDR9kz0Q_kJonEi7t"
 );
 
-/* ===== PEGAR ID DA EXCURSÃO ===== */
-const params = new URLSearchParams(window.location.search);
+const params = new URLSearchParams(location.search);
 const excursaoId = params.get("id");
-let excursaoSelecionada = null;
+let excursao = null;
 
+/* ===== CARREGAR EXCURSÃO E MOSTRAR ===== */
 async function carregarExcursao(){
   if(!excursaoId) return;
+  const {data} = await sb.from("excursoes").select("*").eq("id",excursaoId).single();
+  if(!data) return;
 
-  const { data, error } = await sb
-    .from("excursoes")
-    .select("*")
-    .eq("id", excursaoId)
-    .single();
-
-  if(error){
-    alert("Erro ao carregar excursão.");
-    return;
-  }
-
-  excursaoSelecionada = data;
+  excursao = data;
+  boxExcursao.style.display = "block";
+  exTitulo.innerText = data.titulo;
+  exDestino.innerText = "Destino: " + data.destino;
+  exDatas.innerText = "Saída: " + data.data_saida + " • Retorno: " + data.data_retorno;
+  exValor.innerText = Number(data.valor).toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
 }
 carregarExcursao();
 
-/* ===== MÁSCARAS ===== */
-function mask(el, fn){
-  el.addEventListener("input", ()=>el.value = fn(el.value));
-}
+/* ===== CEP (VIACEP) ===== */
+cep.addEventListener("blur", async ()=>{
+  const c = cep.value.replace(/\D/g,"");
+  if(c.length !== 8) return;
+  const r = await fetch(`https://viacep.com.br/ws/${c}/json/`).then(r=>r.json());
+  if(r.erro) return alert("CEP não encontrado");
+  rua.value = r.logradouro;
+  bairro.value = r.bairro;
+  cidade.value = r.localidade;
+  uf.value = r.uf;
+});
 
-mask(cpf, v=>v.replace(/\D/g,"").replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d{1,2})$/,"$1-$2"));
-mask(rg, v=>v.replace(/\D/g,"").replace(/(\d{2})(\d)/,"$1.$2").replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d)$/,"$1-$2"));
-mask(telefone, v=>v.replace(/\D/g,"").replace(/(\d{2})(\d)/,"($1) $2").replace(/(\d{5})(\d)/,"$1-$2"));
-mask(em_telefone, v=>v.replace(/\D/g,"").replace(/(\d{2})(\d)/,"($1) $2").replace(/(\d{5})(\d)/,"$1-$2"));
-mask(cep, v=>v.replace(/\D/g,"").replace(/(\d{5})(\d)/,"$1-$2"));
-
-/* ===== STORAGE ===== */
-function limparTudo(){
-  if(confirm("DESEJA LIMPAR TODOS OS DADOS?")){
-    localStorage.clear();
-    location.reload();
-  }
-}
-
-formCadastro.onsubmit = e => {
+/* ===== SUBMIT ===== */
+formCadastro.onsubmit = e =>{
   e.preventDefault();
-
-  const dados = {
-    excursao_id: excursaoId,
-    excursao: excursaoSelecionada,
-
-    nome: nome.value,
-    cpf: cpf.value,
-    rg: rg.value,
-    nascimento: nascimento.value,
-    profissao: profissao.value,
-    telefone: telefone.value,
-    email: email.value,
-
-    cep: cep.value,
-    rua: rua.value,
-    numero: numero.value,
-    bairro: bairro.value,
-    cidade: cidade.value,
-    uf: uf.value,
-
-    em_nome: em_nome.value,
-    em_parentesco: em_parentesco.value,
-    em_telefone: em_telefone.value,
-
-    aceite_contrato: aceite_contrato.checked,
-    aceite_risco: aceite_risco.checked,
-    aceite_lgpd: aceite_lgpd.checked
-  };
-
-  if(!dados.aceite_contrato || !dados.aceite_risco || !dados.aceite_lgpd){
-    alert("É necessário aceitar todas as declarações.");
+  if(!aceite_contrato.checked || !aceite_risco.checked || !aceite_lgpd.checked){
+    alert("Aceite todas as declarações");
     return;
   }
 
-  localStorage.setItem("cadastro_savio", JSON.stringify(dados));
-  location.href = "resumo.html";
+  const dados = {
+    excursao,
+    passageiro:{
+      nome:nome.value,cpf:cpf.value,rg:rg.value,nascimento:nascimento.value,
+      profissao:profissao.value,telefone:telefone.value,email:email.value,
+      endereco:{cep:cep.value,rua:rua.value,numero:numero.value,bairro:bairro.value,cidade:cidade.value,uf:uf.value},
+      emergencia:{nome:em_nome.value,parentesco:em_parentesco.value,telefone:em_telefone.value}
+    }
+  };
+
+  localStorage.setItem("cadastro_savio",JSON.stringify(dados));
+  location.href="resumo.html";
 };
 </script>
 
