@@ -202,108 +202,110 @@ input:focus{outline:none;border-color:#ff6a00}
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
-/* ========= SUPABASE ========= */
-const supabase = window.supabase.createClient(
+/* ================= SUPABASE ================= */
+const sb = window.supabase.createClient(
   "https://ghkfeobnrfvqwzuliqfz.supabase.co",
   "sb_publishable_R-eenS9xurRgnrqDR9kz0Q_kJonEi7t"
 );
 
-/* ========= DADOS ========= */
-const dados = JSON.parse(localStorage.getItem("cadastro_savio") || "{}");
-const pacote = JSON.parse(localStorage.getItem("pacote") || "{}");
-const assinatura = localStorage.getItem("assinatura_base64");
+/* ================= STORAGE ================= */
+const STORAGE_KEY = "cadastro_savio";
 
-/* ========= HELPERS ========= */
+/* ================= HELPERS ================= */
+function getId(){
+  return new URLSearchParams(location.search).get("id");
+}
 function formatarData(d){
   if(!d) return "";
   const [y,m,da] = d.split("-");
   return `${da}/${m}/${y}`;
 }
 
-function mesAno(){
-  const d = new Date();
-  return {
-    ano: d.getFullYear(),
-    mes: String(d.getMonth()+1).padStart(2,"0")
-  };
-}
-
-/* ========= PREENCHER CONTRATO ========= */
-c_nome.innerText = dados.nome || "";
-c_cpf.innerText = dados.cpf || "";
-c_rg.innerText = dados.rg || "";
-
-p_titulo.innerText = pacote.titulo || "";
-p_saida.innerText = formatarData(pacote.data_saida);
-p_retorno.innerText = formatarData(pacote.data_retorno);
-p_valor.innerText = Number(pacote.valor)
-  .toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
-
-let inclusos = [];
-if(pacote.inclui_transporte) inclusos.push("Transporte");
-if(pacote.inclui_hospedagem) inclusos.push("Hospedagem");
-if(pacote.inclui_cafe) inclusos.push("Café da manhã");
-if(pacote.inclui_seguro) inclusos.push("Seguro viagem");
-if(pacote.inclui_guia) inclusos.push("Guia turístico");
-p_inclusos.innerText = inclusos.join(", ");
-
-if(assinatura) assin_img.src = assinatura;
-
-const agora = new Date();
-local_data.innerText =
-  `Assinado em ${agora.toLocaleDateString("pt-BR")} às ${agora.toLocaleTimeString("pt-BR")}`;
-
-/* ========= GERAR PDF + UPLOAD ========= */
-async function gerarEEnviarPDF(){
-
-  const el = document.getElementById("contrato");
-
-  const opt = {
-    margin:10,
-    html2canvas:{ scale:2 },
-    jsPDF:{ unit:"mm", format:"a4", orientation:"portrait" }
-  };
-
-  // GERA PDF EM MEMÓRIA
-  const pdfBlob = await html2pdf().set(opt).from(el).outputPdf("blob");
-
-  const { ano, mes } = mesAno();
-  const cpfLimpo = (dados.cpf || "SEMCPF").replace(/\D/g,"");
-  const nomeArquivo =
-    `CONTRATO_${pacote.id}_${cpfLimpo}_${Date.now()}.pdf`;
-
-  const caminho = `${ano}/${mes}/${nomeArquivo}`;
-
-  // UPLOAD
-  const { error } = await supabase
-    .storage
-    .from("buffet_contratos")
-    .upload(caminho, pdfBlob, {
-      contentType: "application/pdf",
-      upsert: false
-    });
-
-  if(error){
-    alert("ERRO AO SALVAR CONTRATO");
-    console.error(error);
+/* ================= CARREGAR PACOTE ================= */
+async function carregarPacote(){
+  const id = getId();
+  if(!id){
+    alert("ID DA EXCURSÃO NÃO INFORMADO");
     return;
   }
 
-  // URL PÚBLICA
-  const { data } = supabase
-    .storage
-    .from("buffet_contratos")
-    .getPublicUrl(caminho);
+  const { data, error } = await sb
+    .from("excursoes")
+    .select("*")
+    .eq("id", id)
+    .single();
 
-  // SALVAR URL
-  localStorage.setItem("contrato_pdf_url", data.publicUrl);
+  if(error || !data){
+    console.error(error);
+    alert("EXCURSÃO NÃO ENCONTRADA");
+    return;
+  }
 
-  console.log("PDF SALVO EM:", data.publicUrl);
+  pacote_nome.value = data.titulo;
+  pacote_periodo.value =
+    formatarData(data.data_saida) + " A " + formatarData(data.data_retorno);
+  pacote_valor.value =
+    Number(data.valor).toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
+
+  localStorage.setItem("pacote", JSON.stringify(data));
 }
 
-/* EXECUTA */
-setTimeout(gerarEEnviarPDF, 800);
+/* ================= CEP ================= */
+cep.onblur = ()=>{
+  const c = cep.value.replace(/\D/g,"");
+  if(c.length !== 8) return;
+  fetch(`https://viacep.com.br/ws/${c}/json/`)
+    .then(r=>r.json())
+    .then(d=>{
+      if(!d.erro){
+        rua.value = d.logradouro;
+        bairro.value = d.bairro;
+        cidade.value = d.localidade;
+        uf.value = d.uf;
+      }
+    });
+};
+
+/* ================= STORAGE AUTO ================= */
+function salvar(){
+  const dados = {};
+  document.querySelectorAll("input").forEach(i=>{
+    dados[i.id] = i.type==="checkbox" ? i.checked : i.value;
+  });
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(dados));
+}
+function restaurar(){
+  const dados = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+  Object.keys(dados).forEach(k=>{
+    const el = document.getElementById(k);
+    if(el){
+      if(el.type==="checkbox") el.checked = dados[k];
+      else el.value = dados[k];
+    }
+  });
+}
+function limparTudo(){
+  if(confirm("DESEJA LIMPAR TODOS OS DADOS?")){
+    localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem("pacote");
+    location.reload();
+  }
+}
+
+/* ================= SUBMIT ================= */
+formCadastro.onsubmit = e=>{
+  e.preventDefault();
+  salvar();
+  location.href = "resumo.html";
+};
+
+/* ================= INIT ================= */
+window.addEventListener("DOMContentLoaded", ()=>{
+  restaurar();
+  carregarPacote();
+});
 </script>
+
 
 </body>
 </html>
