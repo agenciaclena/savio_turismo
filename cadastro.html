@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Sávio Turismo • Cadastro</title>
+<title>SÁVIO TURISMO • CONTRATO DIGITAL</title>
 
 <meta name="viewport"
 content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
@@ -15,14 +15,15 @@ content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no,
   --bg:#f4f6f8;
   --card:#ffffff;
   --border:#e5e7eb;
-  --text:#111827;
+  --text:#111;
   --muted:#6b7280;
 }
 
 *{
   box-sizing:border-box;
-  font-family:Inter,system-ui,-apple-system,sans-serif;
+  font-family:Inter;
   text-transform:uppercase;
+  -webkit-tap-highlight-color:transparent;
 }
 
 html,body{
@@ -33,7 +34,6 @@ html,body{
   -webkit-text-size-adjust:100%;
 }
 
-/* HEADER */
 header{
   background:#fff;
   padding:14px;
@@ -41,26 +41,45 @@ header{
   justify-content:center;
   border-bottom:1px solid var(--border);
 }
-header img{height:46px}
 
-/* CONTAINER */
-.container{
-  max-width:1100px;
-  margin:auto;
-  padding:14px 14px 120px;
+header img{height:50px}
+
+.step{
+  display:none;
+  padding:16px 16px 140px;
 }
 
-/* RESUMO PACOTE */
+.step.active{display:block}
+
+.card{
+  max-width:900px;
+  margin:0 auto 16px;
+  background:var(--card);
+  border-radius:20px;
+  padding:18px;
+  box-shadow:0 10px 24px rgba(0,0,0,.06);
+}
+
+h2{
+  margin:0 0 14px;
+  font-size:15px;
+  font-weight:800;
+  border-bottom:1px solid var(--border);
+  padding-bottom:8px;
+}
+
+/* ===== PACOTE ===== */
 .pacote{
+  max-width:900px;
+  margin:0 auto 16px;
   background:#fff;
-  border-radius:18px;
+  border-radius:20px;
   overflow:hidden;
-  box-shadow:0 8px 20px rgba(0,0,0,.08);
-  margin-bottom:18px;
+  box-shadow:0 10px 24px rgba(0,0,0,.08);
 }
 .pacote img{
   width:100%;
-  height:170px;
+  height:200px;
   object-fit:cover;
 }
 .pacote-body{
@@ -69,7 +88,7 @@ header img{height:46px}
 .pacote-body h3{
   margin:0 0 6px;
   font-size:16px;
-  font-weight:800;
+  font-weight:900;
 }
 .pacote-body p{
   margin:0;
@@ -79,74 +98,87 @@ header img{height:46px}
 .pacote-body strong{
   display:block;
   margin-top:6px;
-  font-size:17px;
+  font-size:18px;
   color:var(--primary);
 }
 
-/* GRID */
-.grid{
-  display:grid;
-  grid-template-columns:1fr;
-  gap:16px;
-}
-@media(min-width:900px){
-  .grid{grid-template-columns:repeat(2,1fr)}
-}
-@media(min-width:1200px){
-  .grid{grid-template-columns:repeat(3,1fr)}
-}
-
-/* CARD */
-.card{
-  background:#fff;
-  border-radius:18px;
-  padding:16px;
-  box-shadow:0 8px 20px rgba(0,0,0,.06);
-}
-.card h2{
-  margin:0 0 12px;
-  font-size:13px;
-  font-weight:800;
-  border-bottom:1px solid var(--border);
-  padding-bottom:8px;
-}
-
-/* INPUTS */
+/* ===== INPUTS ===== */
 label{
+  font-size:11px;
+  font-weight:800;
   display:block;
   margin-top:12px;
-  font-size:12px;
-  font-weight:700;
 }
 
 input{
   width:100%;
   margin-top:6px;
   padding:14px;
-  border-radius:12px;
+  border-radius:14px;
   border:1px solid #d1d5db;
   font-size:16px;
 }
+
 input:focus{
   outline:none;
   border-color:var(--primary);
 }
 
-.readonly{
-  background:#f1f5f9;
-}
-
-/* CHECKBOX NATIVO */
-.checkbox{
+/* ===== FLEGS ===== */
+.fleg{
   display:flex;
+  justify-content:space-between;
   align-items:center;
-  gap:10px;
-  margin-top:14px;
-  font-size:13px;
-  font-weight:700;
+  padding:14px 0;
 }
 
-/* ACTIONS */
+.fleg span{
+  font-size:13px;
+  font-weight:800;
+}
+
+.fleg input{display:none}
+
+.toggle{
+  width:52px;
+  height:28px;
+  background:#d1d5db;
+  border-radius:999px;
+  position:relative;
+  transition:.25s;
+}
+
+.toggle::after{
+  content:"";
+  width:22px;
+  height:22px;
+  background:#fff;
+  border-radius:50%;
+  position:absolute;
+  top:3px;
+  left:3px;
+  transition:.25s;
+}
+
+.fleg input:checked + .toggle{
+  background:var(--primary);
+}
+
+.fleg input:checked + .toggle::after{
+  transform:translateX(24px);
+}
+
+/* ===== CANVAS ===== */
+canvas{
+  width:100%;
+  height:240px;
+  border:2px dashed #d1d5db;
+  border-radius:16px;
+  background:#fafafa;
+  touch-action:none;
+}
+
+/* ===== BOTÃO ===== */
 .actions{
   position:fixed;
   bottom:0;
@@ -156,7 +188,8 @@ input:focus{
   border-top:1px solid var(--border);
   padding:14px;
 }
-.actions button{
+
+.btn{
   width:100%;
   padding:16px;
   border:none;
@@ -172,123 +205,184 @@ input:focus{
 <body>
 
 <header>
-  <img src="logo.png" alt="Sávio Turismo">
+  <img src="logo.png">
 </header>
 
-<div class="container">
+<!-- ================= STEP 1 : CADASTRO ================= -->
+<div class="step active" id="stepCadastro">
 
-<!-- RESUMO DO PACOTE -->
-<div class="pacote" id="boxPacote" style="display:none">
-  <img id="pFoto">
-  <div class="pacote-body">
-    <h3 id="pTitulo"></h3>
-    <p id="pDatas"></p>
-    <strong id="pValor"></strong>
+  <div class="pacote" id="boxPacote">
+    <img id="pFoto">
+    <div class="pacote-body">
+      <h3 id="pTitulo"></h3>
+      <p id="pDatas"></p>
+      <strong id="pValor"></strong>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>DADOS DO CONTRATANTE</h2>
+
+    <label>NOME COMPLETO</label>
+    <input id="nome">
+
+    <label>CPF</label>
+    <input id="cpf">
+
+    <label>RG</label>
+    <input id="rg">
+
+    <label>DATA DE NASCIMENTO</label>
+    <input type="date" id="nascimento">
+
+    <label>WHATSAPP</label>
+    <input id="telefone">
+
+    <label>E-MAIL</label>
+    <input id="email" style="text-transform:none">
+
+    <button class="btn" onclick="irContrato()">CONTINUAR</button>
   </div>
 </div>
 
-<form id="formCadastro">
+<!-- ================= STEP 2 : CONTRATO ================= -->
+<div class="step" id="stepContrato">
 
-<div class="grid">
+  <div class="card">
+    <h2>CONTRATO DE PRESTAÇÃO DE SERVIÇOS TURÍSTICOS</h2>
 
-<div class="card">
-<h2>DADOS DO PASSAGEIRO</h2>
-<label>NOME COMPLETO</label><input id="nome" required>
-<label>CPF</label><input id="cpf" required>
-<label>RG</label><input id="rg" required>
-<label>DATA DE NASCIMENTO</label><input id="nascimento" type="date" required>
-<label>PROFISSÃO</label><input id="profissao">
-<label>WHATSAPP</label><input id="telefone" required>
-<label>E-MAIL</label><input id="email" type="email" style="text-transform:none" required>
+    <p>
+      EU, <strong id="cNome"></strong>, CPF <strong id="cCpf"></strong>,
+      DECLARO QUE LI, COMPREENDI E CONCORDO COM TODOS OS TERMOS
+      REFERENTES AO PACOTE <strong id="cPacote"></strong>.
+    </p>
+
+    <div class="fleg">
+      <span>ACEITO O CONTRATO</span>
+      <input type="checkbox" id="f1">
+      <div class="toggle"></div>
+    </div>
+
+    <div class="fleg">
+      <span>CIÊNCIA DOS RISCOS</span>
+      <input type="checkbox" id="f2">
+      <div class="toggle"></div>
+    </div>
+
+    <div class="fleg">
+      <span>AUTORIZO LGPD</span>
+      <input type="checkbox" id="f3">
+      <div class="toggle"></div>
+    </div>
+
+    <button class="btn" onclick="irAssinatura()">IR PARA ASSINATURA</button>
+  </div>
 </div>
 
-<div class="card">
-<h2>ENDEREÇO</h2>
-<label>CEP</label><input id="cep" required>
-<label>RUA</label><input id="rua" class="readonly" readonly>
-<label>NÚMERO</label><input id="numero" required>
-<label>BAIRRO</label><input id="bairro" class="readonly" readonly>
-<label>CIDADE</label><input id="cidade" class="readonly" readonly>
-<label>UF</label><input id="uf" class="readonly" readonly>
-</div>
+<!-- ================= STEP 3 : ASSINATURA ================= -->
+<div class="step" id="stepAssinatura">
 
-<div class="card">
-<h2>CONTATO DE EMERGÊNCIA</h2>
-<label>NOME</label><input id="em_nome" required>
-<label>PARENTESCO</label><input id="em_parentesco" required>
-<label>TELEFONE</label><input id="em_telefone" required>
-</div>
+  <div class="card">
+    <h2>ASSINATURA DO CONTRATANTE</h2>
 
-<div class="card">
-<h2>DECLARAÇÕES</h2>
+    <canvas id="canvas"></canvas>
 
-<label class="checkbox">
-  <input type="checkbox" required>
-  ACEITO O CONTRATO
-</label>
-
-<label class="checkbox">
-  <input type="checkbox" required>
-  CIÊNCIA DOS RISCOS
-</label>
-
-<label class="checkbox">
-  <input type="checkbox" required>
-  AUTORIZO LGPD
-</label>
-
-</div>
-
-</div>
-
-<div class="actions">
-  <button type="submit">CONTINUAR PARA CONTRATO</button>
-</div>
-
-</form>
+    <button class="btn" onclick="finalizar()">FINALIZAR</button>
+  </div>
 </div>
 
 <script>
-/* PACOTE */
-const pacote = JSON.parse(localStorage.getItem("pacoteSelecionado")||"null");
+/* ===== PACOTE ===== */
+const pacote = JSON.parse(localStorage.getItem("pacoteSelecionado")||"{}");
 if(pacote){
-  boxPacote.style.display="block";
-  pFoto.src = pacote.foto;
-  pTitulo.innerText = pacote.titulo;
-  pDatas.innerText = pacote.datas;
-  pValor.innerText = pacote.valor;
+  pFoto.src = pacote.foto || "";
+  pTitulo.innerText = pacote.titulo || "";
+  pDatas.innerText = pacote.datas || "";
+  pValor.innerText = pacote.valor || "";
 }
 
-/* SUBMIT */
-formCadastro.onsubmit = e=>{
-  e.preventDefault();
+/* ===== NAVEGAÇÃO ===== */
+function show(id){
+  document.querySelectorAll(".step").forEach(s=>s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+}
 
-  const cadastro = {
-    nome:nome.value,
-    cpf:cpf.value,
-    rg:rg.value,
-    nascimento:nascimento.value,
-    profissao:profissao.value,
-    telefone:telefone.value,
-    email:email.value,
-    endereco:{
-      cep:cep.value,
-      rua:rua.value,
-      numero:numero.value,
-      bairro:bairro.value,
-      cidade:cidade.value,
-      uf:uf.value
+/* ===== CADASTRO → CONTRATO ===== */
+function irContrato(){
+  if(!nome.value || !cpf.value) return alert("PREENCHA OS DADOS");
+  cNome.innerText = nome.value;
+  cCpf.innerText = cpf.value;
+  cPacote.innerText = pacote.titulo || "";
+  show("stepContrato");
+}
+
+/* ===== CONTRATO → ASSINATURA ===== */
+function irAssinatura(){
+  if(!f1.checked || !f2.checked || !f3.checked){
+    alert("ACEITE TODAS AS DECLARAÇÕES");
+    return;
+  }
+  show("stepAssinatura");
+}
+
+/* ===== CANVAS ===== */
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+let draw=false;
+
+function resize(){
+  const r=window.devicePixelRatio||1;
+  canvas.width=canvas.offsetWidth*r;
+  canvas.height=canvas.offsetHeight*r;
+  ctx.setTransform(r,0,0,r,0,0);
+  ctx.lineWidth=2.5;
+  ctx.lineCap="round";
+}
+resize();
+window.addEventListener("resize",resize);
+
+canvas.addEventListener("mousedown",e=>{
+  draw=true;ctx.beginPath();ctx.moveTo(e.offsetX,e.offsetY);
+});
+canvas.addEventListener("mousemove",e=>{
+  if(draw){ctx.lineTo(e.offsetX,e.offsetY);ctx.stroke();}
+});
+canvas.addEventListener("mouseup",()=>draw=false);
+canvas.addEventListener("mouseleave",()=>draw=false);
+
+canvas.addEventListener("touchstart",e=>{
+  e.preventDefault();draw=true;
+  const t=e.touches[0],r=canvas.getBoundingClientRect();
+  ctx.beginPath();ctx.moveTo(t.clientX-r.left,t.clientY-r.top);
+},{passive:false});
+
+canvas.addEventListener("touchmove",e=>{
+  e.preventDefault();if(!draw)return;
+  const t=e.touches[0],r=canvas.getBoundingClientRect();
+  ctx.lineTo(t.clientX-r.left,t.clientY-r.top);ctx.stroke();
+},{passive:false});
+
+canvas.addEventListener("touchend",()=>draw=false);
+
+/* ===== FINAL ===== */
+function finalizar(){
+  const vazio = ctx.getImageData(0,0,canvas.width,canvas.height).data.every(v=>v===0);
+  if(vazio){alert("ASSINATURA OBRIGATÓRIA");return;}
+  const assinatura = canvas.toDataURL("image/png");
+  console.log({
+    pacote,
+    cadastro:{
+      nome:nome.value,
+      cpf:cpf.value,
+      rg:rg.value,
+      nascimento:nascimento.value,
+      telefone:telefone.value,
+      email:email.value
     },
-    emergencia:{
-      nome:em_nome.value,
-      parentesco:em_parentesco.value,
-      telefone:em_telefone.value
-    }
-  };
-
-  localStorage.setItem("cadastro", JSON.stringify(cadastro));
-  location.href = "contrato.html";
-};
+    assinatura
+  });
+  alert("FLUXO FINALIZADO. PRONTO PARA PDF / SUPABASE.");
+}
 </script>
 
 </body>
