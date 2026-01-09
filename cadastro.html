@@ -4,74 +4,182 @@
 <meta charset="UTF-8">
 <title>SÁVIO TURISMO • CADASTRO</title>
 
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="viewport"
+content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-*{box-sizing:border-box;font-family:Inter;text-transform:uppercase}
-body{margin:0;background:#f4f6f8;color:#111}
+:root{
+  --primary:#ff6a00;
+  --bg:#f4f6f8;
+  --card:#ffffff;
+  --border:#e5e7eb;
+  --text:#111;
+  --muted:#6b7280;
+}
+
+*{
+  box-sizing:border-box;
+  font-family:Inter;
+  text-transform:uppercase;
+  touch-action:manipulation;
+}
+
+html,body{
+  margin:0;
+  padding:0;
+  background:var(--bg);
+  color:var(--text);
+  -webkit-text-size-adjust:100%;
+}
+
+/* HEADER */
 header{
   background:#fff;
-  padding:16px;
+  padding:14px;
   display:flex;
   justify-content:center;
-  border-bottom:1px solid #e5e7eb
+  border-bottom:1px solid var(--border);
 }
-header img{height:60px}
-.container{max-width:1200px;margin:auto;padding:20px}
+header img{height:54px}
+
+/* CONTAINER */
+.container{
+  max-width:1200px;
+  margin:auto;
+  padding:16px;
+}
+
+/* GRID */
 .grid{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
-  gap:20px
+  grid-template-columns:1fr;
+  gap:16px;
 }
+@media(min-width:900px){
+  .grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(min-width:1200px){
+  .grid{grid-template-columns:repeat(3,1fr)}
+}
+
+/* CARD */
 .card{
-  background:#fff;
+  background:var(--card);
   border-radius:18px;
-  padding:20px;
-  box-shadow:0 10px 24px rgba(0,0,0,.06)
+  padding:18px;
+  box-shadow:0 10px 24px rgba(0,0,0,.06);
 }
 .card h2{
   margin:0 0 12px;
-  font-size:15px;
-  border-bottom:1px solid #eee;
-  padding-bottom:8px
+  font-size:14px;
+  font-weight:800;
+  border-bottom:1px solid var(--border);
+  padding-bottom:8px;
 }
-label{font-size:12px;font-weight:700}
+
+/* INPUTS */
+label{
+  font-size:12px;
+  font-weight:700;
+  display:block;
+  margin-top:10px;
+}
+
 input{
   width:100%;
-  padding:11px;
-  border-radius:10px;
+  padding:14px;
+  border-radius:14px;
   border:1px solid #d1d5db;
-  margin:6px 0 12px;
-  font-size:14px
+  margin-top:6px;
+  font-size:16px; /* EVITA ZOOM */
 }
-input:focus{outline:none;border-color:#ff6a00}
-.readonly{background:#f1f1f1}
-.checks label{
+
+input:focus{
+  outline:none;
+  border-color:var(--primary);
+}
+
+.readonly{
+  background:#f1f1f1;
+}
+
+/* SWITCH PREMIUM */
+.switch{
   display:flex;
   align-items:center;
-  gap:8px;
-  font-size:13px;
-  margin-bottom:10px
+  justify-content:space-between;
+  gap:12px;
+  margin:14px 0;
 }
+
+.switch span{
+  font-size:13px;
+  font-weight:700;
+}
+
+.switch input{
+  display:none;
+}
+
+.toggle{
+  width:46px;
+  height:26px;
+  background:#d1d5db;
+  border-radius:999px;
+  position:relative;
+  cursor:pointer;
+  transition:.3s;
+}
+
+.toggle::after{
+  content:"";
+  position:absolute;
+  width:22px;
+  height:22px;
+  background:#fff;
+  border-radius:50%;
+  top:2px;
+  left:2px;
+  transition:.3s;
+  box-shadow:0 2px 6px rgba(0,0,0,.25);
+}
+
+.switch input:checked + .toggle{
+  background:var(--primary);
+}
+.switch input:checked + .toggle::after{
+  transform:translateX(20px);
+}
+
+/* BOTÕES */
+.actions{
+  margin-top:20px;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
 .btn{
   width:100%;
-  padding:15px;
+  padding:18px;
   border:none;
   border-radius:999px;
-  font-size:16px;
+  font-size:15px;
   font-weight:800;
-  cursor:pointer
+  cursor:pointer;
 }
+
 .btn-primary{
   background:linear-gradient(135deg,#ff6a00,#ff9a57);
   color:#fff;
 }
+
 .btn-clear{
   background:#e5e7eb;
   color:#111;
-  margin-top:10px;
 }
 </style>
 </head>
@@ -87,7 +195,6 @@ input:focus{outline:none;border-color:#ff6a00}
 
 <div class="grid">
 
-<!-- DADOS DO PASSAGEIRO -->
 <div class="card">
 <h2>DADOS DO PASSAGEIRO</h2>
 
@@ -95,10 +202,10 @@ input:focus{outline:none;border-color:#ff6a00}
 <input id="nome" required>
 
 <label>CPF</label>
-<input id="cpf" inputmode="numeric" required>
+<input id="cpf" inputmode="numeric" placeholder="000.000.000-00" required>
 
 <label>RG</label>
-<input id="rg" inputmode="numeric" required>
+<input id="rg" inputmode="numeric" placeholder="00.000.000-0" required>
 
 <label>DATA DE NASCIMENTO</label>
 <input id="nascimento" type="date" required>
@@ -107,18 +214,17 @@ input:focus{outline:none;border-color:#ff6a00}
 <input id="profissao">
 
 <label>WHATSAPP</label>
-<input id="telefone" inputmode="numeric" required>
+<input id="telefone" inputmode="numeric" placeholder="(00) 00000-0000" required>
 
 <label>E-MAIL</label>
 <input id="email" type="email" style="text-transform:none" required>
 </div>
 
-<!-- ENDEREÇO -->
 <div class="card">
 <h2>ENDEREÇO</h2>
 
 <label>CEP</label>
-<input id="cep" inputmode="numeric" required>
+<input id="cep" inputmode="numeric" placeholder="00000-000" required>
 
 <label>RUA</label>
 <input id="rua" class="readonly" readonly>
@@ -136,7 +242,6 @@ input:focus{outline:none;border-color:#ff6a00}
 <input id="uf" class="readonly" readonly>
 </div>
 
-<!-- CONTATO DE EMERGÊNCIA -->
 <div class="card">
 <h2>CONTATO DE EMERGÊNCIA</h2>
 
@@ -147,165 +252,67 @@ input:focus{outline:none;border-color:#ff6a00}
 <input id="em_parentesco" required>
 
 <label>TELEFONE</label>
-<input id="em_telefone" inputmode="numeric" required>
+<input id="em_telefone" inputmode="numeric" placeholder="(00) 00000-0000" required>
 </div>
 
-<!-- SAÚDE -->
-<div class="card">
-<h2>INFORMAÇÕES DE SAÚDE (OPCIONAL)</h2>
-
-<label>CONDIÇÃO DE SAÚDE</label>
-<input id="saude_condicao">
-
-<label>MEDICAMENTOS</label>
-<input id="saude_medicamentos">
-
-<label>ALERGIAS</label>
-<input id="saude_alergias">
-
-<label>TIPO SANGUÍNEO</label>
-<input id="saude_sangue">
-</div>
-
-<!-- PACOTE -->
-<div class="card">
-<h2>PACOTE SELECIONADO</h2>
-
-<label>PACOTE</label>
-<input id="pacote_nome" class="readonly" readonly>
-
-<label>PERÍODO</label>
-<input id="pacote_periodo" class="readonly" readonly>
-
-<label>VALOR</label>
-<input id="pacote_valor" class="readonly" readonly>
-</div>
-
-<!-- ACEITES -->
 <div class="card">
 <h2>DECLARAÇÕES</h2>
-<div class="checks">
-<label><input type="checkbox" id="aceite_contrato" required> LI E ACEITO O CONTRATO</label>
-<label><input type="checkbox" id="aceite_risco" required> CIÊNCIA DOS RISCOS</label>
-<label><input type="checkbox" id="aceite_lgpd" required> AUTORIZO LGPD</label>
+
+<div class="switch">
+  <span>ACEITO O CONTRATO</span>
+  <label>
+    <input type="checkbox" id="aceite_contrato" required>
+    <span class="toggle"></span>
+  </label>
 </div>
+
+<div class="switch">
+  <span>CIÊNCIA DOS RISCOS</span>
+  <label>
+    <input type="checkbox" id="aceite_risco" required>
+    <span class="toggle"></span>
+  </label>
+</div>
+
+<div class="switch">
+  <span>AUTORIZO LGPD</span>
+  <label>
+    <input type="checkbox" id="aceite_lgpd" required>
+    <span class="toggle"></span>
+  </label>
 </div>
 
 </div>
 
-<button type="submit" class="btn btn-primary">CONFIRMAR DADOS</button>
-<button type="button" class="btn btn-clear" onclick="limparTudo()">LIMPAR TUDO</button>
+</div>
+
+<div class="actions">
+  <button type="submit" class="btn btn-primary">CONFIRMAR DADOS</button>
+  <button type="button" class="btn btn-clear" onclick="limparTudo()">LIMPAR TUDO</button>
+</div>
 
 </form>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <script>
-/* ================= SUPABASE ================= */
-const sb = window.supabase.createClient(
-  "https://ghkfeobnrfvqwzuliqfz.supabase.co",
-  "sb_publishable_R-eenS9xurRgnrqDR9kz0Q_kJonEi7t"
-);
-
-/* ================= STORAGE ================= */
-const STORAGE_KEY = "cadastro_savio";
-
-/* ================= HELPERS ================= */
-function getId(){
-  return new URLSearchParams(location.search).get("id");
+/* ===== MÁSCARAS ===== */
+function mask(el, fn){
+  el.addEventListener("input", ()=>el.value = fn(el.value));
 }
-function formatarData(d){
-  if(!d) return "";
-  const [y,m,da] = d.split("-");
-  return `${da}/${m}/${y}`;
-}
+mask(cpf, v=>v.replace(/\D/g,"").replace(/(\d{3})(\d)/,"$1.$2")
+.replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d{1,2})$/,"$1-$2"));
 
-/* ================= CARREGAR PACOTE ================= */
-async function carregarPacote(){
-  const id = getId();
-  if(!id){
-    alert("ID DA EXCURSÃO NÃO INFORMADO");
-    return;
-  }
+mask(rg, v=>v.replace(/\D/g,"").replace(/(\d{2})(\d)/,"$1.$2")
+.replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d)$/,"$1-$2"));
 
-  const { data, error } = await sb
-    .from("excursoes")
-    .select("*")
-    .eq("id", id)
-    .single();
+mask(telefone, v=>v.replace(/\D/g,"").replace(/(\d{2})(\d)/,"($1) $2")
+.replace(/(\d{5})(\d)/,"$1-$2"));
 
-  if(error || !data){
-    console.error(error);
-    alert("EXCURSÃO NÃO ENCONTRADA");
-    return;
-  }
+mask(em_telefone, v=>v.replace(/\D/g,"").replace(/(\d{2})(\d)/,"($1) $2")
+.replace(/(\d{5})(\d)/,"$1-$2"));
 
-  pacote_nome.value = data.titulo;
-  pacote_periodo.value =
-    formatarData(data.data_saida) + " A " + formatarData(data.data_retorno);
-  pacote_valor.value =
-    Number(data.valor).toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
-
-  localStorage.setItem("pacote", JSON.stringify(data));
-}
-
-/* ================= CEP ================= */
-cep.onblur = ()=>{
-  const c = cep.value.replace(/\D/g,"");
-  if(c.length !== 8) return;
-  fetch(`https://viacep.com.br/ws/${c}/json/`)
-    .then(r=>r.json())
-    .then(d=>{
-      if(!d.erro){
-        rua.value = d.logradouro;
-        bairro.value = d.bairro;
-        cidade.value = d.localidade;
-        uf.value = d.uf;
-      }
-    });
-};
-
-/* ================= STORAGE AUTO ================= */
-function salvar(){
-  const dados = {};
-  document.querySelectorAll("input").forEach(i=>{
-    dados[i.id] = i.type==="checkbox" ? i.checked : i.value;
-  });
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(dados));
-}
-function restaurar(){
-  const dados = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
-  Object.keys(dados).forEach(k=>{
-    const el = document.getElementById(k);
-    if(el){
-      if(el.type==="checkbox") el.checked = dados[k];
-      else el.value = dados[k];
-    }
-  });
-}
-function limparTudo(){
-  if(confirm("DESEJA LIMPAR TODOS OS DADOS?")){
-    localStorage.removeItem(STORAGE_KEY);
-    localStorage.removeItem("pacote");
-    location.reload();
-  }
-}
-
-/* ================= SUBMIT ================= */
-formCadastro.onsubmit = e=>{
-  e.preventDefault();
-  salvar();
-  location.href = "resumo.html";
-};
-
-/* ================= INIT ================= */
-window.addEventListener("DOMContentLoaded", ()=>{
-  restaurar();
-  carregarPacote();
-});
+mask(cep, v=>v.replace(/\D/g,"").replace(/(\d{5})(\d)/,"$1-$2"));
 </script>
-
 
 </body>
 </html>
