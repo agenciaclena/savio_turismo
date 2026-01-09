@@ -305,6 +305,21 @@ if(error){
  carregar();
 }
 
+/* ================= FORMATADORES ================= */
+function formatarData(data){
+  if(!data) return "";
+  const [ano, mes, dia] = data.split("-");
+  return `${dia}/${mes}/${ano}`;
+}
+
+function formatarHora(hora){
+  if(!hora) return "";
+  return hora.slice(0,5); // hh:mm
+}
+
+
+
+  
 async function carregar(){
  const {data} = await sb.from("excursoes").select("*").eq("user_id",userId);
  itens = data || [];
@@ -328,7 +343,11 @@ async function carregar(){
         <span class="flag ${e.inclui_jantar?'on':''}"></span>
       </div>
       <div class="meta">${e.destino}</div>
-      <div class="meta">${e.data_saida} → ${e.data_retorno}</div>
+<div class="meta">
+  ${formatarData(e.data_saida)} ${formatarHora(e.hora_saida)}
+  →
+  ${formatarData(e.data_retorno)} ${formatarHora(e.hora_retorno)}
+</div>
       <div class="price">R$ ${e.valor}</div>
       <div class="edit" onclick="editar('${e.id}')">Editar</div>
     </div>
