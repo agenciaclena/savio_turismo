@@ -298,44 +298,49 @@ if(efeito === "slide" && imgs.length > 1){
 
   let timer = null;
 
-  function mostrar(novo){
-    const total = imgs.length;
+function mostrar(novo){
+  const total = imgs.length;
 
-if(efeito === "slide"){
-  track.style.transition = "transform .6s ease";
-  track.style.transform = `translateX(-${novo * 100}%)`;
+  if(efeito === "slide"){
+    track.style.transition = "transform .6s ease";
+    track.style.transform = `translateX(-${novo * 100}%)`;
 
-  if(novo === 0){
-    setTimeout(()=>{
-      track.style.transition = "none";
-      idx = imgs.length - 2;
-      track.style.transform = `translateX(-${idx * 100}%)`;
-    },600);
-    return;
-  }
+    // loop visual
+    if(novo === 0){
+      setTimeout(()=>{
+        track.style.transition = "none";
+        idx = total - 2;
+        track.style.transform = `translateX(-${idx * 100}%)`;
+      },600);
+      return;
+    }
 
-  if(novo === imgs.length - 1){
-    setTimeout(()=>{
-      track.style.transition = "none";
-      idx = 1;
-      track.style.transform = `translateX(-${idx * 100}%)`;
-    },600);
-    return;
-  }
-}
-
-
-    if(efeito === "slide"){
-      track.style.transition = "transform .6s ease";
-      track.style.transform = `translateX(-${novo * 100}%)`;
-    } else {
-      [...track.children].forEach((img, i)=>{
-        img.style.opacity = i === novo ? "1" : "0";
-      });
+    if(novo === total - 1){
+      setTimeout(()=>{
+        track.style.transition = "none";
+        idx = 1;
+        track.style.transform = `translateX(-${idx * 100}%)`;
+      },600);
+      return;
     }
 
     idx = novo;
+    return;
   }
+
+  // ===== FADE =====
+  if(efeito === "fade"){
+    if(novo < 0) novo = total - 1;
+    if(novo >= total) novo = 0;
+
+    [...track.children].forEach((img, i)=>{
+      img.style.opacity = i === novo ? "1" : "0";
+    });
+
+    idx = novo;
+  }
+}
+
 
   function proximo(){ mostrar(idx + 1); }
   function anterior(){ mostrar(idx - 1); }
