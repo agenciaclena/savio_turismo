@@ -4,188 +4,74 @@
 <meta charset="UTF-8">
 <title>SÁVIO TURISMO • CADASTRO</title>
 
-<meta name="viewport"
-content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-:root{
-  --primary:#ff6a00;
-  --bg:#f4f6f8;
-  --card:#ffffff;
-  --border:#e5e7eb;
-  --text:#111;
-  --muted:#6b7280;
-}
-
-*{
-  box-sizing:border-box;
-  font-family:Inter;
-  text-transform:uppercase;
-  touch-action:manipulation;
-}
-
-html,body{
-  margin:0;
-  padding:0;
-  background:var(--bg);
-  color:var(--text);
-  -webkit-text-size-adjust:100%;
-}
-
-/* HEADER */
+*{box-sizing:border-box;font-family:Inter;text-transform:uppercase}
+body{margin:0;background:#f4f6f8;color:#111}
 header{
   background:#fff;
-  padding:14px;
+  padding:16px;
   display:flex;
   justify-content:center;
-  border-bottom:1px solid var(--border);
+  border-bottom:1px solid #e5e7eb
 }
-header img{height:54px}
-
-/* CONTAINER */
-.container{
-  max-width:1200px;
-  margin:auto;
-  padding:16px;
-}
-
-/* GRID */
+header img{height:60px}
+.container{max-width:1200px;margin:auto;padding:20px}
 .grid{
   display:grid;
-  grid-template-columns:1fr;
-  gap:16px;
+  grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+  gap:20px
 }
-@media(min-width:900px){
-  .grid{grid-template-columns:repeat(2,1fr)}
-}
-@media(min-width:1200px){
-  .grid{grid-template-columns:repeat(3,1fr)}
-}
-
-/* CARD */
 .card{
-  background:var(--card);
+  background:#fff;
   border-radius:18px;
-  padding:18px;
-  box-shadow:0 10px 24px rgba(0,0,0,.06);
+  padding:20px;
+  box-shadow:0 10px 24px rgba(0,0,0,.06)
 }
 .card h2{
   margin:0 0 12px;
-  font-size:14px;
-  font-weight:800;
-  border-bottom:1px solid var(--border);
-  padding-bottom:8px;
+  font-size:15px;
+  border-bottom:1px solid #eee;
+  padding-bottom:8px
 }
-
-/* INPUTS */
-label{
-  font-size:12px;
-  font-weight:700;
-  display:block;
-  margin-top:10px;
-}
-
+label{font-size:12px;font-weight:700}
 input{
   width:100%;
-  padding:14px;
-  border-radius:14px;
+  padding:11px;
+  border-radius:10px;
   border:1px solid #d1d5db;
-  margin-top:6px;
-  font-size:16px; /* evita zoom */
+  margin:6px 0 12px;
+  font-size:14px
 }
-
-input:focus{
-  outline:none;
-  border-color:var(--primary);
-}
-
-.readonly{
-  background:#f1f1f1;
-}
-
-/* ===== SWITCHES PROFISSIONAIS ===== */
-.switch-row{
+input:focus{outline:none;border-color:#ff6a00}
+.readonly{background:#f1f1f1}
+.checks label{
   display:flex;
   align-items:center;
-  justify-content:space-between;
-  gap:16px;
-  padding:14px 0;
-  cursor:pointer;
+  gap:8px;
+  font-size:13px;
+  margin-bottom:10px
 }
-
-.switch-row span{
-  font-size:14px;
-  font-weight:700;
-  line-height:1.2;
-}
-
-/* ESCONDE CHECKBOX */
-.switch-row input{
-  display:none;
-}
-
-/* SWITCH VISUAL */
-.switch-ui{
-  width:48px;
-  height:28px;
-  background:#d1d5db;
-  border-radius:999px;
-  position:relative;
-  transition:background .25s ease;
-  flex-shrink:0;
-}
-
-/* BOLA */
-.switch-ui::after{
-  content:"";
-  position:absolute;
-  width:22px;
-  height:22px;
-  background:#fff;
-  border-radius:50%;
-  top:3px;
-  left:3px;
-  transition:transform .25s ease;
-  box-shadow:0 2px 6px rgba(0,0,0,.25);
-}
-
-/* ATIVO */
-.switch-row input:checked + .switch-ui{
-  background:var(--primary);
-}
-.switch-row input:checked + .switch-ui::after{
-  transform:translateX(20px);
-}
-
-/* BOTÕES */
-.actions{
-  margin-top:20px;
-  display:flex;
-  flex-direction:column;
-  gap:12px;
-}
-
 .btn{
   width:100%;
-  padding:18px;
+  padding:15px;
   border:none;
   border-radius:999px;
-  font-size:15px;
+  font-size:16px;
   font-weight:800;
-  cursor:pointer;
+  cursor:pointer
 }
-
 .btn-primary{
   background:linear-gradient(135deg,#ff6a00,#ff9a57);
   color:#fff;
 }
-
 .btn-clear{
   background:#e5e7eb;
   color:#111;
+  margin-top:10px;
 }
 </style>
 </head>
@@ -201,7 +87,7 @@ input:focus{
 
 <div class="grid">
 
-<!-- DADOS -->
+<!-- DADOS DO PASSAGEIRO -->
 <div class="card">
 <h2>DADOS DO PASSAGEIRO</h2>
 
@@ -209,10 +95,10 @@ input:focus{
 <input id="nome" required>
 
 <label>CPF</label>
-<input id="cpf" inputmode="numeric" placeholder="000.000.000-00" required>
+<input id="cpf" inputmode="numeric" required>
 
 <label>RG</label>
-<input id="rg" inputmode="numeric" placeholder="00.000.000-0" required>
+<input id="rg" inputmode="numeric" required>
 
 <label>DATA DE NASCIMENTO</label>
 <input id="nascimento" type="date" required>
@@ -221,7 +107,7 @@ input:focus{
 <input id="profissao">
 
 <label>WHATSAPP</label>
-<input id="telefone" inputmode="numeric" placeholder="(00) 00000-0000" required>
+<input id="telefone" inputmode="numeric" required>
 
 <label>E-MAIL</label>
 <input id="email" type="email" style="text-transform:none" required>
@@ -232,7 +118,7 @@ input:focus{
 <h2>ENDEREÇO</h2>
 
 <label>CEP</label>
-<input id="cep" inputmode="numeric" placeholder="00000-000" required>
+<input id="cep" inputmode="numeric" required>
 
 <label>RUA</label>
 <input id="rua" class="readonly" readonly>
@@ -250,7 +136,7 @@ input:focus{
 <input id="uf" class="readonly" readonly>
 </div>
 
-<!-- EMERGÊNCIA -->
+<!-- CONTATO DE EMERGÊNCIA -->
 <div class="card">
 <h2>CONTATO DE EMERGÊNCIA</h2>
 
@@ -261,71 +147,143 @@ input:focus{
 <input id="em_parentesco" required>
 
 <label>TELEFONE</label>
-<input id="em_telefone" inputmode="numeric" placeholder="(00) 00000-0000" required>
+<input id="em_telefone" inputmode="numeric" required>
 </div>
 
-<!-- DECLARAÇÕES -->
+<!-- SAÚDE -->
+<div class="card">
+<h2>INFORMAÇÕES DE SAÚDE (OPCIONAL)</h2>
+
+<label>CONDIÇÃO DE SAÚDE</label>
+<input id="saude_condicao">
+
+<label>MEDICAMENTOS</label>
+<input id="saude_medicamentos">
+
+<label>ALERGIAS</label>
+<input id="saude_alergias">
+
+<label>TIPO SANGUÍNEO</label>
+<input id="saude_sangue">
+</div>
+
+<!-- PACOTE -->
+<div class="card">
+<h2>PACOTE SELECIONADO</h2>
+
+<label>PACOTE</label>
+<input id="pacote_nome" class="readonly" readonly>
+
+<label>PERÍODO</label>
+<input id="pacote_periodo" class="readonly" readonly>
+
+<label>VALOR</label>
+<input id="pacote_valor" class="readonly" readonly>
+</div>
+
+<!-- ACEITES -->
 <div class="card">
 <h2>DECLARAÇÕES</h2>
-
-<label class="switch-row">
-  <span>ACEITO O CONTRATO</span>
-  <input type="checkbox" id="aceite_contrato" required>
-  <div class="switch-ui"></div>
-</label>
-
-<label class="switch-row">
-  <span>CIÊNCIA DOS RISCOS</span>
-  <input type="checkbox" id="aceite_risco" required>
-  <div class="switch-ui"></div>
-</label>
-
-<label class="switch-row">
-  <span>AUTORIZO LGPD</span>
-  <input type="checkbox" id="aceite_lgpd" required>
-  <div class="switch-ui"></div>
-</label>
-
+<div class="checks">
+<label><input type="checkbox" id="aceite_contrato" required> LI E ACEITO O CONTRATO</label>
+<label><input type="checkbox" id="aceite_risco" required> CIÊNCIA DOS RISCOS</label>
+<label><input type="checkbox" id="aceite_lgpd" required> AUTORIZO LGPD</label>
+</div>
 </div>
 
 </div>
 
-<div class="actions">
-  <button type="submit" class="btn btn-primary">CONFIRMAR DADOS</button>
-  <button type="button" class="btn btn-clear" onclick="limparTudo()">LIMPAR TUDO</button>
-</div>
+<button type="submit" class="btn btn-primary">CONFIRMAR DADOS</button>
+<button type="button" class="btn btn-clear" onclick="limparTudo()">LIMPAR TUDO</button>
 
 </form>
 </div>
 
 <script>
-/* ===== MÁSCARAS ===== */
-function mask(el, fn){
-  el.addEventListener("input", ()=>el.value = fn(el.value));
+/* ================= SUPABASE ================= */
+const supabase = window.supabase.createClient(
+ "https://ghkfeobnrfvqwzuliqfz.supabase.co",
+ "sb_publishable_R-eenS9xurRgnrqDR9kz0Q_kJonEi7t"
+);
+
+/* ================= STORAGE ================= */
+const STORAGE_KEY = "cadastro_savio";
+
+/* ================= PACOTE ================= */
+function getId(){
+  return new URLSearchParams(location.search).get("id");
 }
 
-mask(cpf, v=>v.replace(/\D/g,"")
-  .replace(/(\d{3})(\d)/,"$1.$2")
-  .replace(/(\d{3})(\d)/,"$1.$2")
-  .replace(/(\d{3})(\d{1,2})$/,"$1-$2"));
+async function carregarPacote(){
+  const id = getId();
+  if(!id) return alert("PACOTE NÃO INFORMADO");
 
-mask(rg, v=>v.replace(/\D/g,"")
-  .replace(/(\d{2})(\d)/,"$1.$2")
-  .replace(/(\d{3})(\d)/,"$1.$2")
-  .replace(/(\d{3})(\d)$/,"$1-$2"));
+  const {data,error} = await supabase
+    .from("excursoes")
+    .select("*")
+    .eq("id",id)
+    .single();
 
-mask(telefone, v=>v.replace(/\D/g,"")
-  .replace(/(\d{2})(\d)/,"($1) $2")
-  .replace(/(\d{5})(\d)/,"$1-$2"));
+  if(error) return alert("PACOTE NÃO ENCONTRADO");
 
-mask(em_telefone, v=>v.replace(/\D/g,"")
-  .replace(/(\d{2})(\d)/,"($1) $2")
-  .replace(/(\d{5})(\d)/,"$1-$2"));
+  pacote_nome.value = data.titulo;
+  pacote_periodo.value = formatarData(data.data_saida)+" A "+formatarData(data.data_retorno);
+  pacote_valor.value = Number(data.valor).toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
 
-mask(cep, v=>v.replace(/\D/g,"")
-  .replace(/(\d{5})(\d)/,"$1-$2"));
+  localStorage.setItem("pacote",JSON.stringify(data));
+}
 
-/* ===== STORAGE ===== */
+function formatarData(d){
+  const [y,m,da]=d.split("-");
+  return `${da}/${m}/${y}`;
+}
+
+/* ================= MÁSCARAS ================= */
+function mask(el,p){
+  let i=0,v=el.value.replace(/\D/g,"");
+  el.value=p.replace(/#/g,_=>v[i++]||"");
+}
+cpf.oninput=()=>mask(cpf,"###.###.###-##");
+telefone.oninput=()=>mask(telefone,"(##) #####-####");
+em_telefone.oninput=()=>mask(em_telefone,"(##) #####-####");
+cep.oninput=()=>mask(cep,"#####-###");
+
+/* ================= CEP ================= */
+cep.onblur=()=>{
+  const c=cep.value.replace(/\D/g,"");
+  if(c.length!==8) return;
+  fetch(`https://viacep.com.br/ws/${c}/json/`)
+    .then(r=>r.json())
+    .then(d=>{
+      if(!d.erro){
+        rua.value=d.logradouro;
+        bairro.value=d.bairro;
+        cidade.value=d.localidade;
+        uf.value=d.uf;
+      }
+    });
+};
+
+/* ================= LOCAL STORAGE ================= */
+function salvar(){
+  const dados = {};
+  document.querySelectorAll("input").forEach(i=>{
+    dados[i.id] = i.type==="checkbox" ? i.checked : i.value;
+  });
+  localStorage.setItem(STORAGE_KEY,JSON.stringify(dados));
+}
+
+function restaurar(){
+  const dados = JSON.parse(localStorage.getItem(STORAGE_KEY)||"{}");
+  Object.keys(dados).forEach(k=>{
+    const el=document.getElementById(k);
+    if(el){
+      if(el.type==="checkbox") el.checked=dados[k];
+      else el.value=dados[k];
+    }
+  });
+}
+
 function limparTudo(){
   if(confirm("DESEJA LIMPAR TODOS OS DADOS?")){
     localStorage.clear();
@@ -333,8 +291,16 @@ function limparTudo(){
   }
 }
 
+document.addEventListener("input",salvar);
+window.addEventListener("DOMContentLoaded",()=>{
+  restaurar();
+  carregarPacote();
+});
+
+/* ================= SUBMIT ================= */
 formCadastro.onsubmit=e=>{
   e.preventDefault();
+  salvar();
   location.href="resumo.html";
 };
 </script>
