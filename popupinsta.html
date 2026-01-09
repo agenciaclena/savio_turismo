@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Stories Instagram • Admin</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+*{box-sizing:border-box;font-family:Inter}
+body{
+  margin:0;
+  background:#f3f4f6;
+  padding:24px;
+}
+
+h1{
+  font-size:20px;
+  margin-bottom:16px;
+}
+
+.card{
+  background:#fff;
+  border-radius:16px;
+  padding:20px;
+  box-shadow:0 10px 24px rgba(0,0,0,.08);
+  max-width:520px;
+  margin:auto;
+}
+
+label{
+  font-size:12px;
+  font-weight:700;
+  display:block;
+  margin-top:14px;
+}
+
+input,select{
+  width:100%;
+  height:44px;
+  padding:0 14px;
+  border-radius:10px;
+  border:1px solid #e5e7eb;
+  font-size:14px;
+}
+
+button{
+  margin-top:22px;
+  width:100%;
+  height:48px;
+  border-radius:999px;
+  border:none;
+  font-weight:800;
+  font-size:15px;
+  background:linear-gradient(135deg,#ff6a00,#ff9a57);
+  color:#fff;
+  cursor:pointer;
+}
+
+.msg{
+  margin-top:14px;
+  font-size:13px;
+  font-weight:700;
+}
+.ok{color:#16a34a}
+.err{color:#dc2626}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+  <h1>Adicionar Story do Instagram</h1>
+
+  <label>Título da bolinha</label>
+  <input id="titulo" placeholder="Ex: Luau Rio Azuis">
+
+  <label>URL do Instagram (Reel ou Post)</label>
+  <input id="instagram_url" placeholder="https://www.instagram.com/reel/...">
+
+  <label>Thumbnail (imagem)</label>
+  <input id="thumbnail_url" placeholder="https://...jpg">
+
+  <label>Ordem da bolinha</label>
+  <select id="ordem">
+    <option value="1">1 (primeira)</option>
+    <option value="2">2</option>
+    <option value="3">3</option>
+    <option value="4">4</option>
+    <option value="5">5</option>
+  </select>
+
+  <label>Linha da bolinha</label>
+  <select id="linha">
+    <option value="1">Linha 1</option>
+    <option value="2">Linha 2</option>
+    <option value="3">Linha 3</option>
+  </select>
+
+  <button onclick="salvar()">Salvar Story</button>
+
+  <div class="msg" id="msg"></div>
+</div>
+
+<script>
+const sb = supabase.createClient(
+ "https://ghkfeobnrfvqwzuliqfz.supabase.co",
+ "sb_publishable_R-eenS9xurRgnrqDR9kz0Q_kJonEi7t"
+);
+
+async function salvar(){
+  const titulo = document.getElementById("titulo").value.trim();
+  const instagram_url = document.getElementById("instagram_url").value.trim();
+  const thumbnail_url = document.getElementById("thumbnail_url").value.trim();
+  const ordem = Number(document.getElementById("ordem").value);
+  const linha = Number(document.getElementById("linha").value);
+  const msg = document.getElementById("msg");
+
+  msg.innerText = "";
+  msg.className = "msg";
+
+  if(!instagram_url || !thumbnail_url){
+    msg.innerText = "Informe a URL do Instagram e a thumbnail.";
+    msg.classList.add("err");
+    return;
+  }
+
+  const { error } = await sb.from("stories").insert({
+    titulo,
+    instagram_url,
+    thumbnail_url,
+    ordem,
+    linha,
+    ativo:true
+  });
+
+  if(error){
+    msg.innerText = "Erro ao salvar: " + error.message;
+    msg.classList.add("err");
+    return;
+  }
+
+  msg.innerText = "Story salvo com sucesso ✔";
+  msg.classList.add("ok");
+
+  document.getElementById("titulo").value = "";
+  document.getElementById("instagram_url").value = "";
+  document.getElementById("thumbnail_url").value = "";
+}
+</script>
+
+</body>
+</html>
