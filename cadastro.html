@@ -7,6 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 :root{
@@ -30,47 +31,8 @@ label{font-size:12px;font-weight:700;margin-top:10px;display:block}
 input{width:100%;padding:14px;border-radius:14px;border:1px solid #d1d5db;margin-top:6px;font-size:16px}
 input:focus{outline:none;border-color:var(--primary)}
 .readonly{background:#f1f1f1}
-
-/* SWITCH */
-.switch-row{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  margin-top:14px;
-}
-.switch-row span{
-  font-size:13px;
-  font-weight:800;
-}
-.switch-row input{display:none}
-.switch-ui{
-  width:48px;
-  height:28px;
-  background:#d1d5db;
-  border-radius:999px;
-  position:relative;
-  transition:.25s;
-}
-.switch-ui::after{
-  content:"";
-  width:22px;
-  height:22px;
-  background:#fff;
-  border-radius:50%;
-  position:absolute;
-  top:3px;
-  left:3px;
-  transition:.25s;
-}
-.switch-row input:checked + .switch-ui{
-  background:var(--primary);
-}
-.switch-row input:checked + .switch-ui::after{
-  transform:translateX(20px);
-}
-
-.actions{margin-top:20px}
-.btn{width:100%;padding:18px;border:none;border-radius:999px;font-weight:800;cursor:pointer}
+.actions{margin-top:20px;display:flex;flex-direction:column;gap:12px}
+.btn{padding:18px;border:none;border-radius:999px;font-weight:800;cursor:pointer}
 .btn-primary{background:linear-gradient(135deg,#ff6a00,#ff9a57);color:#fff}
 </style>
 </head>
@@ -82,11 +44,10 @@ input:focus{outline:none;border-color:var(--primary)}
 </header>
 
 <div class="container">
-<form id="formCadastro">
 
+<form id="formCadastro">
 <div class="grid">
 
-<!-- DADOS -->
 <div class="card">
 <h2>DADOS DO PASSAGEIRO</h2>
 <label>NOME</label><input id="nome">
@@ -98,7 +59,6 @@ input:focus{outline:none;border-color:var(--primary)}
 <label>E-MAIL</label><input id="email" type="email" style="text-transform:none">
 </div>
 
-<!-- ENDEREÇO -->
 <div class="card">
 <h2>ENDEREÇO</h2>
 <label>CEP</label><input id="cep">
@@ -109,31 +69,11 @@ input:focus{outline:none;border-color:var(--primary)}
 <label>UF</label><input id="uf" class="readonly" readonly>
 </div>
 
-<!-- EMERGÊNCIA + FLAGS -->
 <div class="card">
-<h2>EMERGÊNCIA E DECLARAÇÕES</h2>
+<h2>EMERGÊNCIA</h2>
 <label>NOME</label><input id="em_nome">
 <label>PARENTESCO</label><input id="em_parentesco">
 <label>TELEFONE</label><input id="em_telefone">
-
-<div class="switch-row">
-  <span>ACEITO O CONTRATO</span>
-  <input type="checkbox" id="aceite_contrato">
-  <div class="switch-ui"></div>
-</div>
-
-<div class="switch-row">
-  <span>CIÊNCIA DOS RISCOS</span>
-  <input type="checkbox" id="aceite_risco">
-  <div class="switch-ui"></div>
-</div>
-
-<div class="switch-row">
-  <span>AUTORIZO LGPD</span>
-  <input type="checkbox" id="aceite_lgpd">
-  <div class="switch-ui"></div>
-</div>
-
 </div>
 
 </div>
@@ -141,58 +81,48 @@ input:focus{outline:none;border-color:var(--primary)}
 <div class="actions">
 <button class="btn btn-primary">CONFIRMAR</button>
 </div>
-
 </form>
 </div>
 
 <script>
+/* ================= ELEMENTOS ================= */
 const el = id => document.getElementById(id);
 
+const form = el("formCadastro");
 const campos = [
  "nome","cpf","rg","nascimento","profissao","telefone","email",
  "cep","rua","numero","bairro","cidade","uf",
  "em_nome","em_parentesco","em_telefone"
 ];
 
-const flags = ["aceite_contrato","aceite_risco","aceite_lgpd"];
+/* ================= RESTAURAR STORAGE ================= */
+const salvo = localStorage.getItem("cadastro_savio");
+if(salvo){
+  const d = JSON.parse(salvo);
+  campos.forEach(c=>{
+    if(d[c] !== undefined) el(c).value = d[c];
+  });
+}
 
-/* ===== RESTAURAR ===== */
-const salvo = JSON.parse(localStorage.getItem("cadastro_savio")||"{}");
-
-campos.forEach(c=>{
-  if(salvo[c]) el(c).value = salvo[c];
-});
-flags.forEach(f=>{
-  if(salvo[f]) el(f).checked = true;
-});
-
-/* ===== CEP ===== */
+/* ================= CEP ================= */
 el("cep").addEventListener("blur", async ()=>{
   const c = el("cep").value.replace(/\D/g,"");
-  if(c.length!==8) return;
+  if(c.length !== 8) return;
   const r = await fetch(`https://viacep.com.br/ws/${c}/json/`).then(r=>r.json());
-  if(r.erro) return alert("CEP NÃO ENCONTRADO");
-  el("rua").value=r.logradouro;
-  el("bairro").value=r.bairro;
-  el("cidade").value=r.localidade;
-  el("uf").value=r.uf;
+  if(r.erro) return alert("CEP não encontrado");
+  el("rua").value = r.logradouro;
+  el("bairro").value = r.bairro;
+  el("cidade").value = r.localidade;
+  el("uf").value = r.uf;
 });
 
-/* ===== SUBMIT ===== */
-el("formCadastro").addEventListener("submit",e=>{
+/* ================= SUBMIT ================= */
+form.addEventListener("submit", e=>{
   e.preventDefault();
-
-  if(!el("aceite_contrato").checked || !el("aceite_risco").checked || !el("aceite_lgpd").checked){
-    alert("É necessário aceitar todas as declarações");
-    return;
-  }
-
   const dados = {};
-  campos.forEach(c=>dados[c]=el(c).value);
-  flags.forEach(f=>dados[f]=el(f).checked);
-
-  localStorage.setItem("cadastro_savio",JSON.stringify(dados));
-  alert("SALVO COM SUCESSO");
+  campos.forEach(c=>dados[c] = el(c).value);
+  localStorage.setItem("cadastro_savio", JSON.stringify(dados));
+  alert("DADOS SALVOS COM SUCESSO");
 });
 </script>
 
