@@ -321,9 +321,6 @@ const sb = supabase.createClient(
  "https://ghkfeobnrfvqwzuliqfz.supabase.co",
  "sb_publishable_R-eenS9xurRgnrqDR9kz0Q_kJonEi7t"
 );
-const storyModal = document.getElementById("storyModal");
-const storyTitulo = document.getElementById("storyTitulo");
-const storyBody = document.getElementById("storyBody");
 
 function pub(path){
   if(!path) return "";
@@ -618,6 +615,11 @@ carregarStories();
     <div class="sheet-body" id="storyBody"></div>
   </div>
 </div>
+<script>
+  const storyModal = document.getElementById("storyModal");
+  const storyTitulo = document.getElementById("storyTitulo");
+  const storyBody = document.getElementById("storyBody");
+</script>
 
 <script async src="https://www.instagram.com/embed.js"></script>
 
