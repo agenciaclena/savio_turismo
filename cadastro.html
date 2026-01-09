@@ -2,115 +2,87 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
+<title>SÁVIO TURISMO • CADASTRO</title>
+
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-
-<title>CADASTRO DE PASSAGEIRO | SAVIO TURISMO</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-*{
-  box-sizing:border-box;
-  font-family:'Inter',sans-serif;
-  text-transform:uppercase;
-}
-body{
-  margin:0;
-  background:#f4f6f8;
-  color:#111;
-}
+*{box-sizing:border-box;font-family:Inter;text-transform:uppercase}
+body{margin:0;background:#f4f6f8;color:#111}
 header{
   background:#fff;
   padding:16px;
   display:flex;
-  align-items:center;
   justify-content:center;
-  border-bottom:1px solid #ddd;
+  border-bottom:1px solid #e5e7eb
 }
-header img{
-  height:60px;
-}
-.container{
-  max-width:1200px;
-  margin:auto;
-  padding:20px;
-}
+header img{height:60px}
+.container{max-width:1200px;margin:auto;padding:20px}
 .grid{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
-  gap:20px;
+  gap:20px
 }
 .card{
   background:#fff;
-  border-radius:12px;
+  border-radius:18px;
   padding:20px;
-  box-shadow:0 4px 12px rgba(0,0,0,0.05);
+  box-shadow:0 10px 24px rgba(0,0,0,.06)
 }
 .card h2{
-  margin-top:0;
-  font-size:16px;
+  margin:0 0 12px;
+  font-size:15px;
   border-bottom:1px solid #eee;
-  padding-bottom:8px;
+  padding-bottom:8px
 }
-label{
-  font-size:12px;
-  font-weight:600;
-}
+label{font-size:12px;font-weight:700}
 input,select{
   width:100%;
-  padding:10px;
-  margin-top:4px;
-  margin-bottom:12px;
-  border-radius:8px;
-  border:1px solid #ccc;
-  font-size:14px;
+  padding:11px;
+  border-radius:10px;
+  border:1px solid #d1d5db;
+  margin:6px 0 12px;
+  font-size:14px
 }
-input:focus,select:focus{
-  outline:none;
-  border-color:#ff6a00;
-}
-.readonly{
-  background:#f1f1f1;
-}
+input:focus{outline:none;border-color:#ff6a00}
+.readonly{background:#f1f1f1}
 .checks label{
   display:flex;
   align-items:center;
   gap:8px;
-  margin-bottom:10px;
+  font-size:13px;
+  margin-bottom:10px
 }
 button{
   width:100%;
-  padding:14px;
+  margin-top:20px;
+  padding:15px;
   border:none;
-  border-radius:10px;
-  background:#ff6a00;
+  border-radius:999px;
+  background:linear-gradient(135deg,#ff6a00,#ff9a57);
   color:#fff;
   font-size:16px;
-  font-weight:700;
-  cursor:pointer;
+  font-weight:800;
+  cursor:pointer
 }
-button:hover{
-  opacity:.9;
-}
-footer{
-  height:40px;
-}
+button:hover{opacity:.9}
 </style>
 </head>
 
 <body>
 
 <header>
-  <img src="logo.png" alt="SAVIO TURISMO">
+  <img src="logo.png" alt="SÁVIO TURISMO">
 </header>
 
 <div class="container">
-
-<form id="cadastroForm">
+<form id="formCadastro">
 
 <div class="grid">
 
-<!-- DADOS DO PASSAGEIRO -->
+<!-- DADOS PESSOAIS -->
 <div class="card">
 <h2>DADOS DO PASSAGEIRO</h2>
 
@@ -161,7 +133,7 @@ footer{
 
 </div>
 
-<!-- CONTATO EMERGÊNCIA -->
+<!-- EMERGÊNCIA -->
 <div class="card">
 <h2>CONTATO DE EMERGÊNCIA</h2>
 
@@ -199,74 +171,59 @@ footer{
 <h2>PACOTE SELECIONADO</h2>
 
 <label>PACOTE</label>
-<input value="EXCURSÃO PORTO SEGURO – FEV/2026" class="readonly" readonly>
+<input id="pacote_nome" class="readonly" readonly>
 
 <label>PERÍODO</label>
-<input value="13/02/2026 A 18/02/2026" class="readonly" readonly>
+<input id="pacote_periodo" class="readonly" readonly>
 
 <label>VALOR</label>
-<input value="R$ 1.500,00" class="readonly" readonly>
+<input id="pacote_valor" class="readonly" readonly>
 
 </div>
 
 <!-- ACEITES -->
 <div class="card">
 <h2>DECLARAÇÕES</h2>
-
 <div class="checks">
 <label><input type="checkbox" required> LI E ACEITO O CONTRATO</label>
 <label><input type="checkbox" required> CIÊNCIA DOS RISCOS</label>
 <label><input type="checkbox" required> AUTORIZO LGPD</label>
 </div>
-
 </div>
 
 </div>
 
-<br>
-
-<button type="submit">CONFIRMAR DADOS E GERAR CONTRATO</button>
+<button type="submit">CONFIRMAR DADOS</button>
 
 </form>
-
 </div>
 
-<footer></footer>
-
 <script>
-// MÁSCARAS
-function mask(el, pattern){
-  let i=0,v=el.value.replace(/\D/g,'');
-  el.value=pattern.replace(/#/g,_=>v[i++]||'');
+/* ================= SUPABASE ================= */
+const supabase = window.supabase.createClient(
+ "https://ghkfeobnrfvqwzuliqfz.supabase.co",
+ "sb_publishable_R-eenS9xurRgnrqDR9kz0Q_kJonEi7t"
+);
+
+function getId(){
+  return new URLSearchParams(location.search).get("id");
 }
 
-cpf.oninput=()=>mask(cpf,'###.###.###-##');
-telefone.oninput=()=>mask(telefone,'(##) #####-####');
-telEmergencia.oninput=()=>mask(telEmergencia,'(##) #####-####');
-cep.oninput=()=>mask(cep,'#####-###');
+/* ================= PACOTE ================= */
+async function carregarPacote(){
+  const id = getId();
+  if(!id) return alert("PACOTE NÃO INFORMADO");
 
-// CEP
-cep.addEventListener('blur',()=>{
-  let c=cep.value.replace(/\D/g,'');
-  if(c.length!==8) return;
-  fetch(`https://viacep.com.br/ws/${c}/json/`)
-  .then(r=>r.json())
-  .then(d=>{
-    if(!d.erro){
-      rua.value=d.logradouro;
-      bairro.value=d.bairro;
-      cidade.value=d.localidade;
-      uf.value=d.uf;
-    }
-  });
-});
+  const {data,error} = await supabase
+    .from("excursoes")
+    .select("*")
+    .eq("id",id)
+    .single();
 
-// SUBMIT
-document.getElementById('cadastroForm').onsubmit=e=>{
-  e.preventDefault();
-  alert('DADOS CONFIRMADOS! PRÓXIMA TELA: RESUMO E ASSINATURA');
-};
-</script>
+  if(error) return alert("PACOTE NÃO ENCONTRADO");
 
-</body>
-</html>
+  document.getElementById("pacote_nome").value = data.titulo;
+  document.getElementById("pacote_periodo").value =
+    formatarData(data.data_saida)+" A "+formatarData(data.data_retorno);
+
+  documen
