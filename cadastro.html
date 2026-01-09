@@ -38,7 +38,7 @@ header img{height:60px}
   padding-bottom:8px
 }
 label{font-size:12px;font-weight:700}
-input,select{
+input{
   width:100%;
   padding:11px;
   border-radius:10px;
@@ -55,19 +55,24 @@ input:focus{outline:none;border-color:#ff6a00}
   font-size:13px;
   margin-bottom:10px
 }
-button{
+.btn{
   width:100%;
-  margin-top:20px;
   padding:15px;
   border:none;
   border-radius:999px;
-  background:linear-gradient(135deg,#ff6a00,#ff9a57);
-  color:#fff;
   font-size:16px;
   font-weight:800;
   cursor:pointer
 }
-button:hover{opacity:.9}
+.btn-primary{
+  background:linear-gradient(135deg,#ff6a00,#ff9a57);
+  color:#fff;
+}
+.btn-clear{
+  background:#e5e7eb;
+  color:#111;
+  margin-top:10px;
+}
 </style>
 </head>
 
@@ -82,31 +87,30 @@ button:hover{opacity:.9}
 
 <div class="grid">
 
-<!-- DADOS PESSOAIS -->
+<!-- DADOS DO PASSAGEIRO -->
 <div class="card">
 <h2>DADOS DO PASSAGEIRO</h2>
 
 <label>NOME COMPLETO</label>
-<input required>
+<input id="nome" required>
 
 <label>CPF</label>
 <input id="cpf" inputmode="numeric" required>
 
 <label>RG</label>
-<input inputmode="numeric" required>
+<input id="rg" inputmode="numeric" required>
 
 <label>DATA DE NASCIMENTO</label>
-<input type="date" required>
+<input id="nascimento" type="date" required>
 
 <label>PROFISSÃO</label>
-<input>
+<input id="profissao">
 
 <label>WHATSAPP</label>
 <input id="telefone" inputmode="numeric" required>
 
 <label>E-MAIL</label>
-<input type="email" style="text-transform:none" required>
-
+<input id="email" type="email" style="text-transform:none" required>
 </div>
 
 <!-- ENDEREÇO -->
@@ -120,7 +124,7 @@ button:hover{opacity:.9}
 <input id="rua" class="readonly" readonly>
 
 <label>NÚMERO</label>
-<input inputmode="numeric" required>
+<input id="numero" inputmode="numeric" required>
 
 <label>BAIRRO</label>
 <input id="bairro" class="readonly" readonly>
@@ -130,22 +134,20 @@ button:hover{opacity:.9}
 
 <label>UF</label>
 <input id="uf" class="readonly" readonly>
-
 </div>
 
-<!-- EMERGÊNCIA -->
+<!-- CONTATO DE EMERGÊNCIA -->
 <div class="card">
 <h2>CONTATO DE EMERGÊNCIA</h2>
 
 <label>NOME</label>
-<input required>
+<input id="em_nome" required>
 
 <label>PARENTESCO</label>
-<input required>
+<input id="em_parentesco" required>
 
 <label>TELEFONE</label>
-<input id="telEmergencia" inputmode="numeric" required>
-
+<input id="em_telefone" inputmode="numeric" required>
 </div>
 
 <!-- SAÚDE -->
@@ -153,17 +155,16 @@ button:hover{opacity:.9}
 <h2>INFORMAÇÕES DE SAÚDE (OPCIONAL)</h2>
 
 <label>CONDIÇÃO DE SAÚDE</label>
-<input>
+<input id="saude_condicao">
 
 <label>MEDICAMENTOS</label>
-<input>
+<input id="saude_medicamentos">
 
 <label>ALERGIAS</label>
-<input>
+<input id="saude_alergias">
 
 <label>TIPO SANGUÍNEO</label>
-<input>
-
+<input id="saude_sangue">
 </div>
 
 <!-- PACOTE -->
@@ -178,22 +179,22 @@ button:hover{opacity:.9}
 
 <label>VALOR</label>
 <input id="pacote_valor" class="readonly" readonly>
-
 </div>
 
 <!-- ACEITES -->
 <div class="card">
 <h2>DECLARAÇÕES</h2>
 <div class="checks">
-<label><input type="checkbox" required> LI E ACEITO O CONTRATO</label>
-<label><input type="checkbox" required> CIÊNCIA DOS RISCOS</label>
-<label><input type="checkbox" required> AUTORIZO LGPD</label>
+<label><input type="checkbox" id="aceite_contrato" required> LI E ACEITO O CONTRATO</label>
+<label><input type="checkbox" id="aceite_risco" required> CIÊNCIA DOS RISCOS</label>
+<label><input type="checkbox" id="aceite_lgpd" required> AUTORIZO LGPD</label>
 </div>
 </div>
 
 </div>
 
-<button type="submit">CONFIRMAR DADOS</button>
+<button type="submit" class="btn btn-primary">CONFIRMAR DADOS</button>
+<button type="button" class="btn btn-clear" onclick="limparTudo()">LIMPAR TUDO</button>
 
 </form>
 </div>
@@ -205,11 +206,14 @@ const supabase = window.supabase.createClient(
  "sb_publishable_R-eenS9xurRgnrqDR9kz0Q_kJonEi7t"
 );
 
+/* ================= STORAGE ================= */
+const STORAGE_KEY = "cadastro_savio";
+
+/* ================= PACOTE ================= */
 function getId(){
   return new URLSearchParams(location.search).get("id");
 }
 
-/* ================= PACOTE ================= */
 async function carregarPacote(){
   const id = getId();
   if(!id) return alert("PACOTE NÃO INFORMADO");
@@ -222,8 +226,84 @@ async function carregarPacote(){
 
   if(error) return alert("PACOTE NÃO ENCONTRADO");
 
-  document.getElementById("pacote_nome").value = data.titulo;
-  document.getElementById("pacote_periodo").value =
-    formatarData(data.data_saida)+" A "+formatarData(data.data_retorno);
+  pacote_nome.value = data.titulo;
+  pacote_periodo.value = formatarData(data.data_saida)+" A "+formatarData(data.data_retorno);
+  pacote_valor.value = Number(data.valor).toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
 
-  documen
+  localStorage.setItem("pacote",JSON.stringify(data));
+}
+
+function formatarData(d){
+  const [y,m,da]=d.split("-");
+  return `${da}/${m}/${y}`;
+}
+
+/* ================= MÁSCARAS ================= */
+function mask(el,p){
+  let i=0,v=el.value.replace(/\D/g,"");
+  el.value=p.replace(/#/g,_=>v[i++]||"");
+}
+cpf.oninput=()=>mask(cpf,"###.###.###-##");
+telefone.oninput=()=>mask(telefone,"(##) #####-####");
+em_telefone.oninput=()=>mask(em_telefone,"(##) #####-####");
+cep.oninput=()=>mask(cep,"#####-###");
+
+/* ================= CEP ================= */
+cep.onblur=()=>{
+  const c=cep.value.replace(/\D/g,"");
+  if(c.length!==8) return;
+  fetch(`https://viacep.com.br/ws/${c}/json/`)
+    .then(r=>r.json())
+    .then(d=>{
+      if(!d.erro){
+        rua.value=d.logradouro;
+        bairro.value=d.bairro;
+        cidade.value=d.localidade;
+        uf.value=d.uf;
+      }
+    });
+};
+
+/* ================= LOCAL STORAGE ================= */
+function salvar(){
+  const dados = {};
+  document.querySelectorAll("input").forEach(i=>{
+    dados[i.id] = i.type==="checkbox" ? i.checked : i.value;
+  });
+  localStorage.setItem(STORAGE_KEY,JSON.stringify(dados));
+}
+
+function restaurar(){
+  const dados = JSON.parse(localStorage.getItem(STORAGE_KEY)||"{}");
+  Object.keys(dados).forEach(k=>{
+    const el=document.getElementById(k);
+    if(el){
+      if(el.type==="checkbox") el.checked=dados[k];
+      else el.value=dados[k];
+    }
+  });
+}
+
+function limparTudo(){
+  if(confirm("DESEJA LIMPAR TODOS OS DADOS?")){
+    localStorage.clear();
+    location.reload();
+  }
+}
+
+document.addEventListener("input",salvar);
+window.addEventListener("DOMContentLoaded",()=>{
+  restaurar();
+  carregarPacote();
+});
+
+/* ================= SUBMIT ================= */
+formCadastro.onsubmit=e=>{
+  e.preventDefault();
+  salvar();
+  location.href="resumo.html";
+};
+</script>
+
+</body>
+</html>
