@@ -1,7 +1,11 @@
-self.addEventListener("install", e => {
+self.addEventListener("install", e=>{
   e.waitUntil(
-    caches.open("admin-v1").then(cache =>
-      cache.addAll(["./","index-admin.html"])
-    )
+    caches.open("excursao-v1").then(cache=>{
+      return cache.addAll([
+        "./",
+        "login.html",
+        "index-admin.html"
+      ]);
+    })
   );
 });
