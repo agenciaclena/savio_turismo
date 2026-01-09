@@ -30,27 +30,37 @@ body{
   background:var(--bg);
   color:var(--text);
 header.topo{
-  background:#fff;
-  padding:14px 16px;
+  position:fixed;
+  top:0;
+  left:0;
+  right:0;
+
+  background:#ffffff;
+  height:64px;
+
   display:flex;
   align-items:center;
   justify-content:center;
-  position:relative;
+
   border-bottom:1px solid var(--border);
+  z-index:9999;
 }
 
+/* LOGO À ESQUERDA */
 header.topo .logo{
   position:absolute;
   left:16px;
-  height:44px;
+  height:42px;
 }
 
+/* TEXTO CENTRAL */
 header.topo .titulo{
   font-size:18px;
   font-weight:900;
-  color:#1e3a8a; /* azul elegante */
+  color:#1e3a8a; /* azul */
   letter-spacing:1px;
 }
+
 
 .container{
   max-width:1000px;
