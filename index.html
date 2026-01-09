@@ -700,13 +700,7 @@ Observações: ${e.observacoes||""}`;
 function fechar(){
   modal.classList.remove("show");
 }
-function abrirInfo(){
-  document.getElementById("infoModal").classList.add("show");
-}
-function fecharInfo(e){
-  if(e && e.target !== e.currentTarget) return;
-  document.getElementById("infoModal").classList.remove("show");
-}
+
 carregar();
 carregarStories();
 </script>
@@ -726,52 +720,6 @@ carregarStories();
 </script>
 
 <script async src="https://www.instagram.com/embed.js"></script>
-<div class="modal" id="infoModal" onclick="fecharInfo(event)">
-  <div class="sheet">
-    <div class="sheet-header">
-      <span>Informações do sistema</span>
-      <span onclick="fecharInfo()">✕</span>
-    </div>
-
-    <div class="sheet-body">
-      <div class="section">
-        <h3>Sobre o sistema</h3>
-        <p>
-          Este sistema foi desenvolvido para facilitar a visualização,
-          escolha e contato sobre pacotes turísticos.
-        </p>
-      </div>
-
-      <div class="section">
-        <h3>Como utilizar</h3>
-        <p>
-          • Clique em um pacote para ver detalhes<br>
-          • Utilize o botão de WhatsApp para contato<br>
-          • As informações exibidas são atualizadas pela empresa
-        </p>
-      </div>
-
-      <div class="section">
-        <h3>Desenvolvedor</h3>
-        <p>
-          Sistema desenvolvido sob medida.<br>
-          Deseja criar soluções personalizadas para o seu negócio?
-        </p>
-      </div>
-    </div>
-
-    <div class="sheet-actions">
-      <a
-        href="https://wa.me/5599999999999?text=Tenho%20interesse%20em%20informações%20sobre%20soluções%20de%20sistemas%20personalizados"
-        target="_blank"
-        class="btn"
-      >
-        Falar com o desenvolvedor
-      </a>
-    </div>
-  </div>
-</div>
-
 
 </body>
 </html>
