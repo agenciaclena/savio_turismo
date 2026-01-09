@@ -28,7 +28,10 @@ header img{height:54px}
   box-shadow:0 10px 24px rgba(0,0,0,.06);
   margin-bottom:16px;
 }
-.box h2{margin:0 0 12px;font-size:15px;font-weight:900;border-bottom:1px solid var(--border);padding-bottom:8px}
+.box h2{
+  margin:0 0 12px;font-size:15px;font-weight:900;
+  border-bottom:1px solid var(--border);padding-bottom:8px
+}
 
 .grid{display:grid;grid-template-columns:1fr;gap:16px}
 @media(min-width:900px){.grid{grid-template-columns:repeat(2,1fr)}}
@@ -45,7 +48,8 @@ input,select{
 .switch{display:flex;justify-content:space-between;align-items:center;margin-top:14px}
 .switch input{display:none}
 .switch-ui{
-  width:48px;height:28px;background:#d1d5db;border-radius:999px;position:relative
+  width:48px;height:28px;background:#d1d5db;
+  border-radius:999px;position:relative
 }
 .switch-ui::after{
   content:"";width:22px;height:22px;background:#fff;border-radius:50%;
@@ -152,12 +156,12 @@ canvas{width:100%;height:140px;border:1px solid #000;border-radius:8px}
 </form>
 </div>
 
-<!-- MODAL -->
+<!-- MODAL ASSINATURA -->
 <div class="modal" id="modal">
   <div class="modal-box">
     <h3>ASSINATURA</h3>
     <canvas id="canvas" width="300" height="140"></canvas>
-    <button class="btn btn-primary" onclick="finalizar()">FINALIZAR</button>
+    <button class="btn btn-primary" onclick="finalizar()">FINALIZAR CONTRATO</button>
   </div>
 </div>
 
@@ -254,8 +258,9 @@ async function finalizar(){
 
   const contrato=document.createElement("div");
   contrato.innerHTML=`
-    <h2>CONTRATO</h2>
-    <p>${nome.value} CPF ${cpf.value}</p>
+    <h2>CONTRATO DE PRESTAÇÃO DE SERVIÇOS</h2>
+    <p>CONTRATANTE: ${nome.value} – CPF ${cpf.value}</p>
+    <p>EXCURSÃO: ${pacote.titulo}</p>
     <img src="${assinatura}" width="200">
   `;
 
@@ -285,6 +290,7 @@ async function finalizar(){
       sangue: saude_sangue.value
     },
     valor: pacote.valor,
+    forma_pagamento: null,
     pdf_url: data.publicUrl,
     status: "ASSINADO"
   });
