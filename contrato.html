@@ -2,198 +2,341 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>CONTRATO • SÁVIO TURISMO</title>
+<title>SÁVIO TURISMO • CADASTRO</title>
 
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport"
+content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-*{box-sizing:border-box;font-family:Inter}
-body{margin:0;background:#fff;color:#111}
-#contrato{
-  max-width:800px;
+:root{
+  --primary:#ff6a00;
+  --bg:#f4f6f8;
+  --card:#ffffff;
+  --border:#e5e7eb;
+  --text:#111;
+  --muted:#6b7280;
+}
+
+*{
+  box-sizing:border-box;
+  font-family:Inter;
+  text-transform:uppercase;
+  touch-action:manipulation;
+}
+
+html,body{
+  margin:0;
+  padding:0;
+  background:var(--bg);
+  color:var(--text);
+  -webkit-text-size-adjust:100%;
+}
+
+/* HEADER */
+header{
+  background:#fff;
+  padding:14px;
+  display:flex;
+  justify-content:center;
+  border-bottom:1px solid var(--border);
+}
+header img{height:54px}
+
+/* CONTAINER */
+.container{
+  max-width:1200px;
   margin:auto;
-  padding:40px;
-  font-size:13px;
-  line-height:1.6;
+  padding:16px;
 }
-h1{text-align:center;font-size:18px}
-h2{font-size:14px;margin-top:28px}
-.assinatura{
-  margin-top:40px;
-  text-align:center;
+
+/* GRID */
+.grid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:16px;
 }
-.assinatura img{
-  max-width:320px;
-  border-bottom:1px solid #000;
+@media(min-width:900px){
+  .grid{grid-template-columns:repeat(2,1fr)}
 }
-.footer{
-  margin-top:30px;
+@media(min-width:1200px){
+  .grid{grid-template-columns:repeat(3,1fr)}
+}
+
+/* CARD */
+.card{
+  background:var(--card);
+  border-radius:18px;
+  padding:18px;
+  box-shadow:0 10px 24px rgba(0,0,0,.06);
+}
+.card h2{
+  margin:0 0 12px;
+  font-size:14px;
+  font-weight:800;
+  border-bottom:1px solid var(--border);
+  padding-bottom:8px;
+}
+
+/* INPUTS */
+label{
   font-size:12px;
-  text-align:center;
+  font-weight:700;
+  display:block;
+  margin-top:10px;
+}
+
+input{
+  width:100%;
+  padding:14px;
+  border-radius:14px;
+  border:1px solid #d1d5db;
+  margin-top:6px;
+  font-size:16px; /* evita zoom */
+}
+
+input:focus{
+  outline:none;
+  border-color:var(--primary);
+}
+
+.readonly{
+  background:#f1f1f1;
+}
+
+/* ===== SWITCHES PROFISSIONAIS ===== */
+.switch-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  padding:14px 0;
+  cursor:pointer;
+}
+
+.switch-row span{
+  font-size:14px;
+  font-weight:700;
+  line-height:1.2;
+}
+
+/* ESCONDE CHECKBOX */
+.switch-row input{
+  display:none;
+}
+
+/* SWITCH VISUAL */
+.switch-ui{
+  width:48px;
+  height:28px;
+  background:#d1d5db;
+  border-radius:999px;
+  position:relative;
+  transition:background .25s ease;
+  flex-shrink:0;
+}
+
+/* BOLA */
+.switch-ui::after{
+  content:"";
+  position:absolute;
+  width:22px;
+  height:22px;
+  background:#fff;
+  border-radius:50%;
+  top:3px;
+  left:3px;
+  transition:transform .25s ease;
+  box-shadow:0 2px 6px rgba(0,0,0,.25);
+}
+
+/* ATIVO */
+.switch-row input:checked + .switch-ui{
+  background:var(--primary);
+}
+.switch-row input:checked + .switch-ui::after{
+  transform:translateX(20px);
+}
+
+/* BOTÕES */
+.actions{
+  margin-top:20px;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+.btn{
+  width:100%;
+  padding:18px;
+  border:none;
+  border-radius:999px;
+  font-size:15px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+.btn-primary{
+  background:linear-gradient(135deg,#ff6a00,#ff9a57);
+  color:#fff;
+}
+
+.btn-clear{
+  background:#e5e7eb;
+  color:#111;
 }
 </style>
 </head>
 
 <body>
 
-<div id="contrato">
+<header>
+  <img src="logo.png" alt="SÁVIO TURISMO">
+</header>
 
-<h1>CONTRATO DE PRESTAÇÃO DE SERVIÇOS TURÍSTICOS</h1>
+<div class="container">
+<form id="formCadastro">
 
-<p>
-Pelo presente instrumento particular, de um lado,
-<strong>SÁVIO TURISMO</strong>, pessoa jurídica de direito privado,
-inscrita no CNPJ nº <strong>56.173.108/0001-30</strong>, doravante denominada
-<strong>CONTRATADA</strong>, e, de outro lado,
-<strong id="c_nome"></strong>, CPF <strong id="c_cpf"></strong>, RG <strong id="c_rg"></strong>,
-doravante denominado(a) <strong>CONTRATANTE</strong>, têm entre si justo e contratado
-o que segue.
-</p>
+<div class="grid">
 
-<h2>I. DO OBJETO</h2>
-<p>
-Prestação de serviços turísticos referentes à excursão
-<strong id="p_titulo"></strong>, com saída em <strong id="p_saida"></strong>
-e retorno em <strong id="p_retorno"></strong>.
-</p>
+<!-- DADOS -->
+<div class="card">
+<h2>DADOS DO PASSAGEIRO</h2>
 
-<h2>II. DOS SERVIÇOS INCLUSOS</h2>
-<p id="p_inclusos"></p>
+<label>NOME COMPLETO</label>
+<input id="nome" required>
 
-<h2>III. DO VALOR</h2>
-<p>O valor total do pacote contratado é de <strong id="p_valor"></strong>.</p>
+<label>CPF</label>
+<input id="cpf" inputmode="numeric" placeholder="000.000.000-00" required>
 
-<h2>IV. DAS OBRIGAÇÕES</h2>
-<p>O passageiro compromete-se a cumprir horários, portar documentos e respeitar orientações.</p>
+<label>RG</label>
+<input id="rg" inputmode="numeric" placeholder="00.000.000-0" required>
 
-<h2>V. DOS RISCOS</h2>
-<p>O contratante declara ciência dos riscos naturais envolvidos em atividades turísticas.</p>
+<label>DATA DE NASCIMENTO</label>
+<input id="nascimento" type="date" required>
 
-<h2>VI. DO CANCELAMENTO</h2>
-<p>Em caso de desistência, não haverá reembolso.</p>
+<label>PROFISSÃO</label>
+<input id="profissao">
 
-<h2>VII. DA PROTEÇÃO DE DADOS</h2>
-<p>O contratante autoriza o tratamento de seus dados conforme a LGPD.</p>
+<label>WHATSAPP</label>
+<input id="telefone" inputmode="numeric" placeholder="(00) 00000-0000" required>
 
-<h2>VIII. DA DECLARAÇÃO FINAL</h2>
-<p>Declaro que li e aceito integralmente os termos deste contrato.</p>
-
-<div class="assinatura">
-<p>ASSINATURA DO CONTRATANTE</p>
-<img id="assin_img">
-<p id="local_data"></p>
+<label>E-MAIL</label>
+<input id="email" type="email" style="text-transform:none" required>
 </div>
 
-<div class="footer">
-SÁVIO TURISMO • CNPJ 56.173.108/0001-30
+<!-- ENDEREÇO -->
+<div class="card">
+<h2>ENDEREÇO</h2>
+
+<label>CEP</label>
+<input id="cep" inputmode="numeric" placeholder="00000-000" required>
+
+<label>RUA</label>
+<input id="rua" class="readonly" readonly>
+
+<label>NÚMERO</label>
+<input id="numero" inputmode="numeric" required>
+
+<label>BAIRRO</label>
+<input id="bairro" class="readonly" readonly>
+
+<label>CIDADE</label>
+<input id="cidade" class="readonly" readonly>
+
+<label>UF</label>
+<input id="uf" class="readonly" readonly>
 </div>
 
+<!-- EMERGÊNCIA -->
+<div class="card">
+<h2>CONTATO DE EMERGÊNCIA</h2>
+
+<label>NOME</label>
+<input id="em_nome" required>
+
+<label>PARENTESCO</label>
+<input id="em_parentesco" required>
+
+<label>TELEFONE</label>
+<input id="em_telefone" inputmode="numeric" placeholder="(00) 00000-0000" required>
+</div>
+
+<!-- DECLARAÇÕES -->
+<div class="card">
+<h2>DECLARAÇÕES</h2>
+
+<label class="switch-row">
+  <span>ACEITO O CONTRATO</span>
+  <input type="checkbox" id="aceite_contrato" required>
+  <div class="switch-ui"></div>
+</label>
+
+<label class="switch-row">
+  <span>CIÊNCIA DOS RISCOS</span>
+  <input type="checkbox" id="aceite_risco" required>
+  <div class="switch-ui"></div>
+</label>
+
+<label class="switch-row">
+  <span>AUTORIZO LGPD</span>
+  <input type="checkbox" id="aceite_lgpd" required>
+  <div class="switch-ui"></div>
+</label>
+
+</div>
+
+</div>
+
+<div class="actions">
+  <button type="submit" class="btn btn-primary">CONFIRMAR DADOS</button>
+  <button type="button" class="btn btn-clear" onclick="limparTudo()">LIMPAR TUDO</button>
+</div>
+
+</form>
 </div>
 
 <script>
-/* ========= SUPABASE (SEM CONFLITO) ========= */
-const sb = window.supabase.createClient(
-  "https://ghkfeobnrfvqwzuliqfz.supabase.co",
-  "sb_publishable_R-eenS9xurRgnrqDR9kz0Q_kJonEi7t"
-);
+/* ===== MÁSCARAS ===== */
+function mask(el, fn){
+  el.addEventListener("input", ()=>el.value = fn(el.value));
+}
 
-/* ========= STORAGE ========= */
-const dados = JSON.parse(localStorage.getItem("cadastro_savio") || "{}");
-const pacote = JSON.parse(localStorage.getItem("pacote") || "{}");
-const assinatura = localStorage.getItem("assinatura_base64");
+mask(cpf, v=>v.replace(/\D/g,"")
+  .replace(/(\d{3})(\d)/,"$1.$2")
+  .replace(/(\d{3})(\d)/,"$1.$2")
+  .replace(/(\d{3})(\d{1,2})$/,"$1-$2"));
 
-/* ========= PREENCHER ========= */
-c_nome.innerText = dados.nome || "";
-c_cpf.innerText = dados.cpf || "";
-c_rg.innerText = dados.rg || "";
+mask(rg, v=>v.replace(/\D/g,"")
+  .replace(/(\d{2})(\d)/,"$1.$2")
+  .replace(/(\d{3})(\d)/,"$1.$2")
+  .replace(/(\d{3})(\d)$/,"$1-$2"));
 
-p_titulo.innerText = pacote.titulo || "";
-p_saida.innerText = formatarData(pacote.data_saida);
-p_retorno.innerText = formatarData(pacote.data_retorno);
-p_valor.innerText = pacote.valor
-  ? Number(pacote.valor).toLocaleString("pt-BR",{style:"currency",currency:"BRL"})
-  : "";
+mask(telefone, v=>v.replace(/\D/g,"")
+  .replace(/(\d{2})(\d)/,"($1) $2")
+  .replace(/(\d{5})(\d)/,"$1-$2"));
 
-const inclusos = [];
-if(pacote.inclui_transporte) inclusos.push("Transporte");
-if(pacote.inclui_hospedagem) inclusos.push("Hospedagem");
-if(pacote.inclui_cafe) inclusos.push("Café da manhã");
-if(pacote.inclui_seguro) inclusos.push("Seguro viagem");
-if(pacote.inclui_guia) inclusos.push("Guia turístico");
-p_inclusos.innerText = inclusos.join(", ");
+mask(em_telefone, v=>v.replace(/\D/g,"")
+  .replace(/(\d{2})(\d)/,"($1) $2")
+  .replace(/(\d{5})(\d)/,"$1-$2"));
 
-if(assinatura) assin_img.src = assinatura;
+mask(cep, v=>v.replace(/\D/g,"")
+  .replace(/(\d{5})(\d)/,"$1-$2"));
 
-const agora = new Date();
-local_data.innerText =
-  `ASSINADO EM ${agora.toLocaleDateString("pt-BR")} ÀS ${agora.toLocaleTimeString("pt-BR")}`;
-
-/* ========= FINALIZAR ========= */
-async function finalizar(){
-
-  const pdfBlob = await html2pdf()
-    .from(document.getElementById("contrato"))
-    .set({html2canvas:{scale:2}})
-    .outputPdf("blob");
-
-  const cpfLimpo = (dados.cpf||"").replace(/\D/g,"");
-  const nomeArquivo = `CONTRATO_${pacote.id}_${cpfLimpo}_${Date.now()}.pdf`;
-
-  const hoje = new Date();
-  const pasta = `${hoje.getFullYear()}/${String(hoje.getMonth()+1).padStart(2,"0")}`;
-  const caminho = `${pasta}/${nomeArquivo}`;
-
-  const { error } = await sb.storage
-    .from("buffet_contratos")
-    .upload(caminho, pdfBlob, { contentType:"application/pdf" });
-
-  if(error){
-    console.error(error);
-    alert("ERRO AO GERAR CONTRATO");
-    return;
+/* ===== STORAGE ===== */
+function limparTudo(){
+  if(confirm("DESEJA LIMPAR TODOS OS DADOS?")){
+    localStorage.clear();
+    location.reload();
   }
-
-  const { data } = sb.storage
-    .from("buffet_contratos")
-    .getPublicUrl(caminho);
-
-  await sb.from("contratos").insert({
-    excursao_id: pacote.id,
-    nome: dados.nome,
-    cpf: dados.cpf,
-    rg: dados.rg,
-    telefone: dados.telefone,
-    email: dados.email,
-    endereco:
-      `${dados.rua}, Nº ${dados.numero} - ${dados.bairro} - ${dados.cidade}/${dados.uf}`,
-    emergencia_nome: dados.em_nome,
-    emergencia_parentesco: dados.em_parentesco,
-    emergencia_telefone: dados.em_telefone,
-    info_saude: {
-      condicao: dados.saude_condicao || null,
-      medicamentos: dados.saude_medicamentos || null,
-      alergias: dados.saude_alergias || null,
-      sangue: dados.saude_sangue || null
-    },
-    valor: pacote.valor,
-    pdf_url: data.publicUrl,
-    status: "ASSINADO"
-  });
-
-  console.log("CONTRATO FINALIZADO COM SUCESSO");
 }
 
-setTimeout(finalizar, 800);
-
-function formatarData(d){
-  if(!d) return "";
-  const [y,m,da] = d.split("-");
-  return `${da}/${m}/${y}`;
-}
+formCadastro.onsubmit=e=>{
+  e.preventDefault();
+  location.href="resumo.html";
+};
 </script>
 
 </body>
