@@ -29,8 +29,8 @@ body{background:#f4f6fb}
 .grid{
   display:grid;
   grid-template-columns:repeat(4,1fr);
-  gap:16px;
-  padding:0 16px 120px;
+  gap:18px;
+  padding:0 16px 140px;
 }
 @media(max-width:900px){
   .grid{grid-template-columns:repeat(2,1fr)}
@@ -39,11 +39,9 @@ body{background:#f4f6fb}
 /* CARD */
 .card{
   background:var(--card);
-  border-radius:18px;
+  border-radius:20px;
   overflow:hidden;
-  box-shadow:0 8px 24px rgba(0,0,0,.12);
-  display:flex;
-  flex-direction:column;
+  box-shadow:0 10px 28px rgba(0,0,0,.15);
 }
 .poster{
   width:100%;
@@ -56,29 +54,29 @@ body{background:#f4f6fb}
   object-fit:contain;
 }
 .card-body{
-  padding:12px;
+  padding:14px;
   display:flex;
   flex-direction:column;
   gap:6px;
 }
 .card-body h4{
-  font-size:14px;
+  font-size:15px;
   font-weight:800;
 }
 .badge{
   font-size:11px;
   font-weight:800;
-  padding:4px 10px;
+  padding:4px 12px;
   border-radius:999px;
   background:#fff7ed;
   color:#c2410c;
   width:fit-content;
 }
 .meta{font-size:12px;color:var(--muted)}
-.price{font-size:14px;font-weight:800}
+.price{font-size:15px;font-weight:800}
 .actions{
   margin-top:6px;
-  font-size:12px;
+  font-size:13px;
   font-weight:800;
   color:var(--primary);
   cursor:pointer;
@@ -87,10 +85,10 @@ body{background:#f4f6fb}
 /* FAB */
 .fab{
   position:fixed;
-  right:16px;
-  bottom:16px;
-  width:56px;
-  height:56px;
+  right:18px;
+  bottom:18px;
+  width:58px;
+  height:58px;
   border-radius:50%;
   background:linear-gradient(135deg,#ff6a00,#ff9a57);
   color:#fff;
@@ -114,7 +112,7 @@ body{background:#f4f6fb}
   width:100%;
   height:95vh;
   background:#fff;
-  border-radius:24px 24px 0 0;
+  border-radius:26px 26px 0 0;
   display:flex;
   flex-direction:column;
 }
@@ -139,18 +137,18 @@ body{background:#f4f6fb}
 .sheet-body textarea,
 .sheet-body select{
   width:100%;
-  height:42px;
+  height:44px;
   margin-bottom:12px;
   border-radius:12px;
   border:1px solid var(--border);
   padding:0 12px;
 }
-.sheet-body textarea{min-height:80px;padding:10px}
+.sheet-body textarea{min-height:90px;padding:10px}
 
 /* IMAGE */
 .image-box{
-  height:180px;
-  border-radius:16px;
+  height:200px;
+  border-radius:18px;
   background:#eee;
   margin-bottom:12px;
   display:flex;
@@ -158,7 +156,11 @@ body{background:#f4f6fb}
   justify-content:center;
   cursor:pointer;
 }
-.image-box img{width:100%;height:100%;object-fit:contain}
+.image-box img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+}
 
 /* FOOTER */
 .sheet-footer{
@@ -169,7 +171,7 @@ body{background:#f4f6fb}
 }
 .sheet-footer button{
   flex:1;
-  height:46px;
+  height:48px;
   border-radius:999px;
   border:none;
   font-weight:800;
@@ -208,6 +210,7 @@ body{background:#f4f6fb}
 
 <label>Título</label><input id="titulo">
 <label>Destino</label><input id="destino">
+
 <label>Tipo</label>
 <select id="tipo">
   <option>Excursão</option>
@@ -216,13 +219,13 @@ body{background:#f4f6fb}
   <option>Sorteio</option>
 </select>
 
-<label>Data saída</label><input type="date" id="data_saida">
-<label>Data retorno</label><input type="date" id="data_retorno">
+<label>Data de saída</label><input type="date" id="data_saida">
+<label>Data de retorno</label><input type="date" id="data_retorno">
 
-<label>Valor</label><input id="valor">
+<label>Valor por pessoa</label><input id="valor">
 <label>Parcelas</label><input id="parcelas">
 
-<label>Roteiro / Descrição</label>
+<label>Descrição / Roteiro</label>
 <textarea id="descricao"></textarea>
 
 </div>
@@ -242,7 +245,7 @@ const sb = supabase.createClient(
  "sb_publishable_R-eenS9xurRgnrqDR9kz0Q_kJonEi7t"
 );
 
-let userId=null,editId=null,blob=null,itens=[];
+let userId=null, editId=null, blob=null, itens=[];
 
 /* AUTH */
 (async()=>{
@@ -252,27 +255,32 @@ let userId=null,editId=null,blob=null,itens=[];
  carregar();
 })();
 
+/* IMAGE */
 imagem.onchange=()=>{
- const f=imagem.files[0];
- blob=f;
- preview.src=URL.createObjectURL(f);
+ blob=imagem.files[0];
+ preview.src=URL.createObjectURL(blob);
  preview.style.display="block";
-}
+};
 
+/* FORM */
 function novo(){
- editId=null;blob=null;preview.style.display="none";
+ editId=null;
+ blob=null;
+ preview.style.display="none";
  btnExcluir.style.display="none";
  tituloForm.innerText="Nova excursão";
  modal.classList.add("show");
 }
-function fechar(){modal.classList.remove("show")}
+function fechar(){modal.classList.remove("show");}
 
+/* SAVE */
 async function salvar(){
  let poster=null;
  if(blob){
   poster=`${userId}/${Date.now()}.jpg`;
   await sb.storage.from("buffet_excursoes").upload(poster,blob,{upsert:true});
  }
+
  const payload={
   user_id:userId,
   titulo:titulo.value,
@@ -280,24 +288,35 @@ async function salvar(){
   tipo:tipo.value,
   data_saida:data_saida.value,
   data_retorno:data_retorno.value,
-  valor:valor.value,
+  valor:Number(valor.value.replace(',','.')),
   parcelas:parcelas.value,
   descricao:descricao.value,
   poster_url:poster
  };
+
  editId
   ? await sb.from("excursoes").update(payload).eq("id",editId)
   : await sb.from("excursoes").insert(payload);
- fechar();carregar();
+
+ fechar();
+ carregar();
 }
 
+/* LOAD */
 async function carregar(){
- const {data}=await sb.from("excursoes").select("*").eq("user_id",userId);
+ const {data}=await sb.from("excursoes")
+  .select("*")
+  .eq("user_id",userId)
+  .order("created_at",{ascending:false});
+
+ itens=data||[];
  lista.innerHTML="";
- (data||[]).forEach(e=>{
+
+ itens.forEach(e=>{
   const img=e.poster_url
    ? sb.storage.from("buffet_excursoes").getPublicUrl(e.poster_url).data.publicUrl
    : "";
+
   lista.innerHTML+=`
   <div class="card">
     <div class="poster">${img?`<img src="${img}">`:``}</div>
@@ -305,24 +324,43 @@ async function carregar(){
       <h4>${e.titulo}</h4>
       <span class="badge">${e.destino}</span>
       <div class="meta">${e.data_saida} → ${e.data_retorno}</div>
-      <div class="price">R$ ${e.valor}</div>
+      <div class="price">R$ ${Number(e.valor).toFixed(2)}</div>
       <div class="actions" onclick="editar('${e.id}')">Editar</div>
     </div>
   </div>`;
  });
 }
 
+/* EDIT */
 function editar(id){
- const e=[...document.querySelectorAll('.actions')].find(()=>true);
+ const e=itens.find(i=>i.id===id);
  editId=id;
  btnExcluir.style.display="block";
+ tituloForm.innerText="Editar excursão";
+
+ titulo.value=e.titulo;
+ destino.value=e.destino;
+ tipo.value=e.tipo;
+ data_saida.value=e.data_saida;
+ data_retorno.value=e.data_retorno;
+ valor.value=e.valor;
+ parcelas.value=e.parcelas;
+ descricao.value=e.descricao||"";
+
+ if(e.poster_url){
+  preview.src=sb.storage.from("buffet_excursoes").getPublicUrl(e.poster_url).data.publicUrl;
+  preview.style.display="block";
+ }
+
  modal.classList.add("show");
 }
 
+/* DELETE */
 async function excluir(){
- if(confirm("Excluir excursão?")){
+ if(confirm("Excluir esta excursão?")){
   await sb.from("excursoes").delete().eq("id",editId);
-  fechar();carregar();
+  fechar();
+  carregar();
  }
 }
 </script>
