@@ -216,6 +216,38 @@ body{
   50%{transform:scale(1.4);opacity:.6}
   100%{transform:scale(1);opacity:1}
 }
+/* STORIES BAR */
+.stories-bar{
+  display:flex;
+  gap:14px;
+  overflow-x:auto;
+  padding:12px 16px 6px;
+  scrollbar-width:none;
+}
+.stories-bar::-webkit-scrollbar{display:none}
+
+.story{
+  width:70px;
+  text-align:center;
+  cursor:pointer;
+  flex-shrink:0;
+}
+
+.story img{
+  width:70px;
+  height:70px;
+  border-radius:50%;
+  object-fit:cover;
+  border:3px solid var(--primary); /* 🔥 MESMA COR DO NOME */
+}
+
+.story span{
+  display:block;
+  font-size:11px;
+  font-weight:700;
+  margin-top:6px;
+  color:var(--text);
+}
 
 </style>
 </head>
@@ -227,10 +259,12 @@ body{
   <p>Escolha sua próxima experiência</p>
 </div>
 
-<!-- BANNER -->
 <div class="banner">
   <div class="banner-track" id="bannerTrack"></div>
 </div>
+
+<!-- STORIES (AQUI 👇) -->
+<div class="stories-bar" id="stories"></div>
 
 <!-- LISTA -->
 <div class="grid" id="lista"></div>
@@ -484,6 +518,46 @@ async function carregar(){
     `;
   });
 }
+async function carregarStories(){
+  const { data } = await sb
+    .from("stories")
+    .select("*")
+    .eq("ativo", true)
+    .order("ordem", { ascending:true })
+    .limit(5);
+
+  const box = document.getElementById("stories");
+  box.innerHTML = "";
+
+  (data || []).forEach(s=>{
+    box.innerHTML += `
+      <div class="story" onclick="abrirStory('${s.instagram_url}','${s.titulo||""}')">
+        <img src="${s.thumbnail_url}">
+        <span>${s.titulo||""}</span>
+      </div>
+    `;
+  });
+}
+function abrirStory(url, titulo){
+  storyTitulo.innerText = titulo;
+  storyBody.innerHTML = `
+    <blockquote class="instagram-media"
+      data-instgrm-permalink="${url}"
+      data-instgrm-version="14">
+    </blockquote>
+  `;
+  storyModal.classList.add("show");
+
+  setTimeout(()=>{
+    if(window.instgrm) window.instgrm.Embeds.process();
+  },100);
+}
+
+function fecharStory(e){
+  if(e && e.target !== e.currentTarget) return;
+  storyModal.classList.remove("show");
+  storyBody.innerHTML = "";
+}
 
 /* ===================== MODAL ===================== */
 function abrir(id){
@@ -529,7 +603,19 @@ function fechar(){
 }
 
 carregar();
+carregarStories();
 </script>
+<div class="modal" id="storyModal" onclick="fecharStory(event)">
+  <div class="sheet" style="height:100%">
+    <div class="sheet-header">
+      <span id="storyTitulo"></span>
+      <span onclick="fecharStory()">✕</span>
+    </div>
+    <div class="sheet-body" id="storyBody"></div>
+  </div>
+</div>
+
+<script async src="https://www.instagram.com/embed.js"></script>
 
 
 </body>
