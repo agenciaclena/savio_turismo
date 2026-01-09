@@ -233,50 +233,73 @@ function novo(){
  btnExcluir.style.display="none";
  tituloForm.innerText="Nova excursão";
  modal.classList.add("show");
+document.querySelectorAll(".sheet-body input, .sheet-body textarea").forEach(el=>{
+  if(el.type==="checkbox") el.checked=false;
+  else el.value="";
+});
+
+status.value="Ativa";
+preview.style.display="none";
+blob=null;
+
+
+  
 }
 
 function fechar(){ modal.classList.remove("show"); }
 
 async function salvar(){
- let poster = null;
+let poster = editId
+ ? itens.find(i=>i.id===editId)?.poster_url
+ : null;
 
  if(blob){
   poster = `${userId}/${Date.now()}.jpg`;
   await sb.storage.from("buffet_excursoes").upload(poster, blob, { upsert:true });
  }
 
- const payload = {
+const payload={
   user_id:userId,
-  titulo:titulo.value,
-  destino:destino.value,
-  tipo:tipo.value,
-  data_saida:data_saida.value,
-  hora_saida:hora_saida.value,
-  data_retorno:data_retorno.value,
-  hora_retorno:hora_retorno.value,
-  duracao_dias:duracao_dias.value,
-  local_saida:local_saida.value,
-  transporte:transporte.value,
-  hospedagem:hospedagem.value,
-  alimentacao:alimentacao.value,
-  roteiro:roteiro.value,
-  valor:valor.value,
-  parcelas:parcelas.value,
-  observacoes:observacoes.value,
-  status:status.value,
-  inclui_transporte:inclui_transporte.checked,
-  inclui_hospedagem:inclui_hospedagem.checked,
-  inclui_cafe:inclui_cafe.checked,
-  inclui_almoco:inclui_almoco.checked,
-  inclui_jantar:inclui_jantar.checked,
-  inclui_seguro:inclui_seguro.checked,
-  inclui_guia:inclui_guia.checked,
-  poster_url: poster
- };
+  titulo:titulo.value || null,
+  destino:destino.value || null,
+  tipo:tipo.value || "Excursão",
 
- editId
-  ? await sb.from("excursoes").update(payload).eq("id",editId)
-  : await sb.from("excursoes").insert(payload);
+  data_saida:data_saida.value || null,
+  hora_saida:hora_saida.value || null,
+  data_retorno:data_retorno.value || null,
+  hora_retorno:hora_retorno.value || null,
+
+  duracao_dias:Number(duracao_dias.value) || null,
+  local_saida:local_saida.value || null,
+  transporte:transporte.value || null,
+  hospedagem:hospedagem.value || null,
+  alimentacao:alimentacao.value || null,
+
+  inclui_transporte:!!inclui_transporte.checked,
+  inclui_hospedagem:!!inclui_hospedagem.checked,
+  inclui_cafe:!!inclui_cafe.checked,
+  inclui_almoco:!!inclui_almoco.checked,
+  inclui_jantar:!!inclui_jantar.checked,
+  inclui_seguro:!!inclui_seguro.checked,
+  inclui_guia:!!inclui_guia.checked,
+
+  roteiro:roteiro.value || null,
+  valor:Number(valor.value) || 0,
+  parcelas:Number(parcelas.value) || 0,
+  observacoes:observacoes.value || null,
+
+  status:status.value || "Ativa",
+  poster_url:poster
+};
+
+const { error } = editId
+ ? await sb.from("excursoes").update(payload).eq("id",editId)
+ : await sb.from("excursoes").insert(payload);
+
+if(error){
+ alert("Erro ao salvar: " + error.message);
+ return;
+}
 
  fechar();
  carregar();
