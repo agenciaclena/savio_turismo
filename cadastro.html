@@ -12,206 +12,275 @@
 
 <style>
 :root{
-  --primary:#ff6a00; --bg:#f4f6f8; --card:#fff; --border:#e5e7eb; --text:#111;
+  --primary:#ff6a00;
+  --bg:#f3f4f6;
+  --card:#ffffff;
+  --border:#e5e7eb;
+  --text:#111827;
+  --muted:#6b7280;
 }
-*{box-sizing:border-box;font-family:Inter;text-transform:uppercase}
-body{margin:0;background:var(--bg);color:var(--text)}
-header{background:#fff;padding:14px;display:flex;justify-content:center;border-bottom:1px solid var(--border)}
+
+*{
+  box-sizing:border-box;
+  font-family:Inter;
+  text-transform:uppercase;
+}
+
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+}
+
+/* HEADER */
+header{
+  background:#fff;
+  padding:14px;
+  display:flex;
+  justify-content:center;
+  border-bottom:1px solid var(--border);
+}
 header img{height:54px}
-.container{max-width:1200px;margin:auto;padding:16px}
 
-.box{
-  background:#fff;border-radius:18px;padding:18px;margin-bottom:16px;
-  box-shadow:0 10px 24px rgba(0,0,0,.06);
+/* CONTAINER */
+.container{
+  max-width:1200px;
+  margin:auto;
+  padding:16px;
 }
-.box h3{margin:0;font-size:16px;font-weight:900}
-.box p{margin:4px 0;font-size:13px;color:#555}
-.valor{font-size:18px;font-weight:900;color:#16a34a}
 
-label{font-size:12px;font-weight:700;margin-top:10px;display:block}
-input{width:100%;padding:14px;border-radius:14px;border:1px solid #d1d5db;margin-top:6px;font-size:16px}
-.readonly{background:#f1f1f1}
+/* PACOTE */
+.pacote{
+  background:linear-gradient(135deg,#ff6a00,#ff9a57);
+  color:#fff;
+  border-radius:20px;
+  padding:20px;
+  margin-bottom:20px;
+}
+.pacote h1{margin:0;font-size:20px;font-weight:900}
+.pacote p{margin:6px 0;font-size:13px}
+.pacote .valor{
+  margin-top:10px;
+  font-size:22px;
+  font-weight:900;
+}
 
+/* GRID */
+.grid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:16px;
+}
+@media(min-width:900px){
+  .grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(min-width:1200px){
+  .grid{grid-template-columns:repeat(3,1fr)}
+}
+
+/* CARD */
+.card{
+  background:var(--card);
+  border-radius:18px;
+  padding:18px;
+  box-shadow:0 8px 20px rgba(0,0,0,.06);
+}
+.card h2{
+  margin:0 0 12px;
+  font-size:14px;
+  font-weight:900;
+  border-bottom:1px solid var(--border);
+  padding-bottom:8px;
+}
+
+/* INPUTS */
+label{
+  font-size:11px;
+  font-weight:800;
+  margin-top:10px;
+  display:block;
+  color:#374151;
+}
+input{
+  width:100%;
+  padding:14px;
+  border-radius:14px;
+  border:1px solid #d1d5db;
+  margin-top:6px;
+  font-size:15px;
+}
+input:focus{
+  outline:none;
+  border-color:var(--primary);
+}
+.readonly{
+  background:#f1f5f9;
+}
+
+/* SWITCH */
 .switch{
-  display:flex;justify-content:space-between;align-items:center;margin-top:14px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-top:14px;
+}
+.switch span{
+  font-size:13px;
+  font-weight:800;
 }
 .switch input{display:none}
 .switch-ui{
-  width:48px;height:28px;background:#d1d5db;border-radius:999px;position:relative
+  width:48px;
+  height:28px;
+  background:#d1d5db;
+  border-radius:999px;
+  position:relative;
 }
 .switch-ui::after{
-  content:"";width:22px;height:22px;background:#fff;border-radius:50%;
-  position:absolute;top:3px;left:3px;transition:.25s
+  content:"";
+  width:22px;
+  height:22px;
+  background:#fff;
+  border-radius:50%;
+  position:absolute;
+  top:3px;
+  left:3px;
+  transition:.25s;
 }
-.switch input:checked + .switch-ui{background:var(--primary)}
-.switch input:checked + .switch-ui::after{transform:translateX(20px)}
+.switch input:checked + .switch-ui{
+  background:var(--primary);
+}
+.switch input:checked + .switch-ui::after{
+  transform:translateX(20px);
+}
 
+/* ACTIONS */
+.actions{
+  margin-top:20px;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
 .btn{
-  width:100%;padding:18px;border:none;border-radius:999px;
-  font-weight:800;margin-top:16px;cursor:pointer
+  width:100%;
+  padding:18px;
+  border:none;
+  border-radius:999px;
+  font-weight:900;
+  cursor:pointer;
+  font-size:15px;
 }
-.btn-primary{background:linear-gradient(135deg,#ff6a00,#ff9a57);color:#fff}
-.btn-clear{background:#e5e7eb}
-
+.btn-primary{
+  background:linear-gradient(135deg,#ff6a00,#ff9a57);
+  color:#fff;
+}
+.btn-secondary{
+  background:#e5e7eb;
+}
 #btnAssinar{display:none}
 
 /* MODAL */
 .modal{
-  position:fixed;inset:0;background:rgba(0,0,0,.6);
-  display:none;align-items:center;justify-content:center;z-index:9999
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.6);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:9999;
 }
 .modal.show{display:flex}
 .modal-box{
-  background:#fff;border-radius:18px;padding:20px;text-align:center;width:320px
+  background:#fff;
+  border-radius:18px;
+  padding:20px;
+  width:340px;
 }
-canvas{border:1px solid #000;border-radius:8px}
+canvas{
+  width:100%;
+  height:140px;
+  border:1px solid #000;
+  border-radius:8px;
+}
 </style>
 </head>
 
 <body>
 
 <header>
-  <img src="logo.png">
+  <img src="logo.png" alt="SÁVIO TURISMO">
 </header>
 
 <div class="container">
 
 <!-- PACOTE -->
-<div class="box" id="boxPacote"></div>
+<div class="pacote" id="pacoteBox"></div>
 
-<!-- FORM -->
-<div class="box">
-<label>NOME</label><input id="nome">
+<form id="formCadastro">
+<div class="grid">
+
+<div class="card">
+<h2>DADOS DO PASSAGEIRO</h2>
+<label>NOME COMPLETO</label><input id="nome">
 <label>CPF</label><input id="cpf">
-<label>TELEFONE</label><input id="telefone">
+<label>RG</label><input id="rg">
+<label>DATA DE NASCIMENTO</label><input id="nascimento" type="date">
+<label>PROFISSÃO</label><input id="profissao">
+<label>WHATSAPP</label><input id="telefone">
+<label>E-MAIL</label><input id="email" type="email" style="text-transform:none">
+</div>
 
-<label class="switch">
+<div class="card">
+<h2>ENDEREÇO</h2>
+<label>CEP</label><input id="cep">
+<label>RUA</label><input id="rua" class="readonly" readonly>
+<label>NÚMERO</label><input id="numero">
+<label>BAIRRO</label><input id="bairro" class="readonly" readonly>
+<label>CIDADE</label><input id="cidade" class="readonly" readonly>
+<label>UF</label><input id="uf" class="readonly" readonly>
+</div>
+
+<div class="card">
+<h2>EMERGÊNCIA & ACEITES</h2>
+<label>NOME</label><input id="em_nome">
+<label>PARENTESCO</label><input id="em_parentesco">
+<label>TELEFONE</label><input id="em_telefone">
+
+<label class="switch" for="aceite_contrato">
   <span>ACEITO O CONTRATO</span>
   <input type="checkbox" id="aceite_contrato">
   <div class="switch-ui"></div>
 </label>
 
-<label class="switch">
+<label class="switch" for="aceite_risco">
   <span>CIÊNCIA DOS RISCOS</span>
   <input type="checkbox" id="aceite_risco">
   <div class="switch-ui"></div>
 </label>
 
-<label class="switch">
+<label class="switch" for="aceite_lgpd">
   <span>AUTORIZO LGPD</span>
   <input type="checkbox" id="aceite_lgpd">
   <div class="switch-ui"></div>
 </label>
 
-<button id="btnAssinar" class="btn btn-primary">ASSINAR CONTRATO</button>
-<button class="btn btn-clear" onclick="limpar()">LIMPAR</button>
 </div>
 
+</div>
+
+<div class="actions">
+  <button type="button" id="btnAssinar" class="btn btn-primary">ASSINAR CONTRATO</button>
+  <button type="button" class="btn btn-secondary" onclick="limparTudo()">LIMPAR TUDO</button>
+</div>
+
+</form>
 </div>
 
 <!-- MODAL ASSINATURA -->
 <div class="modal" id="modal">
   <div class="modal-box">
     <h3>ASSINE ABAIXO</h3>
-    <canvas id="canvas" width="260" height="120"></canvas>
-    <button class="btn btn-primary" onclick="finalizar()">FINALIZAR</button>
+    <canvas id="canvas" width="300" height="140"></canvas>
+    <button class="btn btn-primary" onclick="finalizarContrato()">FINALIZAR CONTRATO</button>
   </div>
 </div>
-
-<script>
-const $ = id => document.getElementById(id);
-
-/* ===== SUPABASE ===== */
-const sb = supabase.createClient(
- "https://ghkfeobnrfvqwzuliqfz.supabase.co",
- "sb_publishable_R-eenS9xurRgnrqDR9kz0Q_kJonEi7t"
-);
-
-/* ===== PACOTE ===== */
-const params = new URLSearchParams(location.search);
-const id = params.get("id");
-let pacote = JSON.parse(localStorage.getItem("pacote")||"null");
-
-(async()=>{
-  if(!pacote && id){
-    const {data} = await sb.from("excursoes").select("*").eq("id",id).single();
-    pacote = data;
-    localStorage.setItem("pacote",JSON.stringify(pacote));
-  }
-  if(pacote){
-    boxPacote.innerHTML = `
-      <h3>${pacote.titulo}</h3>
-      <p>${pacote.destino}</p>
-      <p>${pacote.data_saida} → ${pacote.data_retorno}</p>
-      <div class="valor">R$ ${pacote.valor}</div>
-    `;
-  }
-})();
-
-/* ===== AUTO SAVE ===== */
-["nome","cpf","telefone","aceite_contrato","aceite_risco","aceite_lgpd"].forEach(id=>{
-  const el=$(id);
-  el.oninput=el.onchange=()=>{
-    const dados={
-      nome:nome.value,
-      cpf:cpf.value,
-      telefone:telefone.value,
-      aceite_contrato:aceite_contrato.checked,
-      aceite_risco:aceite_risco.checked,
-      aceite_lgpd:aceite_lgpd.checked
-    };
-    localStorage.setItem("cadastro_savio",JSON.stringify(dados));
-    verificar();
-  }
-});
-
-/* ===== RESTAURA ===== */
-const salvo = JSON.parse(localStorage.getItem("cadastro_savio")||"{}");
-Object.keys(salvo).forEach(k=>{
-  if($(k)){
-    $(k).type==="checkbox"?$(k).checked=salvo[k]:$(k).value=salvo[k];
-  }
-});
-
-/* ===== BOTÃO ASSINAR ===== */
-function verificar(){
-  if(aceite_contrato.checked && aceite_risco.checked && aceite_lgpd.checked){
-    btnAssinar.style.display="block";
-  }else{
-    btnAssinar.style.display="none";
-  }
-}
-verificar();
-
-/* ===== ASSINATURA ===== */
-btnAssinar.onclick=()=>modal.classList.add("show");
-
-const c=canvas,ctx=c.getContext("2d");
-let d=false;
-c.onmousedown=()=>d=true;
-c.onmouseup=()=>d=false;
-c.onmousemove=e=>{if(d){ctx.lineTo(e.offsetX,e.offsetY);ctx.stroke()}};
-
-async function finalizar(){
-  const assinatura=c.toDataURL();
-  localStorage.setItem("assinatura_base64",assinatura);
-
-  const contrato=document.createElement("div");
-  contrato.innerHTML=`<h2>CONTRATO</h2>
-  <p>Eu ${nome.value}, CPF ${cpf.value}, aceito os termos.</p>
-  <img src="${assinatura}" width="200">`;
-
-  html2pdf().from(contrato).save("contrato.pdf");
-}
-
-/* ===== LIMPAR ===== */
-function limpar(){
-  if(confirm("LIMPAR TUDO?")){
-    localStorage.clear();
-    location.reload();
-  }
-}
-</script>
-
-</body>
-</html>
