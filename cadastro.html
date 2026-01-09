@@ -4,14 +4,14 @@
 <meta charset="UTF-8">
 <title>SÁVIO TURISMO • CONTRATO DIGITAL</title>
 
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="viewport"
+content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <style>
-/* === ESTILOS PREMIUM (IGUAIS AO PROJETO) === */
 :root{
   --primary:#ff6a00;
   --bg:#f4f6f8;
@@ -20,26 +20,115 @@
   --text:#111827;
   --muted:#6b7280;
 }
-*{box-sizing:border-box;font-family:Inter;text-transform:uppercase}
-html,body{margin:0;background:var(--bg);color:var(--text);-webkit-text-size-adjust:100%}
-header{background:#fff;padding:16px;display:flex;justify-content:center;border-bottom:1px solid var(--border)}
+*{
+  box-sizing:border-box;
+  font-family:Inter;
+  text-transform:uppercase;
+}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+}
+header{
+  background:#fff;
+  padding:16px;
+  display:flex;
+  justify-content:center;
+  border-bottom:1px solid var(--border);
+}
 header img{height:52px}
-.container{max-width:980px;margin:auto;padding:16px 16px 160px}
-.card{background:#fff;border-radius:22px;padding:22px;margin-bottom:18px;box-shadow:0 12px 28px rgba(0,0,0,.08)}
-h2{font-size:15px;font-weight:900;margin:0 0 14px;border-bottom:1px solid var(--border);padding-bottom:10px}
-label{font-size:12px;font-weight:800;display:block;margin-top:14px}
-input{width:100%;padding:16px;border-radius:14px;border:1px solid #d1d5db;font-size:16px;margin-top:6px}
-input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 2px rgba(255,106,0,.15)}
-.fleg{display:flex;justify-content:space-between;align-items:center;padding:16px 0}
-.fleg span{font-size:13px;font-weight:800}
+.container{
+  max-width:1000px;
+  margin:auto;
+  padding:16px 16px 160px;
+}
+.card{
+  background:#fff;
+  border-radius:22px;
+  padding:22px;
+  margin-bottom:18px;
+  box-shadow:0 12px 28px rgba(0,0,0,.08);
+}
+h2{
+  font-size:15px;
+  font-weight:900;
+  margin:0 0 14px;
+  border-bottom:1px solid var(--border);
+  padding-bottom:10px;
+}
+label{
+  font-size:12px;
+  font-weight:800;
+  display:block;
+  margin-top:14px;
+}
+input{
+  width:100%;
+  padding:16px;
+  border-radius:14px;
+  border:1px solid #d1d5db;
+  font-size:16px;
+  margin-top:6px;
+}
+input:focus{
+  outline:none;
+  border-color:var(--primary);
+}
+.pacote img{
+  width:100%;
+  height:260px;
+  object-fit:cover;
+  border-radius:16px;
+}
+.contrato{
+  font-size:13px;
+  line-height:1.75;
+}
+.fleg{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:16px 0;
+}
+.fleg span{font-weight:800;font-size:13px}
 .fleg input{display:none}
-.toggle{width:54px;height:30px;background:#d1d5db;border-radius:999px;position:relative}
-.toggle::after{content:"";width:24px;height:24px;background:#fff;border-radius:50%;position:absolute;top:3px;left:3px;transition:.25s}
+.toggle{
+  width:54px;height:30px;background:#d1d5db;border-radius:999px;position:relative;
+}
+.toggle::after{
+  content:"";width:24px;height:24px;background:#fff;border-radius:50%;
+  position:absolute;top:3px;left:3px;transition:.25s;
+}
 .fleg input:checked+.toggle{background:var(--primary)}
 .fleg input:checked+.toggle::after{transform:translateX(24px)}
-canvas{width:100%;height:260px;border:2px dashed #d1d5db;border-radius:18px;background:#fafafa;touch-action:none}
-.actions{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--border);padding:14px}
-.btn{width:100%;padding:18px;border:none;border-radius:999px;font-size:15px;font-weight:900;background:linear-gradient(135deg,#ff6a00,#ff9a57);color:#fff}
+canvas{
+  width:100%;
+  height:260px;
+  border:2px dashed #d1d5db;
+  border-radius:18px;
+  background:#fafafa;
+  touch-action:none;
+}
+.actions{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  background:#fff;
+  border-top:1px solid var(--border);
+  padding:14px;
+}
+.btn{
+  width:100%;
+  padding:18px;
+  border:none;
+  border-radius:999px;
+  font-size:15px;
+  font-weight:900;
+  background:linear-gradient(135deg,#ff6a00,#ff9a57);
+  color:#fff;
+}
 </style>
 </head>
 
@@ -51,138 +140,113 @@ canvas{width:100%;height:260px;border:2px dashed #d1d5db;border-radius:18px;back
 
 <div class="container">
 
-<!-- ================= PACOTE ================= -->
-<div class="card" id="pacoteBox">
-  <img id="pFoto" style="width:100%;height:240px;object-fit:cover;border-radius:16px">
-  <h2 id="pTitulo"></h2>
+<!-- PACOTE -->
+<div class="card pacote">
+  <img id="pFoto">
+  <h2 id="pTitulo">CARREGANDO...</h2>
   <p id="pDatas"></p>
   <strong id="pValor"></strong>
 </div>
 
-<!-- ================= CADASTRO ================= -->
+<!-- CADASTRO -->
 <div class="card">
 <h2>DADOS DO CONTRATANTE</h2>
-
-<label>NOME COMPLETO</label><input id="nome">
+<label>NOME</label><input id="nome">
 <label>CPF</label><input id="cpf">
 <label>RG</label><input id="rg">
-<label>DATA DE NASCIMENTO</label><input type="date" id="nascimento">
+<label>NASCIMENTO</label><input type="date" id="nascimento">
 <label>PROFISSÃO</label><input id="profissao">
 <label>WHATSAPP</label><input id="telefone">
 <label>E-MAIL</label><input id="email" style="text-transform:none">
-
-<label>CEP</label><input id="cep">
-<label>RUA</label><input id="rua">
-<label>NÚMERO</label><input id="numero">
-<label>BAIRRO</label><input id="bairro">
-<label>CIDADE</label><input id="cidade">
-<label>UF</label><input id="uf">
-
-<label>EMERGÊNCIA - NOME</label><input id="em_nome">
-<label>PARENTESCO</label><input id="em_parentesco">
-<label>TELEFONE</label><input id="em_telefone">
 </div>
 
-<!-- ================= CONTRATO ================= -->
-<div class="card" id="contratoTexto">
-<h2>CONTRATO DE PRESTAÇÃO DE SERVIÇOS TURÍSTICOS</h2>
+<!-- CONTRATO -->
+<div class="card contrato">
+<h2>CONTRATO</h2>
 
-<p>PELO PRESENTE INSTRUMENTO PARTICULAR, DE UM LADO, <strong>SÁVIO TURISMO</strong>,
-CNPJ 56.173.108/0001-30, DORAVANTE DENOMINADA CONTRATADA, E DE OUTRO LADO
-<strong id="cNome"></strong>, CPF <strong id="cCpf"></strong>, RG <strong id="cRg"></strong>,
-DORAVANTE DENOMINADO(A) CONTRATANTE, TÊM ENTRE SI JUSTO E CONTRATADO O QUE SEGUE:</p>
+<p>
+Pelo presente instrumento, <strong>SÁVIO TURISMO</strong>, CNPJ 56.173.108/0001-30,
+e <strong id="cNome">________</strong>, CPF <strong id="cCpf">________</strong>,
+RG <strong id="cRg">________</strong>, acordam:
+</p>
 
-<h3>I. DO OBJETO</h3>
-<p>PRESTAÇÃO DE SERVIÇOS TURÍSTICOS RELATIVOS À EXCURSÃO <strong id="cPacote"></strong>.</p>
-
-<h3>II. DOS SERVIÇOS INCLUSOS</h3>
-<p id="cInclusos"></p>
-
-<h3>III. DO VALOR</h3>
-<p>VALOR TOTAL: <strong id="cValor"></strong>.</p>
-
-<h3>IV. OBRIGAÇÕES</h3>
-<p>CUMPRIR HORÁRIOS, PORTAR DOCUMENTOS, ZELAR POR PERTENCES.</p>
-
-<h3>V. RISCOS</h3>
-<p>CIÊNCIA DOS RISCOS INERENTES À ATIVIDADE TURÍSTICA.</p>
-
-<h3>VI. CANCELAMENTO</h3>
-<p>NÃO HAVERÁ REEMBOLSO EM CASO DE DESISTÊNCIA.</p>
-
-<h3>VII. LGPD</h3>
-<p>AUTORIZAÇÃO PARA TRATAMENTO DE DADOS.</p>
-
-<h3>VIII. DECLARAÇÃO FINAL</h3>
-<p>DECLARO QUE LI E ACEITO TODOS OS TERMOS.</p>
+<p>
+Excursão: <strong id="cPacote">________</strong><br>
+Período: <strong id="cDatas">________</strong><br>
+Valor: <strong id="cValor">________</strong>
+</p>
 
 <div class="fleg"><span>ACEITO O CONTRATO</span><input type="checkbox" id="f1"><div class="toggle"></div></div>
 <div class="fleg"><span>CIÊNCIA DOS RISCOS</span><input type="checkbox" id="f2"><div class="toggle"></div></div>
 <div class="fleg"><span>AUTORIZO LGPD</span><input type="checkbox" id="f3"><div class="toggle"></div></div>
-
 </div>
 
-<!-- ================= ASSINATURA ================= -->
+<!-- ASSINATURA -->
 <div class="card">
 <h2>ASSINATURA</h2>
 <canvas id="canvas"></canvas>
 </div>
 
 <div class="actions">
-  <button class="btn" onclick="finalizar()">FINALIZAR CONTRATO</button>
+<button class="btn" onclick="finalizar()">FINALIZAR CONTRATO</button>
 </div>
 
 </div>
 
 <script>
-/* ===== SUPABASE ===== */
+/* SUPABASE */
 const sb = supabase.createClient(
  "https://ghkfeobnrfvqwzuliqfz.supabase.co",
  "sb_publishable_R-eenS9xurRgnrqDR9kz0Q_kJonEi7t"
 );
 
-/* ===== PACOTE ===== */
-const pacote = JSON.parse(localStorage.getItem("pacoteSelecionado")||"{}");
-if(pacote){
- pFoto.src=pacote.foto;
- pTitulo.innerText=pacote.titulo;
- pDatas.innerText=pacote.datas;
- pValor.innerText=pacote.valor;
- cPacote.innerText=pacote.titulo;
- cValor.innerText=pacote.valor;
- cInclusos.innerText="TRANSPORTE • HOSPEDAGEM • CAFÉ • SEGURO";
-}
+/* ID */
+const id = new URLSearchParams(location.search).get("id");
 
-/* ===== CANVAS ===== */
+/* PACOTE */
+async function carregarPacote(){
+ const {data} = await sb.from("excursoes").select("*").eq("id",id).single();
+ const url = sb.storage.from("buffet_excursoes").getPublicUrl(data.poster_url).data.publicUrl;
+ pFoto.src=url;
+ pTitulo.innerText=data.titulo;
+ pDatas.innerText=`${data.data_saida} → ${data.data_retorno}`;
+ pValor.innerText=Number(data.valor).toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
+ cPacote.innerText=data.titulo;
+ cDatas.innerText=pDatas.innerText;
+ cValor.innerText=pValor.innerText;
+}
+carregarPacote();
+
+/* FORM → CONTRATO */
+nome.oninput=()=>cNome.innerText=nome.value||"________";
+cpf.oninput=()=>cCpf.innerText=cpf.value||"________";
+rg.oninput=()=>cRg.innerText=rg.value||"________";
+
+/* CANVAS */
 const canvas=document.getElementById("canvas");
 const ctx=canvas.getContext("2d");
-let draw=false;
+let d=false;
 function resize(){const r=window.devicePixelRatio||1;canvas.width=canvas.offsetWidth*r;canvas.height=canvas.offsetHeight*r;ctx.setTransform(r,0,0,r,0,0);ctx.lineWidth=2.5;ctx.lineCap="round"}
-resize();window.addEventListener("resize",resize);
-canvas.addEventListener("mousedown",e=>{draw=true;ctx.beginPath();ctx.moveTo(e.offsetX,e.offsetY)});
-canvas.addEventListener("mousemove",e=>{if(draw){ctx.lineTo(e.offsetX,e.offsetY);ctx.stroke()}});
-canvas.addEventListener("mouseup",()=>draw=false);
-canvas.addEventListener("touchstart",e=>{e.preventDefault();draw=true;const t=e.touches[0],r=canvas.getBoundingClientRect();ctx.beginPath();ctx.moveTo(t.clientX-r.left,t.clientY-r.top)},{passive:false});
-canvas.addEventListener("touchmove",e=>{e.preventDefault();if(!draw)return;const t=e.touches[0],r=canvas.getBoundingClientRect();ctx.lineTo(t.clientX-r.left,t.clientY-r.top);ctx.stroke()},{passive:false});
-canvas.addEventListener("touchend",()=>draw=false);
+resize();window.onresize=resize;
+canvas.onmousedown=e=>{d=true;ctx.beginPath();ctx.moveTo(e.offsetX,e.offsetY)};
+canvas.onmousemove=e=>{if(d){ctx.lineTo(e.offsetX,e.offsetY);ctx.stroke()}};
+canvas.onmouseup=()=>d=false;
+canvas.ontouchstart=e=>{e.preventDefault();d=true;const t=e.touches[0],r=canvas.getBoundingClientRect();ctx.beginPath();ctx.moveTo(t.clientX-r.left,t.clientY-r.top)};
+canvas.ontouchmove=e=>{e.preventDefault();if(!d)return;const t=e.touches[0],r=canvas.getBoundingClientRect();ctx.lineTo(t.clientX-r.left,t.clientY-r.top);ctx.stroke()};
+canvas.ontouchend=()=>d=false;
 
-/* ===== FINALIZAR ===== */
+/* FINALIZAR */
 async function finalizar(){
  if(!f1.checked||!f2.checked||!f3.checked){alert("ACEITE TODAS AS DECLARAÇÕES");return;}
  const vazio=ctx.getImageData(0,0,canvas.width,canvas.height).data.every(v=>v===0);
- if(vazio){alert("ASSINATURA OBRIGATÓRIA");return;}
-
- cNome.innerText=nome.value;
- cCpf.innerText=cpf.value;
- cRg.innerText=rg.value;
+ if(vazio){alert("ASSINE O CONTRATO");return;}
 
  const pdf = await html2pdf().from(document.body).set({html2canvas:{scale:2}}).outputPdf("blob");
+ const nomeArquivo=`CONTRATO_${id}_${Date.now()}.pdf`;
 
- const nomeArquivo=`CONTRATO_${pacote.id}_${Date.now()}.pdf`;
- const {error} = await sb.storage.from("buffet_contratos").upload(nomeArquivo,pdf,{contentType:"application/pdf"});
- if(error){alert("ERRO AO SALVAR CONTRATO");return;}
+ await sb.storage.from("buffet_contratos").upload(nomeArquivo,pdf,{contentType:"application/pdf"});
 
- alert("CONTRATO ASSINADO E SALVO COM SUCESSO");
+ alert("CONTRATO ASSINADO COM SUCESSO");
 }
 </script>
 
