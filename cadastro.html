@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>SÁVIO TURISMO • CADASTRO</title>
+<title>SÁVIO TURISMO • CADASTRO E CONTRATO</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -22,6 +22,9 @@ body{margin:0;background:var(--bg);color:var(--text)}
 header{background:#fff;padding:14px;display:flex;justify-content:center;border-bottom:1px solid var(--border)}
 header img{height:54px}
 .container{max-width:1200px;margin:auto;padding:16px}
+
+.step{display:none}
+.step.active{display:block}
 
 .box{
   background:#fff;border-radius:18px;padding:18px;
@@ -48,8 +51,7 @@ input,select{
 .switch{display:flex;justify-content:space-between;align-items:center;margin-top:14px}
 .switch input{display:none}
 .switch-ui{
-  width:48px;height:28px;background:#d1d5db;
-  border-radius:999px;position:relative
+  width:48px;height:28px;background:#d1d5db;border-radius:999px;position:relative
 }
 .switch-ui::after{
   content:"";width:22px;height:22px;background:#fff;border-radius:50%;
@@ -65,7 +67,7 @@ input,select{
 .btn-primary{background:linear-gradient(135deg,#ff6a00,#ff9a57);color:#fff}
 .btn-secondary{background:#e5e7eb}
 
-#btnAssinar{display:none}
+.actions{display:flex;gap:12px}
 
 /* MODAL */
 .modal{
@@ -74,9 +76,9 @@ input,select{
 }
 .modal.show{display:flex}
 .modal-box{
-  background:#fff;border-radius:18px;padding:20px;width:340px
+  background:#fff;border-radius:18px;padding:20px;width:360px
 }
-canvas{width:100%;height:140px;border:1px solid #000;border-radius:8px}
+canvas{width:100%;height:150px;border:1px solid #000;border-radius:8px}
 </style>
 </head>
 
@@ -88,9 +90,10 @@ canvas{width:100%;height:140px;border:1px solid #000;border-radius:8px}
 
 <div class="container">
 
-<div class="box" id="pacoteBox"></div>
+<!-- STEP 1 – CADASTRO -->
+<section class="step active" id="step1">
 
-<form id="form">
+<div class="box" id="pacoteBox"></div>
 
 <div class="grid">
 
@@ -124,11 +127,9 @@ canvas{width:100%;height:140px;border:1px solid #000;border-radius:8px}
 <label>ALERGIAS</label><input id="saude_alergias">
 <label>TIPO SANGUÍNEO</label>
 <select id="saude_sangue">
-  <option value=""></option>
-  <option>O+</option><option>O-</option>
-  <option>A+</option><option>A-</option>
-  <option>B+</option><option>B-</option>
-  <option>AB+</option><option>AB-</option>
+<option value=""></option><option>O+</option><option>O-</option>
+<option>A+</option><option>A-</option><option>B+</option><option>B-</option>
+<option>AB+</option><option>AB-</option>
 </select>
 
 <label class="switch" for="aceite_contrato">
@@ -147,32 +148,40 @@ canvas{width:100%;height:140px;border:1px solid #000;border-radius:8px}
 </label>
 
 </div>
-
 </div>
 
-<button type="button" id="btnAssinar" class="btn btn-primary">ASSINAR CONTRATO</button>
-<button type="button" class="btn btn-secondary" onclick="limpar()">LIMPAR TUDO</button>
-
-</form>
+<div class="actions">
+<button class="btn btn-primary" onclick="irParaAssinatura()">AVANÇAR</button>
+<button class="btn btn-secondary" onclick="limpar()">LIMPAR</button>
 </div>
 
-<!-- MODAL ASSINATURA -->
-<div class="modal" id="modal">
-  <div class="modal-box">
-    <h3>ASSINATURA</h3>
-    <canvas id="canvas" width="300" height="140"></canvas>
-    <button class="btn btn-primary" onclick="finalizar()">FINALIZAR CONTRATO</button>
-  </div>
+</section>
+
+<!-- STEP 2 – ASSINATURA -->
+<section class="step" id="step2">
+
+<div class="box">
+<h2>ASSINATURA DO CONTRATANTE</h2>
+<canvas id="canvas" width="350" height="150"></canvas>
+<button class="btn btn-primary" onclick="finalizar()">FINALIZAR CONTRATO</button>
+</div>
+
+</section>
+
 </div>
 
 <script>
 const $=id=>document.getElementById(id);
-
-/* SUPABASE */
 const sb=supabase.createClient(
  "https://ghkfeobnrfvqwzuliqfz.supabase.co",
  "sb_publishable_R-eenS9xurRgnrqDR9kz0Q_kJonEi7t"
 );
+
+/* STEP */
+function showStep(n){
+  document.querySelectorAll(".step").forEach(s=>s.classList.remove("active"));
+  $("#step"+n).classList.add("active");
+}
 
 /* PACOTE */
 const params=new URLSearchParams(location.search);
@@ -201,7 +210,6 @@ const s=JSON.parse(localStorage.getItem("cadastro_savio")||"{}");
 Object.keys(s).forEach(k=>{
   if($(k)) $(k).type==="checkbox"?$(k).checked=s[k]:$(k).value=s[k];
 });
-verificar();
 
 /* SALVAR */
 function salvar(){
@@ -210,23 +218,13 @@ function salvar(){
     cep:cep.value,rua:rua.value,numero:numero.value,bairro:bairro.value,
     cidade:cidade.value,uf:uf.value,
     em_nome:em_nome.value,em_parentesco:em_parentesco.value,em_telefone:em_telefone.value,
-    saude_condicao:saude_condicao.value,
-    saude_medicamentos:saude_medicamentos.value,
-    saude_alergias:saude_alergias.value,
-    saude_sangue:saude_sangue.value,
+    saude_condicao:saude_condicao.value,saude_medicamentos:saude_medicamentos.value,
+    saude_alergias:saude_alergias.value,saude_sangue:saude_sangue.value,
     aceite_contrato:aceite_contrato.checked,
     aceite_risco:aceite_risco.checked,
     aceite_lgpd:aceite_lgpd.checked
   };
   localStorage.setItem("cadastro_savio",JSON.stringify(d));
-  verificar();
-}
-
-/* VERIFICAR FLAGS */
-function verificar(){
-  btnAssinar.style.display=
-    aceite_contrato.checked&&aceite_risco.checked&&aceite_lgpd.checked
-    ?"block":"none";
 }
 
 /* CEP */
@@ -241,8 +239,16 @@ cep.onblur=async()=>{
   uf.value=r.uf;
 };
 
+/* AVANÇAR */
+function irParaAssinatura(){
+  if(!aceite_contrato.checked||!aceite_risco.checked||!aceite_lgpd.checked){
+    alert("É necessário aceitar todas as declarações");
+    return;
+  }
+  showStep(2);
+}
+
 /* ASSINATURA */
-btnAssinar.onclick=()=>modal.classList.add("show");
 const ctx=canvas.getContext("2d");
 let draw=false;
 canvas.onmousedown=()=>draw=true;
