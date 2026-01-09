@@ -327,8 +327,22 @@ todos os termos deste contrato.
 <!-- ASSINATURA -->
 <div class="card">
 <h2>ASSINATURA</h2>
+
 <canvas id="canvas"></canvas>
+
+<div style="display:flex;gap:12px;margin-top:14px">
+  <button
+    type="button"
+    class="btn"
+    style="background:#e5e7eb;color:#111"
+    onclick="limparAssinatura()"
+  >
+    LIMPAR ASSINATURA
+  </button>
 </div>
+
+</div>
+
 
 <div class="actions">
 <button class="btn" onclick="finalizar()">FINALIZAR CONTRATO</button>
@@ -507,6 +521,9 @@ function formatarData(d){
   if(!d) return "__/__/____";
   const [y,m,da] = d.split("-");
   return `${da}/${m}/${y}`;
+}
+function limparAssinatura(){
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
 
 </script>
