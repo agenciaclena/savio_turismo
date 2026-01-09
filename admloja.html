@@ -137,6 +137,69 @@ body{background:#f4f6fb;color:#111}
 .save{background:var(--primary);color:#fff}
 .cancel{background:#e5e7eb}
 .delete{background:transparent;color:#dc2626}
+
+/* ===== TOGGLE FLAGS (BONITAS) ===== */
+.toggle-group{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:14px;
+  margin-top:6px;
+}
+
+.toggle{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:12px 14px;
+  border:1px solid var(--border);
+  border-radius:14px;
+  font-size:13px;
+  font-weight:700;
+  background:#fff;
+  cursor:pointer;
+}
+
+.toggle span{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+/* esconde checkbox real */
+.toggle input{
+  display:none;
+}
+
+/* switch */
+.toggle .switch{
+  width:38px;
+  height:22px;
+  background:#d1d5db;
+  border-radius:999px;
+  position:relative;
+  transition:.25s;
+}
+
+.toggle .switch::after{
+  content:"";
+  width:18px;
+  height:18px;
+  background:#fff;
+  border-radius:50%;
+  position:absolute;
+  top:2px;
+  left:2px;
+  transition:.25s;
+}
+
+/* ativo */
+.toggle input:checked + .switch{
+  background:var(--primary);
+}
+.toggle input:checked + .switch::after{
+  left:18px;
+}
+
 </style>
 </head>
 
@@ -190,22 +253,53 @@ body{background:#f4f6fb;color:#111}
 <label>Alimentação</label><input id="alimentacao">
 
 <label>Inclusos</label>
+
 <div class="checks">
-<label>Formas de pagamento</label>
-<div class="checks">
-<label><input type="checkbox" id="inclui_transporte"> Transporte</label>
-<label><input type="checkbox" id="inclui_hospedagem"> Hospedagem</label>
-<label><input type="checkbox" id="inclui_cafe"> Café</label>
-<label><input type="checkbox" id="inclui_almoco"> Almoço</label>
-<label><input type="checkbox" id="inclui_jantar"> Jantar</label>
-<label><input type="checkbox" id="inclui_seguro"> Seguro</label>
-<label><input type="checkbox" id="inclui_guia"> Guia</label>
+  <label><input type="checkbox" id="inclui_transporte"> Transporte</label>
+  <label><input type="checkbox" id="inclui_hospedagem"> Hospedagem</label>
+  <label><input type="checkbox" id="inclui_cafe"> Café</label>
+  <label><input type="checkbox" id="inclui_almoco"> Almoço</label>
+  <label><input type="checkbox" id="inclui_jantar"> Jantar</label>
+  <label><input type="checkbox" id="inclui_seguro"> Seguro</label>
+  <label><input type="checkbox" id="inclui_guia"> Guia</label>
 </div>
-  <label><input type="checkbox" id="pag_pix"> Pix</label>
-  <label><input type="checkbox" id="pag_credito"> Crédito</label>
-  <label><input type="checkbox" id="pag_debito"> Débito</label>
-  <label><input type="checkbox" id="pag_dinheiro"> Dinheiro</label>
-  <label><input type="checkbox" id="pag_parcelado"> Parcelado</label>
+
+<label>Formas de pagamento</label>
+
+<div class="toggle-group">
+
+  <label class="toggle">
+    <span>💳 Pix</span>
+    <input type="checkbox" id="pag_pix">
+    <div class="switch"></div>
+  </label>
+
+  <label class="toggle">
+    <span>💳 Crédito</span>
+    <input type="checkbox" id="pag_credito">
+    <div class="switch"></div>
+  </label>
+
+  <label class="toggle">
+    <span>💳 Débito</span>
+    <input type="checkbox" id="pag_debito">
+    <div class="switch"></div>
+  </label>
+
+  <label class="toggle">
+    <span>💵 Dinheiro</span>
+    <input type="checkbox" id="pag_dinheiro">
+    <div class="switch"></div>
+  </label>
+
+  <label class="toggle">
+    <span>📆 Parcelado</span>
+    <input type="checkbox" id="pag_parcelado">
+    <div class="switch"></div>
+  </label>
+
+</div>
+
 </div>
 <label>Roteiro</label><textarea id="roteiro"></textarea>
 <label>Valor</label>
@@ -466,6 +560,12 @@ valor.value = formatarMoeda(e.valor);
  inclui_jantar.checked = !!e.inclui_jantar;
  inclui_seguro.checked = !!e.inclui_seguro;
  inclui_guia.checked = !!e.inclui_guia;
+  pag_pix.checked = !!e.pag_pix;
+pag_credito.checked = !!e.pag_credito;
+pag_debito.checked = !!e.pag_debito;
+pag_dinheiro.checked = !!e.pag_dinheiro;
+pag_parcelado.checked = !!e.pag_parcelado;
+
 
  // IMAGEM
  if(e.poster_url){
