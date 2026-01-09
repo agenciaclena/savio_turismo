@@ -189,10 +189,11 @@ body{background:#f4f6fb;color:#111}
 
 <label>Status</label>
 <select id="status">
-  <option>Ativa</option>
-  <option>Inativa</option>
-  <option>Esgotada</option>
+  <option value="Ativa">Ativa</option>
+  <option value="Inativa">Inativa</option>
+  <option value="Esgotada">Esgotada</option>
 </select>
+
 
 </div>
 
@@ -313,27 +314,56 @@ async function carregar(){
 }
 
 function editar(id){
- const e = itens.find(i=>i.id===id);
+ const e = itens.find(i => i.id === id);
  if(!e) return;
 
  editId = id;
- btnExcluir.style.display="block";
- tituloForm.innerText="Editar excursão";
+ btnExcluir.style.display = "block";
+ tituloForm.innerText = "Editar excursão";
 
- Object.keys(e).forEach(k=>{
-  const el = document.getElementById(k);
-  if(!el) return;
-  el.type==="checkbox" ? el.checked=!!e[k] : el.value=e[k]||"";
- });
+ // TEXTOS
+ titulo.value = e.titulo || "";
+ destino.value = e.destino || "";
+ tipo.value = e.tipo || "Excursão";
+ data_saida.value = e.data_saida || "";
+ hora_saida.value = e.hora_saida || "";
+ data_retorno.value = e.data_retorno || "";
+ hora_retorno.value = e.hora_retorno || "";
+ duracao_dias.value = e.duracao_dias || "";
+ local_saida.value = e.local_saida || "";
+ transporte.value = e.transporte || "";
+ hospedagem.value = e.hospedagem || "";
+ alimentacao.value = e.alimentacao || "";
+ roteiro.value = e.roteiro || "";
+ valor.value = e.valor || "";
+ parcelas.value = e.parcelas || "";
+ observacoes.value = e.observacoes || "";
 
+ // ✅ STATUS (AQUI ESTÁ A CORREÇÃO)
+ status.value = e.status || "Ativa";
+
+ // CHECKBOX
+ inclui_transporte.checked = !!e.inclui_transporte;
+ inclui_hospedagem.checked = !!e.inclui_hospedagem;
+ inclui_cafe.checked = !!e.inclui_cafe;
+ inclui_almoco.checked = !!e.inclui_almoco;
+ inclui_jantar.checked = !!e.inclui_jantar;
+ inclui_seguro.checked = !!e.inclui_seguro;
+ inclui_guia.checked = !!e.inclui_guia;
+
+ // IMAGEM
  if(e.poster_url){
-  preview.src = sb.storage.from("buffet_excursoes")
+  preview.src = sb.storage
+    .from("buffet_excursoes")
     .getPublicUrl(e.poster_url).data.publicUrl;
-  preview.style.display="block";
+  preview.style.display = "block";
+ } else {
+  preview.style.display = "none";
  }
 
  modal.classList.add("show");
 }
+
 
 async function excluir(){
  if(confirm("Excluir excursão?")){
