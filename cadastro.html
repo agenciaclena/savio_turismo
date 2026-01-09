@@ -15,13 +15,13 @@ content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no,
   --bg:#f4f6f8;
   --card:#ffffff;
   --border:#e5e7eb;
-  --text:#111;
+  --text:#111827;
   --muted:#6b7280;
 }
 
 *{
   box-sizing:border-box;
-  font-family:Inter;
+  font-family:Inter,system-ui,-apple-system,sans-serif;
   text-transform:uppercase;
   -webkit-tap-highlight-color:transparent;
 }
@@ -34,151 +34,162 @@ html,body{
   -webkit-text-size-adjust:100%;
 }
 
+/* HEADER */
 header{
   background:#fff;
-  padding:14px;
+  padding:16px;
   display:flex;
   justify-content:center;
   border-bottom:1px solid var(--border);
+  position:sticky;
+  top:0;
+  z-index:10;
+}
+header img{height:52px}
+
+/* CONTAINER */
+.container{
+  max-width:960px;
+  margin:auto;
+  padding:18px 14px 160px;
 }
 
-header img{height:50px}
-
-.step{
-  display:none;
-  padding:16px 16px 140px;
-}
-
+/* STEP */
+.step{display:none}
 .step.active{display:block}
 
+/* CARD PREMIUM */
 .card{
-  max-width:900px;
-  margin:0 auto 16px;
   background:var(--card);
-  border-radius:20px;
-  padding:18px;
-  box-shadow:0 10px 24px rgba(0,0,0,.06);
+  border-radius:22px;
+  padding:22px;
+  margin-bottom:18px;
+  box-shadow:0 12px 28px rgba(0,0,0,.08);
 }
 
+/* TITLES */
 h2{
   margin:0 0 14px;
   font-size:15px;
-  font-weight:800;
+  font-weight:900;
   border-bottom:1px solid var(--border);
-  padding-bottom:8px;
+  padding-bottom:10px;
+}
+h3{
+  font-size:14px;
+  margin-top:26px;
+  font-weight:900;
 }
 
-/* ===== PACOTE ===== */
+/* PACOTE */
 .pacote{
-  max-width:900px;
-  margin:0 auto 16px;
-  background:#fff;
-  border-radius:20px;
+  border-radius:24px;
   overflow:hidden;
-  box-shadow:0 10px 24px rgba(0,0,0,.08);
+  margin-bottom:20px;
 }
 .pacote img{
   width:100%;
-  height:200px;
+  height:220px;
   object-fit:cover;
 }
 .pacote-body{
-  padding:14px;
+  padding:16px;
 }
-.pacote-body h3{
+.pacote-body h4{
   margin:0 0 6px;
   font-size:16px;
   font-weight:900;
 }
-.pacote-body p{
-  margin:0;
+.pacote-meta{
   font-size:13px;
   color:var(--muted);
 }
-.pacote-body strong{
-  display:block;
-  margin-top:6px;
-  font-size:18px;
+.pacote-valor{
+  font-size:20px;
+  font-weight:900;
   color:var(--primary);
+  margin-top:6px;
 }
 
-/* ===== INPUTS ===== */
+/* INPUTS */
 label{
-  font-size:11px;
-  font-weight:800;
   display:block;
-  margin-top:12px;
+  margin-top:14px;
+  font-size:12px;
+  font-weight:800;
 }
-
 input{
   width:100%;
   margin-top:6px;
-  padding:14px;
+  padding:16px;
   border-radius:14px;
   border:1px solid #d1d5db;
   font-size:16px;
 }
-
 input:focus{
   outline:none;
   border-color:var(--primary);
+  box-shadow:0 0 0 2px rgba(255,106,0,.15);
 }
 
-/* ===== FLEGS ===== */
+/* TEXTO CONTRATO */
+.contrato-texto{
+  font-size:13px;
+  line-height:1.75;
+  color:#111;
+}
+
+/* FLEGS */
 .fleg{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  padding:14px 0;
+  padding:18px 0;
+  gap:14px;
 }
-
 .fleg span{
   font-size:13px;
   font-weight:800;
 }
-
 .fleg input{display:none}
-
 .toggle{
-  width:52px;
-  height:28px;
+  width:54px;
+  height:30px;
   background:#d1d5db;
   border-radius:999px;
   position:relative;
   transition:.25s;
 }
-
 .toggle::after{
   content:"";
-  width:22px;
-  height:22px;
+  width:24px;
+  height:24px;
   background:#fff;
   border-radius:50%;
   position:absolute;
   top:3px;
   left:3px;
   transition:.25s;
+  box-shadow:0 2px 6px rgba(0,0,0,.25);
 }
-
 .fleg input:checked + .toggle{
   background:var(--primary);
 }
-
 .fleg input:checked + .toggle::after{
   transform:translateX(24px);
 }
 
-/* ===== CANVAS ===== */
+/* CANVAS */
 canvas{
   width:100%;
-  height:240px;
+  height:260px;
   border:2px dashed #d1d5db;
-  border-radius:16px;
+  border-radius:18px;
   background:#fafafa;
   touch-action:none;
 }
 
-/* ===== BOTÃO ===== */
+/* ACTIONS */
 .actions{
   position:fixed;
   bottom:0;
@@ -188,14 +199,13 @@ canvas{
   border-top:1px solid var(--border);
   padding:14px;
 }
-
 .btn{
   width:100%;
-  padding:16px;
+  padding:18px;
   border:none;
   border-radius:999px;
-  font-size:14px;
-  font-weight:800;
+  font-size:15px;
+  font-weight:900;
   background:linear-gradient(135deg,#ff6a00,#ff9a57);
   color:#fff;
 }
@@ -205,18 +215,20 @@ canvas{
 <body>
 
 <header>
-  <img src="logo.png">
+  <img src="logo.png" alt="SÁVIO TURISMO">
 </header>
 
-<!-- ================= STEP 1 : CADASTRO ================= -->
+<div class="container">
+
+<!-- ================= STEP 1 ================= -->
 <div class="step active" id="stepCadastro">
 
-  <div class="pacote" id="boxPacote">
+  <div class="card pacote" id="boxPacote">
     <img id="pFoto">
     <div class="pacote-body">
-      <h3 id="pTitulo"></h3>
-      <p id="pDatas"></p>
-      <strong id="pValor"></strong>
+      <h4 id="pTitulo"></h4>
+      <div class="pacote-meta" id="pDatas"></div>
+      <div class="pacote-valor" id="pValor"></div>
     </div>
   </div>
 
@@ -240,22 +252,79 @@ canvas{
 
     <label>E-MAIL</label>
     <input id="email" style="text-transform:none">
+  </div>
 
+  <div class="actions">
     <button class="btn" onclick="irContrato()">CONTINUAR</button>
   </div>
 </div>
 
-<!-- ================= STEP 2 : CONTRATO ================= -->
+<!-- ================= STEP 2 ================= -->
 <div class="step" id="stepContrato">
 
   <div class="card">
     <h2>CONTRATO DE PRESTAÇÃO DE SERVIÇOS TURÍSTICOS</h2>
 
-    <p>
-      EU, <strong id="cNome"></strong>, CPF <strong id="cCpf"></strong>,
-      DECLARO QUE LI, COMPREENDI E CONCORDO COM TODOS OS TERMOS
-      REFERENTES AO PACOTE <strong id="cPacote"></strong>.
-    </p>
+    <div class="contrato-texto">
+      <p>
+        Pelo presente instrumento particular, de um lado,
+        <strong>SÁVIO TURISMO</strong>, pessoa jurídica de direito privado,
+        inscrita no CNPJ nº <strong>56.173.108/0001-30</strong>,
+        doravante denominada <strong>CONTRATADA</strong>, e, de outro lado,
+        <strong id="cNome"></strong>, CPF <strong id="cCpf"></strong>,
+        RG <strong id="cRg"></strong>, doravante denominado(a)
+        <strong>CONTRATANTE</strong>, têm entre si justo e contratado o que segue:
+      </p>
+
+      <h3>I. DO OBJETO</h3>
+      <p>
+        O presente contrato tem por objeto a prestação de serviços turísticos
+        relativos à excursão <strong id="cPacote"></strong>,
+        conforme condições aqui estabelecidas.
+      </p>
+
+      <h3>II. DOS SERVIÇOS INCLUSOS</h3>
+      <p>
+        Transporte, hospedagem e demais serviços descritos no pacote contratado,
+        conforme informações previamente apresentadas ao contratante.
+      </p>
+
+      <h3>III. DO VALOR</h3>
+      <p>
+        O valor total do pacote contratado é de <strong id="cValor"></strong>,
+        conforme acordado entre as partes.
+      </p>
+
+      <h3>IV. DAS OBRIGAÇÕES DO CONTRATANTE</h3>
+      <p>
+        Cumprir horários, portar documentos pessoais, respeitar orientações da equipe
+        e zelar por seus pertences durante a viagem.
+      </p>
+
+      <h3>V. DOS RISCOS</h3>
+      <p>
+        O contratante declara estar ciente dos riscos naturais envolvidos
+        em atividades turísticas.
+      </p>
+
+      <h3>VI. DO CANCELAMENTO</h3>
+      <p>
+        Em caso de desistência, aplicam-se as regras previamente informadas,
+        podendo haver retenção de valores.
+      </p>
+
+      <h3>VII. DA PROTEÇÃO DE DADOS</h3>
+      <p>
+        O contratante autoriza o tratamento de seus dados pessoais
+        nos termos da Lei nº 13.709/2018 (LGPD).
+      </p>
+
+      <h3>VIII. DECLARAÇÃO FINAL</h3>
+      <p>
+        Declaro que li, compreendi e aceito integralmente
+        todos os termos deste contrato.
+      </p>
+    </div>
 
     <div class="fleg">
       <span>ACEITO O CONTRATO</span>
@@ -274,25 +343,27 @@ canvas{
       <input type="checkbox" id="f3">
       <div class="toggle"></div>
     </div>
+  </div>
 
+  <div class="actions">
     <button class="btn" onclick="irAssinatura()">IR PARA ASSINATURA</button>
   </div>
 </div>
 
-<!-- ================= STEP 3 : ASSINATURA ================= -->
+<!-- ================= STEP 3 ================= -->
 <div class="step" id="stepAssinatura">
 
   <div class="card">
     <h2>ASSINATURA DO CONTRATANTE</h2>
-
     <canvas id="canvas"></canvas>
+  </div>
 
-    <button class="btn" onclick="finalizar()">FINALIZAR</button>
+  <div class="actions">
+    <button class="btn" onclick="finalizar()">FINALIZAR CONTRATO</button>
   </div>
 </div>
 
 <script>
-/* ===== PACOTE ===== */
 const pacote = JSON.parse(localStorage.getItem("pacoteSelecionado")||"{}");
 if(pacote){
   pFoto.src = pacote.foto || "";
@@ -301,22 +372,21 @@ if(pacote){
   pValor.innerText = pacote.valor || "";
 }
 
-/* ===== NAVEGAÇÃO ===== */
 function show(id){
   document.querySelectorAll(".step").forEach(s=>s.classList.remove("active"));
   document.getElementById(id).classList.add("active");
 }
 
-/* ===== CADASTRO → CONTRATO ===== */
 function irContrato(){
   if(!nome.value || !cpf.value) return alert("PREENCHA OS DADOS");
   cNome.innerText = nome.value;
   cCpf.innerText = cpf.value;
+  cRg.innerText = rg.value;
   cPacote.innerText = pacote.titulo || "";
+  cValor.innerText = pacote.valor || "";
   show("stepContrato");
 }
 
-/* ===== CONTRATO → ASSINATURA ===== */
 function irAssinatura(){
   if(!f1.checked || !f2.checked || !f3.checked){
     alert("ACEITE TODAS AS DECLARAÇÕES");
@@ -325,7 +395,7 @@ function irAssinatura(){
   show("stepAssinatura");
 }
 
-/* ===== CANVAS ===== */
+/* CANVAS */
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 let draw=false;
@@ -364,24 +434,12 @@ canvas.addEventListener("touchmove",e=>{
 
 canvas.addEventListener("touchend",()=>draw=false);
 
-/* ===== FINAL ===== */
 function finalizar(){
   const vazio = ctx.getImageData(0,0,canvas.width,canvas.height).data.every(v=>v===0);
   if(vazio){alert("ASSINATURA OBRIGATÓRIA");return;}
   const assinatura = canvas.toDataURL("image/png");
-  console.log({
-    pacote,
-    cadastro:{
-      nome:nome.value,
-      cpf:cpf.value,
-      rg:rg.value,
-      nascimento:nascimento.value,
-      telefone:telefone.value,
-      email:email.value
-    },
-    assinatura
-  });
-  alert("FLUXO FINALIZADO. PRONTO PARA PDF / SUPABASE.");
+  console.log({pacote,cadastro:{nome:nome.value,cpf:cpf.value},assinatura});
+  alert("CONTRATO COMPLETO E ASSINADO.");
 }
 </script>
 
