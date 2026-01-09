@@ -5,17 +5,17 @@
 <title>Sávio Turismo • Excursões</title>
 
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#ff6a00">
+<meta name="theme-color" content="">
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 :root{
-  --primary:#ff6a00;
-  --bg:#f4f6fb;
-  --card:#ffffff;
-  --text:#111827;
+  --primary: transparent;
+  --bg: transparent;
+  --card: transparent;
+  --text: #111827;
   --muted:#6b7280;
   --radius:22px;
 }
@@ -25,7 +25,10 @@ body{
   margin:0;
   background:var(--bg);
   color:var(--text);
+  opacity:0;
+  transition:opacity .2s ease;
 }
+
 
 /* HEADER */
 .header{
@@ -293,10 +296,22 @@ async function carregar(){
   const {data:cfg}=await sb.from("loja_config").select("*").single();
   const {data}=await sb.from("excursoes").select("*").eq("status","Ativa");
 
-  if(cfg){
-    document.documentElement.style.setProperty("--primary",cfg.cor_primaria);
-    startBanner(cfg.banners);
-  }
+if(cfg){
+  const root = document.documentElement;
+
+  root.style.setProperty("--primary", cfg.cor_primaria);
+  root.style.setProperty("--bg", cfg.cor_fundo);
+  root.style.setProperty("--card", cfg.cor_card);
+  root.style.setProperty("--text", cfg.cor_texto);
+  document
+    .querySelector('meta[name="theme-color"]')
+    .setAttribute("content", cfg.cor_primaria);
+
+  document.body.style.opacity = "1";
+
+  startBanner(cfg.banners);
+}
+
 
   lista.innerHTML="";
 
