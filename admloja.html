@@ -199,6 +199,21 @@ body{background:#f4f6fb;color:#111}
 .toggle input:checked + .switch::after{
   left:18px;
 }
+.tags{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+}
+
+.tag{
+  font-size:11px;
+  font-weight:800;
+  padding:4px 10px;
+  border-radius:999px;
+  background:#fff7ed;
+  color:#c2410c;
+  border:1px solid #fed7aa;
+}
 
 </style>
 </head>
@@ -488,19 +503,24 @@ async function carregar(){
     <div class="poster">${img?`<img src="${img}">`:``}</div>
     <div class="card-body">
       <h4>${e.titulo}</h4>
-      <div class="flags">
-        <span class="flag ${e.inclui_transporte?'on':''}"></span>
-        <span class="flag ${e.inclui_hospedagem?'on':''}"></span>
-        <span class="flag ${e.inclui_cafe?'on':''}"></span>
-        <span class="flag ${e.inclui_almoco?'on':''}"></span>
-        <span class="flag ${e.inclui_jantar?'on':''}"></span>
-      </div>
-<div class="flags">
-  <span class="flag ${e.pag_pix?'on':''}" title="Pix"></span>
-  <span class="flag ${e.pag_credito?'on':''}" title="Crédito"></span>
-  <span class="flag ${e.pag_debito?'on':''}" title="Débito"></span>
-  <span class="flag ${e.pag_dinheiro?'on':''}" title="Dinheiro"></span>
-  <span class="flag ${e.pag_parcelado?'on':''}" title="Parcelado"></span>
+
+
+
+      
+      <div class="tags">
+  ${e.inclui_transporte ? `<span class="tag">Transporte</span>` : ``}
+  ${e.inclui_hospedagem ? `<span class="tag">Hospedagem</span>` : ``}
+  ${e.inclui_cafe ? `<span class="tag">Café</span>` : ``}
+  ${e.inclui_almoco ? `<span class="tag">Almoço</span>` : ``}
+  ${e.inclui_jantar ? `<span class="tag">Jantar</span>` : ``}
+</div>
+
+<div class="tags">
+  ${e.pag_pix ? `<span class="tag">Pix</span>` : ``}
+  ${e.pag_credito ? `<span class="tag">Crédito</span>` : ``}
+  ${e.pag_debito ? `<span class="tag">Débito</span>` : ``}
+  ${e.pag_dinheiro ? `<span class="tag">Dinheiro</span>` : ``}
+  ${e.pag_parcelado ? `<span class="tag">Parcelado</span>` : ``}
 </div>
 
 
