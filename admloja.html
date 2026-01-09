@@ -714,7 +714,7 @@ function fecharParcerias(){
 
   previewParceiro.style.display = "none";
   parc_nome.value = "";
-  parc_cidade.value = "";
+  parc_link.value = "";
   parc_ativo.checked = true;
 }
 
@@ -736,12 +736,13 @@ async function salvarParceria(){
   }
 
   const payload = {
-    user_id: userId,
-    nome: parc_nome.value || null,
-    cidade: parc_cidade.value || null,
-    logo_url: path,
-    ativo: parc_ativo.checked
-  };
+  user_id: userId,
+  nome: parc_nome.value || null,
+  link: parc_link.value || null,
+  logo_url: path,
+  ativo: parc_ativo.checked
+};
+
 
   const { error } = await sb.from("parcerias").insert(payload);
 
@@ -846,23 +847,24 @@ async function salvarParceria(){
 
     <div class="sheet-body">
 
-      <label>Logo da parceria</label>
-      <div class="image-box" onclick="logoParceiro.click()">
-        <img id="previewParceiro" style="display:none">
-        <input type="file" id="logoParceiro" hidden accept="image/*">
-      </div>
+     <label>Logo da parceria</label>
+<div class="image-box" onclick="logoParceiro.click()">
+  <img id="previewParceiro" style="display:none">
+  <input type="file" id="logoParceiro" hidden accept="image/*">
+</div>
 
-      <label>Nome</label>
-      <input id="parc_nome">
+<label>Nome</label>
+<input id="parc_nome">
 
-      <label>Cidade</label>
-      <input id="parc_cidade" placeholder="Ex: Barreiras - BA">
+<label>Link da parceria</label>
+<input id="parc_link" placeholder="https://site-do-parceiro.com" type="url">
 
-      <label class="toggle">
-        <span>Ativo</span>
-        <input type="checkbox" id="parc_ativo" checked>
-        <div class="switch"></div>
-      </label>
+<label class="toggle">
+  <span>Ativo</span>
+  <input type="checkbox" id="parc_ativo" checked>
+  <div class="switch"></div>
+</label>
+
 
     </div>
 
