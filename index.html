@@ -316,6 +316,55 @@ body{
   color:#111;
   text-decoration:none;
 }
+.footer{
+  background:#fff;
+  border-top:1px solid #e5e7eb;
+  padding:16px;
+}
+
+.footer-title{
+  font-size:12px;
+  font-weight:800;
+  margin-bottom:10px;
+  display:block;
+}
+
+.parceiros-wrap{
+  overflow:hidden;
+  width:100%;
+}
+
+.parceiros-track{
+  display:flex;
+  gap:24px;
+  align-items:center;
+  animation:scroll-parceiros 20s linear infinite;
+}
+
+.parceiros-track img{
+  height:36px;
+  width:auto;
+  opacity:.85;
+  filter:grayscale(100%);
+  transition:.3s;
+}
+
+.parceiros-track img:hover{
+  opacity:1;
+  filter:none;
+}
+
+.footer-copy{
+  margin-top:16px;
+  font-size:11px;
+  color:#6b7280;
+  text-align:center;
+}
+
+@keyframes scroll-parceiros{
+  from{ transform:translateX(0) }
+  to{ transform:translateX(-50%) }
+}
 
 </style>
 </head>
@@ -589,6 +638,31 @@ async function carregar(){
     document.body.style.opacity = "1";
 
     startBanner(cfg.banners, cfg.banner_efeito, cfg.banner_intervalo);
+// ===== ANO AUTOMÁTICO =====
+const anoEl = document.getElementById("ano");
+if(anoEl){
+  anoEl.innerText = new Date().getFullYear();
+}
+
+// ===== PARCEIROS (CARROSSEL) =====
+const parceirosTrack = document.getElementById("parceirosTrack");
+
+if(parceirosTrack && cfg.logos_parceiros?.length){
+  parceirosTrack.innerHTML = "";
+
+  // duplica para rolagem infinita
+  const logos = [...cfg.logos_parceiros, ...cfg.logos_parceiros];
+
+  logos.forEach(path=>{
+    const img = document.createElement("img");
+    img.src = pub(path);
+    img.alt = "Parceiro";
+    parceirosTrack.appendChild(img);
+  });
+}
+
+
+    
   }
 const loc = document.getElementById("localizacao");
 if(loc && cfg.localizacao){
@@ -720,6 +794,19 @@ carregarStories();
 </script>
 
 <script async src="https://www.instagram.com/embed.js"></script>
+<footer class="footer">
+  <div class="parceiros">
+    <span class="footer-title">Parcerias</span>
+
+    <div class="parceiros-wrap">
+      <div class="parceiros-track" id="parceirosTrack"></div>
+    </div>
+  </div>
+
+  <div class="footer-copy">
+    © <span id="ano"></span> Sávio Turismo — Todos os direitos reservados
+  </div>
+</footer>
 
 </body>
 </html>
