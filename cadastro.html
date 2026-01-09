@@ -389,9 +389,11 @@ todos os termos deste contrato.
 </div>
 
 
-<div class="actions">
-<button class="btn" onclick="finalizar()">FINALIZAR CONTRATO</button>
+<div class="actions" id="acoesFinalizar" style="display:none">
+  <button class="btn" onclick="finalizar()">FINALIZAR CONTRATO</button>
 </div>
+
+
 
 </div>
 
@@ -519,6 +521,22 @@ canvas.onmouseup=()=>d=false;
 canvas.ontouchstart=e=>{e.preventDefault();d=true;const t=e.touches[0],r=canvas.getBoundingClientRect();ctx.beginPath();ctx.moveTo(t.clientX-r.left,t.clientY-r.top)};
 canvas.ontouchmove=e=>{e.preventDefault();if(!d)return;const t=e.touches[0],r=canvas.getBoundingClientRect();ctx.lineTo(t.clientX-r.left,t.clientY-r.top);ctx.stroke()};
 canvas.ontouchend=()=>d=false;
+
+
+
+/* ===== CONTROLE DAS FLEGS ===== */
+const flegs = [f1, f2, f3];
+const acoesFinalizar = document.getElementById("acoesFinalizar");
+
+function verificarFlegs(){
+  const todasMarcadas = flegs.every(f => f.checked);
+  acoesFinalizar.style.display = todasMarcadas ? "block" : "none";
+}
+
+/* ESCUTA TODAS AS FLEGS */
+flegs.forEach(f => {
+  f.addEventListener("change", verificarFlegs);
+});
 
 /* FINALIZAR */
 async function finalizar(){
