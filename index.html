@@ -306,21 +306,15 @@ body{
   stroke:#000;
   stroke-width:1.6;
 }
-.info-btn{
-  position:fixed;
-  top:16px;
-  right:16px;
-  width:32px;
-  height:32px;
-  border-radius:50%;
-  background:#111;
-  color:#fff;
-  font-weight:900;
-  display:flex;
+.localizacao{
+  display:inline-flex;
   align-items:center;
-  justify-content:center;
-  cursor:pointer;
-  z-index:10000;
+  gap:6px;
+  margin-top:4px;
+  font-size:12px;
+  font-weight:700;
+  color:#111;
+  text-decoration:none;
 }
 
 </style>
@@ -346,7 +340,17 @@ body{
     </a>
   </span>
 </h1>
-  <p>Escolha sua próxima experiência</p>
+
+<a
+  id="localizacao"
+  class="localizacao"
+  href="https://wa.me/5577998253249"
+  target="_blank"
+>
+  📍
+</a>
+
+<p>Escolha sua próxima experiência</p>
 </div>
 
 <div class="banner">
@@ -586,6 +590,10 @@ async function carregar(){
 
     startBanner(cfg.banners, cfg.banner_efeito, cfg.banner_intervalo);
   }
+const loc = document.getElementById("localizacao");
+if(loc && cfg.localizacao){
+  loc.innerText = `📍 ${cfg.localizacao}`;
+}
 
   itens = data || [];
   lista.innerHTML = "";
