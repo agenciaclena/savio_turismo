@@ -95,6 +95,25 @@ body{
 .price{
   font-weight:900;
 }
+.meta{
+  font-size:12px;
+  color:var(--muted);
+}
+
+.btn-whats{
+  margin-top:8px;
+  height:36px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:999px;
+  background:#25d366;
+  color:#fff;
+  font-size:13px;
+  font-weight:800;
+  text-decoration:none;
+}
+
 .flags{
   display:flex;
   gap:6px;
@@ -401,6 +420,36 @@ function ultimasVagas(data_saida){
 
   return diff >= 0 && diff <= 7; // até 7 dias
 }
+/* ===== AUXILIARES DO CARD ===== */
+
+function textoParcelas(valor, parcelas){
+  if(!parcelas || parcelas <= 1) return "";
+  const v = valor / parcelas;
+  return `${parcelas}x de ${formatarMoeda(v)}`;
+}
+
+function ufPorCep(cep){
+  if(!cep || cep.length !== 8) return "";
+
+  const faixa = Number(cep.substring(0,2));
+
+  if(faixa >= 40 && faixa <= 49) return "BA";
+  if(faixa >= 10 && faixa <= 19) return "SP";
+  if(faixa >= 20 && faixa <= 28) return "RJ";
+  if(faixa >= 30 && faixa <= 39) return "MG";
+  if(faixa >= 50 && faixa <= 56) return "PE";
+  if(faixa >= 57 && faixa <= 57) return "AL";
+  if(faixa >= 58 && faixa <= 58) return "PB";
+  if(faixa >= 59 && faixa <= 59) return "RN";
+  if(faixa >= 60 && faixa <= 62) return "CE";
+  if(faixa >= 70 && faixa <= 72) return "DF";
+  if(faixa >= 73 && faixa <= 73) return "BA";
+  if(faixa >= 80 && faixa <= 87) return "PR";
+  if(faixa >= 88 && faixa <= 88) return "SC";
+  if(faixa >= 90 && faixa <= 99) return "RS";
+
+  return "";
+}
 
 
 
@@ -432,20 +481,37 @@ startBanner(
   lista.innerHTML="";
 
   data.forEach(e=>{
-    lista.innerHTML += `
-      <div class="card" onclick='abrir(${JSON.stringify(e)})'>
-        <img src="${pub(e.poster_url)}">
-        <div class="card-body">
-          <h4>${e.titulo}</h4>
+   const uf = ufPorCep(e.cep || "");
+const parcelasTxt = textoParcelas(e.valor, e.parcelas);
 
-          ${
-            ultimasVagas(e.data_saida)
-            ? `<div class="ultimas-vagas">
-                 <span class="pulse"></span>
-                 Últimas vagas
-               </div>`
-            : ``
-          }
+lista.innerHTML += `
+  <div class="card">
+    <img src="${pub(e.poster_url)}">
+
+    <div class="card-body">
+      <h4>${e.titulo}</h4>
+
+      <div class="meta">
+        📅 ${dataHora(e.data_saida, e.hora_saida)}
+      </div>
+
+      ${uf ? `<div class="meta">📍 ${uf}</div>` : ``}
+
+      <div class="price">${formatarMoeda(e.valor)}</div>
+
+      ${parcelasTxt ? `<div class="meta">💳 ${parcelasTxt}</div>` : ``}
+
+      <a
+        class="btn-whats"
+        href="https://wa.me/55${e.whatsapp || ''}?text=Quero%20informações%20sobre%20${encodeURIComponent(e.titulo)}"
+        target="_blank"
+      >
+        💬 WhatsApp
+      </a>
+    </div>
+  </div>
+`;
+
 
           <div class="price">${formatarMoeda(e.valor)}</div>
         </div>
