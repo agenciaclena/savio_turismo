@@ -4,17 +4,13 @@
 <meta charset="UTF-8">
 <title>Painel Administrativo</title>
 
-<!-- VIEWPORT / FULLSCREEN -->
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#ff6a00">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Admin">
 <meta name="mobile-web-app-capable" content="yes">
 
-<!-- PWA -->
 <link rel="manifest" href="manifest.json">
-
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -22,35 +18,36 @@
 *{margin:0;padding:0;box-sizing:border-box;font-family:Inter}
 html,body{
   height:100%;
-  background:#f4f6fb;
-  overflow:hidden; /* 🔒 SEM BARRA */
+  background:#f5f7fb;
+  overflow:hidden;
 }
 
 :root{
   --primary:#ff6a00;
   --card:#ffffff;
-  --border:#e5e7eb;
+  --border:#e6e8ef;
   --text:#111827;
   --muted:#6b7280;
 }
 
 /* HEADER */
 .header{
-  padding:20px env(safe-area-inset-left) 16px env(safe-area-inset-right);
+  padding:18px 16px 14px;
   display:flex;
   justify-content:space-between;
   align-items:center;
 }
 .header h1{
-  font-size:20px;
+  font-size:18px;
   font-weight:800;
 }
 .header p{
   font-size:12px;
   color:var(--muted);
+  margin-top:2px;
 }
 
-/* SINO */
+/* NOTIFICAÇÃO */
 .notify{
   position:relative;
   font-size:22px;
@@ -58,50 +55,56 @@ html,body{
 }
 .badge{
   position:absolute;
-  top:-4px;
+  top:-6px;
   right:-6px;
-  background:#dc2626;
+  background:#ef4444;
   color:#fff;
   font-size:10px;
-  font-weight:900;
+  font-weight:800;
   border-radius:999px;
   padding:2px 6px;
 }
 
-/* GRID – SEMPRE 5 POR LINHA */
+/* GRID – 5 POR LINHA */
 .grid{
-  padding:0 12px env(safe-area-inset-bottom);
+  padding:10px 12px env(safe-area-inset-bottom);
   display:grid;
   grid-template-columns:repeat(5,1fr);
-  gap:10px;
-  height:calc(100vh - 76px);
-  overflow:auto;
+  gap:12px;
+  height:calc(100vh - 80px);
+  overflow-y:auto;
 }
 
 /* CARD */
 .card{
   background:var(--card);
-  border-radius:18px;
-  padding:14px 10px;
+  border-radius:16px;
   border:1px solid var(--border);
+  aspect-ratio:1/1;
   display:flex;
   flex-direction:column;
   align-items:center;
-  gap:6px;
+  justify-content:center;
+  gap:8px;
   text-align:center;
   cursor:pointer;
-  transition:.2s;
+  transition:.18s ease;
 }
 .card:active{
-  transform:scale(.96);
+  transform:scale(.95);
+  background:#fff7ed;
 }
 
+/* ÍCONE */
 .icon{
-  font-size:22px;
+  font-size:26px;
 }
+
+/* TEXTO */
 .card span{
   font-size:11px;
-  font-weight:700;
+  font-weight:800;
+  color:#1f2937;
   line-height:1.2;
 }
 
@@ -120,8 +123,8 @@ html,body{
 }
 .close{
   position:fixed;
-  top:14px;
-  right:14px;
+  top:12px;
+  right:12px;
   z-index:10000;
   background:#fff;
   border-radius:999px;
@@ -140,7 +143,7 @@ html,body{
     <p>Controle do sistema</p>
   </div>
 
-  <div class="notify" onclick="abrirNotificacoes()">
+  <div class="notify" onclick="abrir('notificacoes.html')">
     🔔
     <div class="badge" id="badge">3</div>
   </div>
@@ -208,13 +211,13 @@ html,body{
 </div>
 
 <script>
-/* ================= SUPABASE ================= */
+/* SUPABASE */
 const sb = supabase.createClient(
   "https://ghkfeobnrfvqwzuliqfz.supabase.co",
   "sb_publishable_R-eenS9xurRgnrqDR9kz0Q_kJonEi7t"
 );
 
-/* 🔐 PROTEÇÃO DE ACESSO */
+/* 🔒 PROTEÇÃO */
 (async()=>{
   const { data:{session} } = await sb.auth.getSession();
   if(!session){
@@ -230,9 +233,6 @@ function abrir(url){
 function fechar(){
   frame.src = "";
   popup.style.display = "none";
-}
-function abrirNotificacoes(){
-  abrir("notificacoes.html");
 }
 
 /* PWA */
