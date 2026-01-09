@@ -281,41 +281,39 @@ function ultimasVagas(data_saida){
 
 
 
-
-
-  
-/* LOAD */
 async function carregar(){
- const {data:cfg}=await sb.from("loja_config").select("*").single();
- const {data}=await sb.from("excursoes").select("*").eq("status","Ativa");
+  const {data:cfg}=await sb.from("loja_config").select("*").single();
+  const {data}=await sb.from("excursoes").select("*").eq("status","Ativa");
 
- if(cfg){
-  document.documentElement.style.setProperty("--primary",cfg.cor_primaria);
-  startBanner(cfg.banners);
- }
+  if(cfg){
+    document.documentElement.style.setProperty("--primary",cfg.cor_primaria);
+    startBanner(cfg.banners);
+  }
 
- lista.innerHTML="";
- data.forEach(e=>{
+  lista.innerHTML="";
 
-   
- lista.innerHTML += `
-<div class="card" onclick='abrir(${JSON.stringify(e)})'>
-  <img src="${pub(e.poster_url)}">
-  <div class="card-body">
-    <h4>${e.titulo}</h4>
+  data.forEach(e=>{
+    lista.innerHTML += `
+      <div class="card" onclick='abrir(${JSON.stringify(e)})'>
+        <img src="${pub(e.poster_url)}">
+        <div class="card-body">
+          <h4>${e.titulo}</h4>
 
-    ${
-      ultimasVagas(e.data_saida)
-      ? `<div class="ultimas-vagas">
-           <span class="pulse"></span>
-           Últimas vagas
-         </div>`
-      : ``
-    }
+          ${
+            ultimasVagas(e.data_saida)
+            ? `<div class="ultimas-vagas">
+                 <span class="pulse"></span>
+                 Últimas vagas
+               </div>`
+            : ``
+          }
 
-    <div class="price">R$ ${e.valor}</div>
-  </div>
-</div>`;
+          <div class="price">${formatarMoeda(e.valor)}</div>
+        </div>
+      </div>
+    `;
+  });
+}
 
 /* MODAL */
 function abrir(e){
