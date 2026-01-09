@@ -160,22 +160,81 @@ canvas{
 <label>E-MAIL</label><input id="email" style="text-transform:none">
 </div>
 
-<!-- CONTRATO -->
-<div class="card contrato">
-<h2>CONTRATO</h2>
+<!-- CONTRATO COMPLETO -->
+<div class="card contrato" id="contratoTexto">
+
+<h2>CONTRATO DE PRESTAÇÃO DE SERVIÇOS TURÍSTICOS</h2>
 
 <p>
-Pelo presente instrumento, <strong>SÁVIO TURISMO</strong>, CNPJ 56.173.108/0001-30,
-e <strong id="cNome">________</strong>, CPF <strong id="cCpf">________</strong>,
-RG <strong id="cRg">________</strong>, acordam:
+<strong>EXCURSÃO – <span id="ctr_titulo">__________</span></strong>
 </p>
 
 <p>
-Excursão: <strong id="cPacote">________</strong><br>
-Período: <strong id="cDatas">________</strong><br>
-Valor: <strong id="cValor">________</strong>
+Pelo presente instrumento particular, de um lado,
+<strong>SÁVIO TURISMO</strong>, pessoa jurídica de direito privado,
+inscrita no CNPJ nº <strong>56.173.108/0001-30</strong>,
+doravante denominada <strong>CONTRATADA</strong>, e, de outro lado,
+<strong><span id="ctr_nome">____________________________</span></strong>,
+CPF <strong><span id="ctr_cpf">________________</span></strong>,
+RG <strong><span id="ctr_rg">________________</span></strong>,
+doravante denominado(a) <strong>CONTRATANTE</strong>,
+têm entre si justo e contratado o que segue:
 </p>
 
+<h3>I. DO OBJETO</h3>
+<p>
+Prestação de serviços turísticos relativos à excursão
+<strong><span id="ctr_destino">__________</span></strong>,
+com saída em <strong><span id="ctr_saida">__/__/____</span></strong>
+e retorno em <strong><span id="ctr_retorno">__/__/____</span></strong>,
+conforme roteiro e condições estabelecidas.
+</p>
+
+<h3>II. DOS SERVIÇOS INCLUSOS</h3>
+<ul id="ctr_inclusos"></ul>
+
+<h3>III. DO VALOR</h3>
+<p>
+O valor total do pacote contratado é de
+<strong><span id="ctr_valor">R$ 0,00</span></strong>.
+</p>
+
+<h3>IV. DAS OBRIGAÇÕES DO CONTRATANTE</h3>
+<p>
+Cumprir horários, portar documentos pessoais válidos,
+respeitar orientações da equipe responsável e zelar por seus pertences.
+</p>
+
+<h3>V. DOS RISCOS</h3>
+<p>
+O contratante declara estar ciente dos riscos inerentes
+às atividades turísticas.
+</p>
+
+<h3>VI. DO CANCELAMENTO</h3>
+<p>
+Em caso de desistência por parte do contratante,
+não haverá reembolso dos valores pagos.
+</p>
+
+<h3>VII. DA PROTEÇÃO DE DADOS (LGPD)</h3>
+<p>
+O contratante autoriza o tratamento de seus dados pessoais
+nos termos da Lei nº 13.709/2018.
+</p>
+
+<h3>VIII. DA DECLARAÇÃO FINAL</h3>
+<p>
+Declaro que li, compreendi e aceito integralmente
+todos os termos deste contrato.
+</p>
+
+<p>
+<strong>Local e data:</strong>
+<span id="ctr_local_data">__________</span>
+</p>
+
+<!-- FLEGS -->
 <label class="fleg">
   <span>ACEITO O CONTRATO</span>
   <input type="checkbox" id="f1">
@@ -193,6 +252,8 @@ Valor: <strong id="cValor">________</strong>
   <input type="checkbox" id="f3">
   <div class="toggle"></div>
 </label>
+
+</div>
 
 
 <!-- ASSINATURA -->
@@ -217,24 +278,64 @@ const sb = supabase.createClient(
 /* ID */
 const id = new URLSearchParams(location.search).get("id");
 
-/* PACOTE */
 async function carregarPacote(){
- const {data} = await sb.from("excursoes").select("*").eq("id",id).single();
- const url = sb.storage.from("buffet_excursoes").getPublicUrl(data.poster_url).data.publicUrl;
- pFoto.src=url;
- pTitulo.innerText=data.titulo;
- pDatas.innerText=`${data.data_saida} → ${data.data_retorno}`;
- pValor.innerText=Number(data.valor).toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
- cPacote.innerText=data.titulo;
- cDatas.innerText=pDatas.innerText;
- cValor.innerText=pValor.innerText;
-}
-carregarPacote();
+  const { data, error } = await sb
+    .from("excursoes")
+    .select("*")
+    .eq("id", id)
+    .single();
 
-/* FORM → CONTRATO */
-nome.oninput=()=>cNome.innerText=nome.value||"________";
-cpf.oninput=()=>cCpf.innerText=cpf.value||"________";
-rg.oninput=()=>cRg.innerText=rg.value||"________";
+  if(error){
+    alert("ERRO AO CARREGAR PACOTE");
+    console.error(error);
+    return;
+  }
+
+  const url = sb.storage
+    .from("buffet_excursoes")
+    .getPublicUrl(data.poster_url).data.publicUrl;
+
+  /* CARD DO PACOTE */
+  pFoto.src = url;
+  pTitulo.innerText = data.titulo;
+  pDatas.innerText =
+    `${formatarData(data.data_saida)} → ${formatarData(data.data_retorno)}`;
+  pValor.innerText =
+    Number(data.valor).toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
+
+  /* CONTRATO — DADOS DO PACOTE */
+  ctr_titulo.innerText  = data.titulo;
+  ctr_destino.innerText = data.destino || data.titulo;
+  ctr_saida.innerText   = formatarData(data.data_saida);
+  ctr_retorno.innerText = formatarData(data.data_retorno);
+  ctr_valor.innerText   =
+    Number(data.valor).toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
+
+  /* INCLUSOS */
+  ctr_inclusos.innerHTML = "";
+  if(data.inclui_transporte) ctr_inclusos.innerHTML += "<li>• Transporte</li>";
+  if(data.inclui_hospedagem) ctr_inclusos.innerHTML += "<li>• Hospedagem</li>";
+  if(data.inclui_cafe)       ctr_inclusos.innerHTML += "<li>• Café da manhã</li>";
+  if(data.inclui_guia)       ctr_inclusos.innerHTML += "<li>• Guia turístico</li>";
+  if(data.inclui_seguro)     ctr_inclusos.innerHTML += "<li>• Seguro viagem</li>";
+
+  /* DATA DO CONTRATO */
+  ctr_local_data.innerText =
+    new Date().toLocaleDateString("pt-BR");
+}
+
+  carregarPacote();
+
+/* FORM → CONTRATO (CLIENTE) */
+nome.oninput = () =>
+  ctr_nome.innerText = nome.value || "____________________________";
+
+cpf.oninput = () =>
+  ctr_cpf.innerText = cpf.value || "________________";
+
+rg.oninput = () =>
+  ctr_rg.innerText = rg.value || "________________";
+
 
 /* CANVAS */
 const canvas=document.getElementById("canvas");
@@ -262,6 +363,12 @@ async function finalizar(){
 
  alert("CONTRATO ASSINADO COM SUCESSO");
 }
+function formatarData(d){
+  if(!d) return "__/__/____";
+  const [y,m,da] = d.split("-");
+  return `${da}/${m}/${y}`;
+}
+
 </script>
 
 </body>
