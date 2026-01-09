@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>SÁVIO TURISMO • CADASTRO</title>
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+:root{
+  --primary:#ff6a00;
+  --bg:#f4f6f8;
+  --card:#ffffff;
+  --border:#e5e7eb;
+  --text:#111;
+  --muted:#6b7280;
+}
+
+*{
+  box-sizing:border-box;
+  font-family:Inter;
+  text-transform:uppercase;
+  touch-action:manipulation;
+}
+
+html,body{
+  margin:0;
+  padding:0;
+  background:var(--bg);
+  color:var(--text);
+  -webkit-text-size-adjust:100%;
+}
+
+/* HEADER */
+header{
+  background:#fff;
+  padding:14px;
+  display:flex;
+  justify-content:center;
+  border-bottom:1px solid var(--border);
+}
+header img{height:54px}
+
+/* CONTAINER */
+.container{
+  max-width:1200px;
+  margin:auto;
+  padding:16px;
+}
+
+/* GRID */
+.grid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:16px;
+}
+@media(min-width:900px){
+  .grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(min-width:1200px){
+  .grid{grid-template-columns:repeat(3,1fr)}
+}
+
+/* CARD */
+.card{
+  background:var(--card);
+  border-radius:18px;
+  padding:18px;
+  box-shadow:0 10px 24px rgba(0,0,0,.06);
+}
+.card h2{
+  margin:0 0 12px;
+  font-size:14px;
+  font-weight:800;
+  border-bottom:1px solid var(--border);
+  padding-bottom:8px;
+}
+
+/* INPUTS */
+label{
+  font-size:12px;
+  font-weight:700;
+  display:block;
+  margin-top:10px;
+}
+
+input{
+  width:100%;
+  padding:14px;
+  border-radius:14px;
+  border:1px solid #d1d5db;
+  margin-top:6px;
+  font-size:16px; /* evita zoom */
+}
+
+input:focus{
+  outline:none;
+  border-color:var(--primary);
+}
+
+.readonly{
+  background:#f1f1f1;
+}
+
+/* ===== SWITCHES PROFISSIONAIS ===== */
+.switch-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  padding:14px 0;
+  cursor:pointer;
+}
+
+.switch-row span{
+  font-size:14px;
+  font-weight:700;
+  line-height:1.2;
+}
+
+/* ESCONDE CHECKBOX */
+.switch-row input{
+  display:none;
+}
+
+/* SWITCH VISUAL */
+.switch-ui{
+  width:48px;
+  height:28px;
+  background:#d1d5db;
+  border-radius:999px;
+  position:relative;
+  transition:background .25s ease;
+  flex-shrink:0;
+}
+
+/* BOLA */
+.switch-ui::after{
+  content:"";
+  position:absolute;
+  width:22px;
+  height:22px;
+  background:#fff;
+  border-radius:50%;
+  top:3px;
+  left:3px;
+  transition:transform .25s ease;
+  box-shadow:0 2px 6px rgba(0,0,0,.25);
+}
+
+/* ATIVO */
+.switch-row input:checked + .switch-ui{
+  background:var(--primary);
+}
+.switch-row input:checked + .switch-ui::after{
+  transform:translateX(20px);
+}
+
+/* BOTÕES */
+.actions{
+  margin-top:20px;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+.btn{
+  width:100%;
+  padding:18px;
+  border:none;
+  border-radius:999px;
+  font-size:15px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+.btn-primary{
+  background:linear-gradient(135deg,#ff6a00,#ff9a57);
+  color:#fff;
+}
+
+.btn-clear{
+  background:#e5e7eb;
+  color:#111;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <img src="logo.png" alt="SÁVIO TURISMO">
+</header>
+
+<div class="container">
+<form id="formCadastro">
+
+<div class="grid">
+
+<!-- DADOS -->
+<div class="card">
+<h2>DADOS DO PASSAGEIRO</h2>
+
+<label>NOME COMPLETO</label>
+<input id="nome" required>
+
+<label>CPF</label>
+<input id="cpf" inputmode="numeric" placeholder="000.000.000-00" required>
+
+<label>RG</label>
+<input id="rg" inputmode="numeric" placeholder="00.000.000-0" required>
+
+<label>DATA DE NASCIMENTO</label>
+<input id="nascimento" type="date" required>
+
+<label>PROFISSÃO</label>
+<input id="profissao">
+
+<label>WHATSAPP</label>
+<input id="telefone" inputmode="numeric" placeholder="(00) 00000-0000" required>
+
+<label>E-MAIL</label>
+<input id="email" type="email" style="text-transform:none" required>
+</div>
+
+<!-- ENDEREÇO -->
+<div class="card">
+<h2>ENDEREÇO</h2>
+
+<label>CEP</label>
+<input id="cep" inputmode="numeric" placeholder="00000-000" required>
+
+<label>RUA</label>
+<input id="rua" class="readonly" readonly>
+
+<label>NÚMERO</label>
+<input id="numero" inputmode="numeric" required>
+
+<label>BAIRRO</label>
+<input id="bairro" class="readonly" readonly>
+
+<label>CIDADE</label>
+<input id="cidade" class="readonly" readonly>
+
+<label>UF</label>
+<input id="uf" class="readonly" readonly>
+</div>
+
+<!-- EMERGÊNCIA -->
+<div class="card">
+<h2>CONTATO DE EMERGÊNCIA</h2>
+
+<label>NOME</label>
+<input id="em_nome" required>
+
+<label>PARENTESCO</label>
+<input id="em_parentesco" required>
+
+<label>TELEFONE</label>
+<input id="em_telefone" inputmode="numeric" placeholder="(00) 00000-0000" required>
+</div>
+
+<!-- DECLARAÇÕES -->
+<div class="card">
+<h2>DECLARAÇÕES</h2>
+
+<label class="switch-row">
+  <span>ACEITO O CONTRATO</span>
+  <input type="checkbox" id="aceite_contrato" required>
+  <div class="switch-ui"></div>
+</label>
+
+<label class="switch-row">
+  <span>CIÊNCIA DOS RISCOS</span>
+  <input type="checkbox" id="aceite_risco" required>
+  <div class="switch-ui"></div>
+</label>
+
+<label class="switch-row">
+  <span>AUTORIZO LGPD</span>
+  <input type="checkbox" id="aceite_lgpd" required>
+  <div class="switch-ui"></div>
+</label>
+
+</div>
+
+</div>
+
+<div class="actions">
+  <button type="submit" class="btn btn-primary">CONFIRMAR DADOS</button>
+  <button type="button" class="btn btn-clear" onclick="limparTudo()">LIMPAR TUDO</button>
+</div>
+
+</form>
+</div>
+
+<script>
+/* ===== MÁSCARAS ===== */
+function mask(el, fn){
+  el.addEventListener("input", ()=>el.value = fn(el.value));
+}
+
+mask(cpf, v=>v.replace(/\D/g,"")
+  .replace(/(\d{3})(\d)/,"$1.$2")
+  .replace(/(\d{3})(\d)/,"$1.$2")
+  .replace(/(\d{3})(\d{1,2})$/,"$1-$2"));
+
+mask(rg, v=>v.replace(/\D/g,"")
+  .replace(/(\d{2})(\d)/,"$1.$2")
+  .replace(/(\d{3})(\d)/,"$1.$2")
+  .replace(/(\d{3})(\d)$/,"$1-$2"));
+
+mask(telefone, v=>v.replace(/\D/g,"")
+  .replace(/(\d{2})(\d)/,"($1) $2")
+  .replace(/(\d{5})(\d)/,"$1-$2"));
+
+mask(em_telefone, v=>v.replace(/\D/g,"")
+  .replace(/(\d{2})(\d)/,"($1) $2")
+  .replace(/(\d{5})(\d)/,"$1-$2"));
+
+mask(cep, v=>v.replace(/\D/g,"")
+  .replace(/(\d{5})(\d)/,"$1-$2"));
+
+/* ===== STORAGE ===== */
+function limparTudo(){
+  if(confirm("DESEJA LIMPAR TODOS OS DADOS?")){
+    localStorage.clear();
+    location.reload();
+  }
+}
+
+formCadastro.onsubmit=e=>{
+  e.preventDefault();
+  location.href="resumo.html";
+};
+</script>
+
+</body>
+</html>

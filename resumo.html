@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>SÁVIO TURISMO • RESUMO</title>
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --primary:#ff6a00;
+  --bg:#f4f6f8;
+  --card:#ffffff;
+  --border:#e5e7eb;
+  --text:#111;
+  --muted:#6b7280;
+}
+
+*{
+  box-sizing:border-box;
+  font-family:Inter;
+  text-transform:uppercase;
+  touch-action:manipulation;
+}
+
+html,body{
+  margin:0;
+  padding:0;
+  background:var(--bg);
+  color:var(--text);
+  -webkit-text-size-adjust:100%;
+}
+
+/* HEADER */
+header{
+  background:#fff;
+  padding:14px;
+  display:flex;
+  justify-content:center;
+  border-bottom:1px solid var(--border);
+}
+header img{height:54px}
+
+/* CONTAINER */
+.container{
+  max-width:1000px;
+  margin:auto;
+  padding:16px;
+}
+
+/* CARD */
+.card{
+  background:var(--card);
+  border-radius:18px;
+  padding:18px;
+  margin-bottom:16px;
+  box-shadow:0 10px 24px rgba(0,0,0,.06);
+}
+
+.card h2{
+  margin:0 0 12px;
+  font-size:15px;
+  font-weight:800;
+  border-bottom:1px solid var(--border);
+  padding-bottom:8px;
+}
+
+/* GRID */
+.grid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:10px;
+}
+
+@media(min-width:900px){
+  .grid{
+    grid-template-columns:repeat(2,1fr);
+  }
+}
+
+/* TEXTO */
+p{
+  font-size:16px; /* EVITA ZOOM */
+  margin:6px 0;
+  line-height:1.5;
+}
+
+.label{
+  font-weight:800;
+}
+
+/* AÇÕES */
+.actions{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  margin:20px 0 10px;
+}
+
+@media(min-width:700px){
+  .actions{
+    flex-direction:row;
+  }
+}
+
+.btn{
+  flex:1;
+  padding:18px;
+  border:none;
+  border-radius:999px;
+  font-size:15px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+.btn-primary{
+  background:linear-gradient(135deg,#ff6a00,#ff9a57);
+  color:#fff;
+}
+
+.btn-secondary{
+  background:#e5e7eb;
+  color:#111;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <img src="logo.png" alt="SÁVIO TURISMO">
+</header>
+
+<div class="container">
+
+<!-- PASSAGEIRO -->
+<div class="card">
+<h2>DADOS DO PASSAGEIRO</h2>
+<div class="grid">
+  <p><span class="label">NOME:</span> <span id="r_nome"></span></p>
+  <p><span class="label">CPF:</span> <span id="r_cpf"></span></p>
+  <p><span class="label">RG:</span> <span id="r_rg"></span></p>
+  <p><span class="label">NASCIMENTO:</span> <span id="r_nascimento"></span></p>
+  <p><span class="label">PROFISSÃO:</span> <span id="r_profissao"></span></p>
+  <p><span class="label">WHATSAPP:</span> <span id="r_telefone"></span></p>
+  <p><span class="label">E-MAIL:</span> <span id="r_email"></span></p>
+</div>
+</div>
+
+<!-- ENDEREÇO -->
+<div class="card">
+<h2>ENDEREÇO</h2>
+<p id="r_endereco"></p>
+</div>
+
+<!-- EMERGÊNCIA -->
+<div class="card">
+<h2>CONTATO DE EMERGÊNCIA</h2>
+<div class="grid">
+  <p><span class="label">NOME:</span> <span id="r_em_nome"></span></p>
+  <p><span class="label">PARENTESCO:</span> <span id="r_em_parentesco"></span></p>
+  <p><span class="label">TELEFONE:</span> <span id="r_em_telefone"></span></p>
+</div>
+</div>
+
+<!-- SAÚDE -->
+<div class="card">
+<h2>INFORMAÇÕES DE SAÚDE</h2>
+<p id="r_saude"></p>
+</div>
+
+<!-- PACOTE -->
+<div class="card">
+<h2>PACOTE CONTRATADO</h2>
+<div class="grid">
+  <p><span class="label">PACOTE:</span> <span id="r_pacote"></span></p>
+  <p><span class="label">PERÍODO:</span> <span id="r_periodo"></span></p>
+  <p><span class="label">VALOR:</span> <span id="r_valor"></span></p>
+</div>
+</div>
+
+<!-- AÇÕES -->
+<div class="actions">
+  <button class="btn btn-secondary" onclick="voltar()">VOLTAR E CORRIGIR</button>
+  <button class="btn btn-primary" onclick="confirmar()">CONFIRMAR E ASSINAR</button>
+</div>
+
+</div>
+
+<script>
+/* ========= DADOS ========= */
+const dados = JSON.parse(localStorage.getItem("cadastro_savio")||"{}");
+const pacote = JSON.parse(localStorage.getItem("pacote")||"{}");
+
+/* PASSAGEIRO */
+r_nome.innerText = dados.nome || "";
+r_cpf.innerText = dados.cpf || "";
+r_rg.innerText = dados.rg || "";
+r_nascimento.innerText = dados.nascimento || "";
+r_profissao.innerText = dados.profissao || "";
+r_telefone.innerText = dados.telefone || "";
+r_email.innerText = dados.email || "";
+
+/* ENDEREÇO */
+r_endereco.innerText =
+`${dados.rua||""}, Nº ${dados.numero||""} – ${dados.bairro||""} – ${dados.cidade||""}/${dados.uf||""}`;
+
+/* EMERGÊNCIA */
+r_em_nome.innerText = dados.em_nome || "";
+r_em_parentesco.innerText = dados.em_parentesco || "";
+r_em_telefone.innerText = dados.em_telefone || "";
+
+/* SAÚDE */
+const saude = [
+  dados.saude_condicao,
+  dados.saude_medicamentos,
+  dados.saude_alergias,
+  dados.saude_sangue
+].filter(v=>v).join(" • ");
+r_saude.innerText = saude || "NÃO INFORMADO";
+
+/* PACOTE */
+r_pacote.innerText = pacote.titulo || "";
+r_periodo.innerText =
+  pacote.data_saida && pacote.data_retorno
+  ? formatarData(pacote.data_saida)+" A "+formatarData(pacote.data_retorno)
+  : "";
+
+r_valor.innerText = pacote.valor
+  ? Number(pacote.valor).toLocaleString("pt-BR",{style:"currency",currency:"BRL"})
+  : "";
+
+/* FUNÇÕES */
+function formatarData(d){
+  const [y,m,da]=d.split("-");
+  return `${da}/${m}/${y}`;
+}
+
+function voltar(){
+  history.back();
+}
+
+function confirmar(){
+  location.href="assinatura.html";
+}
+</script>
+
+</body>
+</html>
