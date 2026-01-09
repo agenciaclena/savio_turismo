@@ -4,62 +4,126 @@
 <meta charset="UTF-8">
 <title>SÁVIO TURISMO • RESUMO</title>
 
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="viewport"
+content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 
 <style>
-*{box-sizing:border-box;font-family:Inter;text-transform:uppercase}
-body{margin:0;background:#f4f6f8;color:#111}
+:root{
+  --primary:#ff6a00;
+  --bg:#f4f6f8;
+  --card:#ffffff;
+  --border:#e5e7eb;
+  --text:#111;
+  --muted:#6b7280;
+}
+
+*{
+  box-sizing:border-box;
+  font-family:Inter;
+  text-transform:uppercase;
+  touch-action:manipulation;
+}
+
+html,body{
+  margin:0;
+  padding:0;
+  background:var(--bg);
+  color:var(--text);
+  -webkit-text-size-adjust:100%;
+}
+
+/* HEADER */
 header{
   background:#fff;
-  padding:16px;
+  padding:14px;
   display:flex;
   justify-content:center;
-  border-bottom:1px solid #e5e7eb
+  border-bottom:1px solid var(--border);
 }
-header img{height:55px}
-.container{max-width:1000px;margin:auto;padding:20px}
+header img{height:54px}
+
+/* CONTAINER */
+.container{
+  max-width:1000px;
+  margin:auto;
+  padding:16px;
+}
+
+/* CARD */
 .card{
-  background:#fff;
+  background:var(--card);
   border-radius:18px;
-  padding:20px;
+  padding:18px;
   margin-bottom:16px;
-  box-shadow:0 10px 24px rgba(0,0,0,.06)
+  box-shadow:0 10px 24px rgba(0,0,0,.06);
 }
+
 .card h2{
   margin:0 0 12px;
   font-size:15px;
-  border-bottom:1px solid #eee;
-  padding-bottom:8px
+  font-weight:800;
+  border-bottom:1px solid var(--border);
+  padding-bottom:8px;
 }
+
+/* GRID */
 .grid{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-  gap:16px
+  grid-template-columns:1fr;
+  gap:10px;
 }
-p{font-size:13px;margin:6px 0}
-.label{font-weight:800}
+
+@media(min-width:900px){
+  .grid{
+    grid-template-columns:repeat(2,1fr);
+  }
+}
+
+/* TEXTO */
+p{
+  font-size:16px; /* EVITA ZOOM */
+  margin:6px 0;
+  line-height:1.5;
+}
+
+.label{
+  font-weight:800;
+}
+
+/* AÇÕES */
 .actions{
-  display:grid;
-  grid-template-columns:1fr 1fr;
+  display:flex;
+  flex-direction:column;
   gap:12px;
-  margin-top:20px
+  margin:20px 0 10px;
 }
+
+@media(min-width:700px){
+  .actions{
+    flex-direction:row;
+  }
+}
+
 .btn{
-  padding:15px;
+  flex:1;
+  padding:18px;
   border:none;
   border-radius:999px;
   font-size:15px;
   font-weight:800;
-  cursor:pointer
+  cursor:pointer;
 }
+
 .btn-primary{
   background:linear-gradient(135deg,#ff6a00,#ff9a57);
-  color:#fff
+  color:#fff;
 }
+
 .btn-secondary{
   background:#e5e7eb;
-  color:#111
+  color:#111;
 }
 </style>
 </head>
@@ -127,7 +191,7 @@ p{font-size:13px;margin:6px 0}
 </div>
 
 <script>
-/* ========= CARREGAR DADOS ========= */
+/* ========= DADOS ========= */
 const dados = JSON.parse(localStorage.getItem("cadastro_savio")||"{}");
 const pacote = JSON.parse(localStorage.getItem("pacote")||"{}");
 
