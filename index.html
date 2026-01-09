@@ -253,14 +253,87 @@ function pub(path){
 
 /* BANNER */
 let idx=0;
-function startBanner(imgs){
- const track=document.getElementById("bannerTrack");
- imgs.forEach(i=>track.innerHTML+=`<img src="${i}">`);
- setInterval(()=>{
-  idx=(idx+1)%imgs.length;
-  track.style.transform=`translateX(-${idx*100}%)`;
- },2000);
+function startBanner(imgs, efeito = "slide", intervalo = 3000){
+  const track = document.getElementById("bannerTrack");
+  track.innerHTML = "";
+  idx = 0;
+
+  // estilo base
+  track.style.transition = "none";
+  track.style.transform = "translateX(0)";
+  track.style.display = "flex";
+
+  // cria imagens
+  imgs.forEach((src, i) => {
+    const img = document.createElement("img");
+    img.src = src;
+
+    if(efeito === "fade"){
+      img.style.position = "absolute";
+      img.style.inset = 0;
+      img.style.opacity = i === 0 ? "1" : "0";
+      img.style.transition = "opacity .6s ease";
+    }
+
+    track.appendChild(img);
+  });
+
+  if(efeito === "fade"){
+    track.style.position = "relative";
+    track.style.display = "block";
+  }
+
+  let timer = null;
+
+  function mostrar(novo){
+    const total = imgs.length;
+
+    if(novo < 0) novo = total - 1;
+    if(novo >= total) novo = 0;
+
+    if(efeito === "slide"){
+      track.style.transition = "transform .6s ease";
+      track.style.transform = `translateX(-${novo * 100}%)`;
+    } else {
+      [...track.children].forEach((img, i)=>{
+        img.style.opacity = i === novo ? "1" : "0";
+      });
+    }
+
+    idx = novo;
+  }
+
+  function proximo(){ mostrar(idx + 1); }
+  function anterior(){ mostrar(idx - 1); }
+
+  // loop automático
+  function iniciarLoop(){
+    clearInterval(timer);
+    timer = setInterval(proximo, intervalo);
+  }
+
+  iniciarLoop();
+
+  /* ===== SWIPE TOUCH ===== */
+  let startX = 0;
+
+  track.addEventListener("touchstart", e=>{
+    startX = e.touches[0].clientX;
+    clearInterval(timer);
+  }, { passive:true });
+
+  track.addEventListener("touchend", e=>{
+    const endX = e.changedTouches[0].clientX;
+    const diff = startX - endX;
+
+    if(Math.abs(diff) > 40){
+      diff > 0 ? proximo() : anterior();
+    }
+
+    iniciarLoop();
+  });
 }
+
 
 /* DATA */
 function dataHora(d,h){
@@ -309,7 +382,11 @@ if(cfg){
 
   document.body.style.opacity = "1";
 
-  startBanner(cfg.banners);
+startBanner(
+  cfg.banners,
+  cfg.banner_efeito || "slide",
+  cfg.banner_intervalo || 3000
+);
 }
 
 
