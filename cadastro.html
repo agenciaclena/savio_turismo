@@ -151,14 +151,82 @@ canvas{
 <!-- CADASTRO -->
 <div class="card">
 <h2>DADOS DO CONTRATANTE</h2>
-<label>NOME</label><input id="nome">
-<label>CPF</label><input id="cpf">
-<label>RG</label><input id="rg">
-<label>NASCIMENTO</label><input type="date" id="nascimento">
-<label>PROFISSÃO</label><input id="profissao">
-<label>WHATSAPP</label><input id="telefone">
-<label>E-MAIL</label><input id="email" style="text-transform:none">
+
+<label>NOME</label>
+<input id="nome">
+
+<label>CPF</label>
+<input id="cpf">
+
+<label>RG</label>
+<input id="rg">
+
+<label>NASCIMENTO</label>
+<input type="date" id="nascimento">
+
+<label>PROFISSÃO</label>
+<input id="profissao">
+
+<label>WHATSAPP</label>
+<input id="telefone">
+
+<label>E-MAIL</label>
+<input id="email" style="text-transform:none">
 </div>
+
+<!-- ENDEREÇO -->
+<div class="card">
+<h2>ENDEREÇO</h2>
+
+<label>ENDEREÇO COMPLETO</label>
+<input id="endereco" placeholder="Rua, Nº, Bairro, Cidade/UF">
+</div>
+
+<!-- CONTATO DE EMERGÊNCIA -->
+<div class="card">
+<h2>CONTATO DE EMERGÊNCIA</h2>
+
+<label>NOME</label>
+<input id="em_nome">
+
+<label>PARENTESCO</label>
+<input id="em_parentesco">
+
+<label>TELEFONE</label>
+<input id="em_telefone">
+</div>
+
+<!-- SAÚDE -->
+<div class="card">
+<h2>INFORMAÇÕES DE SAÚDE</h2>
+
+<label>TIPO SANGUÍNEO</label>
+<input id="saude_sangue">
+
+<label>ALERGIAS</label>
+<input id="saude_alergias">
+
+<label>CONDIÇÃO DE SAÚDE</label>
+<input id="saude_condicao">
+
+<label>MEDICAMENTOS EM USO</label>
+<input id="saude_medicamentos">
+</div>
+
+<!-- PAGAMENTO -->
+<div class="card">
+<h2>PAGAMENTO</h2>
+
+<label>FORMA DE PAGAMENTO</label>
+<select id="forma_pagamento">
+  <option value="">SELECIONE</option>
+  <option value="PIX">PIX</option>
+  <option value="CRÉDITO">CRÉDITO</option>
+  <option value="DÉBITO">DÉBITO</option>
+  <option value="DINHEIRO">DINHEIRO</option>
+</select>
+</div>
+
 
 <!-- CONTRATO COMPLETO -->
 <div class="card contrato" id="contratoTexto">
@@ -352,17 +420,89 @@ canvas.ontouchend=()=>d=false;
 
 /* FINALIZAR */
 async function finalizar(){
- if(!f1.checked||!f2.checked||!f3.checked){alert("ACEITE TODAS AS DECLARAÇÕES");return;}
- const vazio=ctx.getImageData(0,0,canvas.width,canvas.height).data.every(v=>v===0);
- if(vazio){alert("ASSINE O CONTRATO");return;}
 
- const pdf = await html2pdf().from(document.body).set({html2canvas:{scale:2}}).outputPdf("blob");
- const nomeArquivo=`CONTRATO_${id}_${Date.now()}.pdf`;
+  if(!f1.checked || !f2.checked || !f3.checked){
+    alert("ACEITE TODAS AS DECLARAÇÕES");
+    return;
+  }
 
- await sb.storage.from("buffet_contratos").upload(nomeArquivo,pdf,{contentType:"application/pdf"});
+  const vazio = ctx.getImageData(0,0,canvas.width,canvas.height).data
+    .every(v => v === 0);
 
- alert("CONTRATO ASSINADO COM SUCESSO");
+  if(vazio){
+    alert("ASSINE O CONTRATO");
+    return;
+  }
+
+  /* ===== GERAR PDF ===== */
+  const pdfBlob = await html2pdf()
+    .from(document.getElementById("contratoTexto"))
+    .set({ html2canvas:{ scale:2 }})
+    .outputPdf("blob");
+
+  const nomeArquivo =
+    `CONTRATO_${id}_${cpf.value.replace(/\D/g,"")}_${Date.now()}.pdf`;
+
+  const caminho = `2026/01/${nomeArquivo}`;
+
+  const { error:uploadError } = await sb
+    .storage
+    .from("buffet_contratos")
+    .upload(caminho, pdfBlob, { contentType:"application/pdf" });
+
+  if(uploadError){
+    alert("ERRO AO ENVIAR PDF");
+    console.error(uploadError);
+    return;
+  }
+
+  const { data:pdfData } = sb
+    .storage
+    .from("buffet_contratos")
+    .getPublicUrl(caminho);
+
+  /* ===== INSERT NA TABELA CONTRATOS ===== */
+  const { error:insertError } = await sb
+    .from("contratos")
+    .insert({
+
+      excursao_id: id,
+
+      nome: nome.value,
+      cpf: cpf.value,
+      rg: rg.value,
+      telefone: telefone.value,
+      email: email.value,
+
+      endereco: endereco.value,
+
+      emergencia_nome: em_nome.value,
+      emergencia_parentesco: em_parentesco.value,
+      emergencia_telefone: em_telefone.value,
+
+      info_saude: {
+        sangue: saude_sangue.value || null,
+        alergias: saude_alergias.value || null,
+        condicao: saude_condicao.value || null,
+        medicamentos: saude_medicamentos.value || null
+      },
+
+      valor: ctr_valor.innerText.replace(/[^\d]/g,""),
+      forma_pagamento: forma_pagamento.value || null,
+
+      pdf_url: pdfData.publicUrl,
+      status: "ASSINADO"
+    });
+
+  if(insertError){
+    alert("ERRO AO SALVAR CONTRATO");
+    console.error(insertError);
+    return;
+  }
+
+  alert("CONTRATO ASSINADO COM SUCESSO");
 }
+
 function formatarData(d){
   if(!d) return "__/__/____";
   const [y,m,da] = d.split("-");
