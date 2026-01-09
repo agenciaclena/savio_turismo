@@ -332,10 +332,45 @@ function limparTudo(){
     location.reload();
   }
 }
-
-formCadastro.onsubmit=e=>{
+formCadastro.onsubmit = e => {
   e.preventDefault();
-  location.href="resumo.html";
+
+  const dados = {
+    nome: nome.value,
+    cpf: cpf.value,
+    rg: rg.value,
+    nascimento: nascimento.value,
+    profissao: profissao.value,
+    telefone: telefone.value,
+    email: email.value,
+
+    cep: cep.value,
+    rua: rua.value,
+    numero: numero.value,
+    bairro: bairro.value,
+    cidade: cidade.value,
+    uf: uf.value,
+
+    em_nome: em_nome.value,
+    em_parentesco: em_parentesco.value,
+    em_telefone: em_telefone.value,
+
+    aceite_contrato: aceite_contrato.checked,
+    aceite_risco: aceite_risco.checked,
+    aceite_lgpd: aceite_lgpd.checked
+  };
+
+  // 🔒 Validação extra (segurança)
+  if(!dados.aceite_contrato || !dados.aceite_risco || !dados.aceite_lgpd){
+    alert("É necessário aceitar todas as declarações.");
+    return;
+  }
+
+  // 💾 SALVA NO LOCAL STORAGE
+  localStorage.setItem("cadastro_savio", JSON.stringify(dados));
+
+  // ➜ VAI PARA O RESUMO
+  location.href = "resumo.html";
 };
 </script>
 
