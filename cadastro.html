@@ -156,30 +156,42 @@ canvas{
 <input id="nome">
 
 <label>CPF</label>
-<input id="cpf">
+<input
+  id="cpf"
+  inputmode="numeric"
+  pattern="[0-9]*"
+  autocomplete="off"
+  placeholder="000.000.000-00"
+>
+
 
 <label>RG</label>
-<input id="rg">
+<input
+  id="rg"
+  inputmode="numeric"
+  pattern="[0-9]*"
+  autocomplete="off"
+  placeholder="00.000.000-0"
+>
+
 
 <label>NASCIMENTO</label>
 <input type="date" id="nascimento">
 
 <label>PROFISSÃO</label>
 <input id="profissao">
-
 <label>WHATSAPP</label>
-<input id="telefone">
+<input
+  id="telefone"
+  inputmode="numeric"
+  pattern="[0-9]*"
+  autocomplete="off"
+  placeholder="(00) 00000-0000"
+>
+
 
 <label>E-MAIL</label>
 <input id="email" style="text-transform:none">
-</div>
-
-<!-- ENDEREÇO -->
-<div class="card">
-<h2>ENDEREÇO</h2>
-
-<label>ENDEREÇO COMPLETO</label>
-<input id="endereco" placeholder="Rua, Nº, Bairro, Cidade/UF">
 </div>
 
 <!-- CONTATO DE EMERGÊNCIA -->
@@ -193,7 +205,13 @@ canvas{
 <input id="em_parentesco">
 
 <label>TELEFONE</label>
-<input id="em_telefone">
+<input
+  id="em_telefone"
+  inputmode="numeric"
+  pattern="[0-9]*"
+  autocomplete="off"
+  placeholder="(00) 00000-0000"
+>
 </div>
 
 <!-- SAÚDE -->
@@ -438,8 +456,6 @@ function maskWhats(v){
   v = v.replace(/(\d{5})(\d)/,"$1-$2");
   return v;
 }
-
-/* ===== FORM → CONTRATO (COM MÁSCARA) ===== */
 cpf.oninput = () => {
   cpf.value = maskCPF(cpf.value);
   ctr_cpf.innerText = cpf.value || "________________";
@@ -452,6 +468,10 @@ rg.oninput = () => {
 
 telefone.oninput = () => {
   telefone.value = maskWhats(telefone.value);
+};
+
+em_telefone.oninput = () => {
+  em_telefone.value = maskWhats(em_telefone.value);
 };
 
 nome.oninput = () => {
