@@ -51,7 +51,7 @@ inscrita no CNPJ nº <strong>56.173.108/0001-30</strong>, doravante denominada
 <strong>CONTRATADA</strong>, e, de outro lado,
 <strong id="c_nome"></strong>, CPF <strong id="c_cpf"></strong>, RG <strong id="c_rg"></strong>,
 doravante denominado(a) <strong>CONTRATANTE</strong>, têm entre si justo e contratado
-o que segue, nos termos da legislação vigente.
+o que segue.
 </p>
 
 <h2>I. DO OBJETO</h2>
@@ -65,39 +65,22 @@ e retorno em <strong id="p_retorno"></strong>.
 <p id="p_inclusos"></p>
 
 <h2>III. DO VALOR</h2>
-<p>
-O valor total do pacote contratado é de <strong id="p_valor"></strong>.
-</p>
+<p>O valor total do pacote contratado é de <strong id="p_valor"></strong>.</p>
 
 <h2>IV. DAS OBRIGAÇÕES</h2>
-<p>
-O passageiro compromete-se a cumprir horários, portar documentos,
-respeitar orientações da equipe e zelar por seus pertences.
-</p>
+<p>O passageiro compromete-se a cumprir horários, portar documentos e respeitar orientações.</p>
 
 <h2>V. DOS RISCOS</h2>
-<p>
-O contratante declara ciência dos riscos naturais envolvidos
-em atividades turísticas, isentando a contratada de responsabilidades
-decorrentes de imprudência ou fatores externos.
-</p>
+<p>O contratante declara ciência dos riscos naturais envolvidos em atividades turísticas.</p>
 
 <h2>VI. DO CANCELAMENTO</h2>
-<p>
-Em caso de desistência por parte do contratante, não haverá reembolso,
-podendo o valor ser convertido em crédito, a critério da contratada.
-</p>
+<p>Em caso de desistência, não haverá reembolso.</p>
 
 <h2>VII. DA PROTEÇÃO DE DADOS</h2>
-<p>
-O contratante autoriza o tratamento de seus dados pessoais,
-nos termos da Lei nº 13.709/2018 (LGPD).
-</p>
+<p>O contratante autoriza o tratamento de seus dados conforme a LGPD.</p>
 
 <h2>VIII. DA DECLARAÇÃO FINAL</h2>
-<p>
-Declaro que li, compreendi e aceito integralmente os termos deste contrato.
-</p>
+<p>Declaro que li e aceito integralmente os termos deste contrato.</p>
 
 <div class="assinatura">
 <p>ASSINATURA DO CONTRATANTE</p>
@@ -112,18 +95,18 @@ SÁVIO TURISMO • CNPJ 56.173.108/0001-30
 </div>
 
 <script>
-/* ================= SUPABASE ================= */
-const supabase = window.supabase.createClient(
+/* ========= SUPABASE (SEM CONFLITO) ========= */
+const sb = window.supabase.createClient(
   "https://ghkfeobnrfvqwzuliqfz.supabase.co",
   "sb_publishable_R-eenS9xurRgnrqDR9kz0Q_kJonEi7t"
 );
 
-/* ================= DADOS ================= */
+/* ========= STORAGE ========= */
 const dados = JSON.parse(localStorage.getItem("cadastro_savio") || "{}");
 const pacote = JSON.parse(localStorage.getItem("pacote") || "{}");
 const assinatura = localStorage.getItem("assinatura_base64");
 
-/* ================= PREENCHER ================= */
+/* ========= PREENCHER ========= */
 c_nome.innerText = dados.nome || "";
 c_cpf.innerText = dados.cpf || "";
 c_rg.innerText = dados.rg || "";
@@ -131,10 +114,11 @@ c_rg.innerText = dados.rg || "";
 p_titulo.innerText = pacote.titulo || "";
 p_saida.innerText = formatarData(pacote.data_saida);
 p_retorno.innerText = formatarData(pacote.data_retorno);
-p_valor.innerText = Number(pacote.valor)
-  .toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
+p_valor.innerText = pacote.valor
+  ? Number(pacote.valor).toLocaleString("pt-BR",{style:"currency",currency:"BRL"})
+  : "";
 
-let inclusos = [];
+const inclusos = [];
 if(pacote.inclui_transporte) inclusos.push("Transporte");
 if(pacote.inclui_hospedagem) inclusos.push("Hospedagem");
 if(pacote.inclui_cafe) inclusos.push("Café da manhã");
@@ -148,58 +132,53 @@ const agora = new Date();
 local_data.innerText =
   `ASSINADO EM ${agora.toLocaleDateString("pt-BR")} ÀS ${agora.toLocaleTimeString("pt-BR")}`;
 
-/* ================= PDF + UPLOAD + INSERT ================= */
-async function finalizarContrato(){
+/* ========= FINALIZAR ========= */
+async function finalizar(){
 
-  const pdfBlob = await html2pdf().from(document.getElementById("contrato"))
+  const pdfBlob = await html2pdf()
+    .from(document.getElementById("contrato"))
     .set({html2canvas:{scale:2}})
     .outputPdf("blob");
 
   const cpfLimpo = (dados.cpf||"").replace(/\D/g,"");
-  const nomeArquivo =
-    `CONTRATO_${pacote.id}_${cpfLimpo}_${Date.now()}.pdf`;
+  const nomeArquivo = `CONTRATO_${pacote.id}_${cpfLimpo}_${Date.now()}.pdf`;
 
   const hoje = new Date();
   const pasta = `${hoje.getFullYear()}/${String(hoje.getMonth()+1).padStart(2,"0")}`;
-
   const caminho = `${pasta}/${nomeArquivo}`;
 
-  const { error } = await supabase
-    .storage.from("buffet_contratos")
+  const { error } = await sb.storage
+    .from("buffet_contratos")
     .upload(caminho, pdfBlob, { contentType:"application/pdf" });
 
   if(error){
-    alert("ERRO AO SALVAR PDF");
     console.error(error);
+    alert("ERRO AO GERAR CONTRATO");
     return;
   }
 
-  const { data } = supabase
-    .storage.from("buffet_contratos")
+  const { data } = sb.storage
+    .from("buffet_contratos")
     .getPublicUrl(caminho);
 
-  const endereco =
-    `${dados.rua}, Nº ${dados.numero} - ${dados.bairro} - ${dados.cidade}/${dados.uf}`;
-
-  const infoSaude = {
-    condicao: dados.saude_condicao || null,
-    medicamentos: dados.saude_medicamentos || null,
-    alergias: dados.saude_alergias || null,
-    sangue: dados.saude_sangue || null
-  };
-
-  await supabase.from("contratos").insert({
+  await sb.from("contratos").insert({
     excursao_id: pacote.id,
     nome: dados.nome,
     cpf: dados.cpf,
     rg: dados.rg,
     telefone: dados.telefone,
     email: dados.email,
-    endereco,
+    endereco:
+      `${dados.rua}, Nº ${dados.numero} - ${dados.bairro} - ${dados.cidade}/${dados.uf}`,
     emergencia_nome: dados.em_nome,
     emergencia_parentesco: dados.em_parentesco,
     emergencia_telefone: dados.em_telefone,
-    info_saude: infoSaude,
+    info_saude: {
+      condicao: dados.saude_condicao || null,
+      medicamentos: dados.saude_medicamentos || null,
+      alergias: dados.saude_alergias || null,
+      sangue: dados.saude_sangue || null
+    },
     valor: pacote.valor,
     pdf_url: data.publicUrl,
     status: "ASSINADO"
@@ -208,12 +187,11 @@ async function finalizarContrato(){
   console.log("CONTRATO FINALIZADO COM SUCESSO");
 }
 
-/* EXECUTA */
-setTimeout(finalizarContrato, 1000);
+setTimeout(finalizar, 800);
 
 function formatarData(d){
   if(!d) return "";
-  const [y,m,da]=d.split("-");
+  const [y,m,da] = d.split("-");
   return `${da}/${m}/${y}`;
 }
 </script>
