@@ -4,66 +4,136 @@
 <meta charset="UTF-8">
 <title>SÁVIO TURISMO • ASSINATURA</title>
 
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 
 <style>
-*{box-sizing:border-box;font-family:Inter;text-transform:uppercase}
-body{margin:0;background:#f4f6f8;color:#111}
+:root{
+  --primary:#ff6a00;
+  --bg:#f4f6f8;
+  --card:#ffffff;
+  --border:#e5e7eb;
+  --text:#111;
+}
+
+*{
+  box-sizing:border-box;
+  font-family:Inter;
+  text-transform:uppercase;
+  -webkit-user-select:none;
+  user-select:none;
+}
+
+html,body{
+  margin:0;
+  padding:0;
+  width:100%;
+  height:100%;
+  overflow:hidden; /* IMPEDE ZOOM E SCROLL INDESEJADO */
+  background:var(--bg);
+  color:var(--text);
+}
+
 header{
   background:#fff;
-  padding:16px;
+  padding:14px;
   display:flex;
   justify-content:center;
-  border-bottom:1px solid #e5e7eb
+  border-bottom:1px solid var(--border);
 }
-header img{height:55px}
-.container{max-width:900px;margin:auto;padding:20px}
+
+header img{
+  height:52px;
+}
+
+.container{
+  max-width:900px;
+  margin:auto;
+  padding:16px;
+  height:calc(100vh - 80px);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
 .card{
-  background:#fff;
-  border-radius:18px;
-  padding:20px;
-  box-shadow:0 10px 24px rgba(0,0,0,.06)
+  width:100%;
+  max-width:520px;
+  background:var(--card);
+  border-radius:20px;
+  padding:18px;
+  box-shadow:0 10px 24px rgba(0,0,0,.06);
+  display:flex;
+  flex-direction:column;
 }
+
 .card h2{
-  margin:0 0 12px;
+  margin:0 0 10px;
   font-size:15px;
-  border-bottom:1px solid #eee;
-  padding-bottom:8px
+  font-weight:800;
+  border-bottom:1px solid var(--border);
+  padding-bottom:8px;
+  text-align:center;
 }
+
+.info{
+  font-size:12px;
+  color:#6b7280;
+  text-align:center;
+  margin-bottom:12px;
+}
+
+/* ===== CANVAS ===== */
+.canvas-wrap{
+  flex:1;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
 canvas{
   width:100%;
-  height:220px;
+  height:240px;
   border:2px dashed #d1d5db;
-  border-radius:14px;
-  touch-action:none;
+  border-radius:16px;
+  background:#fafafa;
+  touch-action:none; /* ESSENCIAL PARA NÃO DAR ZOOM */
 }
+
+/* ===== BOTÕES ===== */
 .actions{
   display:grid;
   grid-template-columns:1fr 1fr;
   gap:12px;
-  margin-top:16px
+  margin-top:14px;
 }
+
 .btn{
-  padding:15px;
+  padding:16px;
   border:none;
   border-radius:999px;
-  font-size:15px;
+  font-size:14px;
   font-weight:800;
-  cursor:pointer
+  cursor:pointer;
 }
+
 .btn-primary{
   background:linear-gradient(135deg,#ff6a00,#ff9a57);
-  color:#fff
+  color:#fff;
 }
+
 .btn-secondary{
   background:#e5e7eb;
-  color:#111
+  color:#111;
 }
-.info{
-  font-size:13px;
-  color:#6b7280;
-  margin-bottom:12px
+
+/* ===== MOBILE EXTRA ===== */
+@media(max-width:480px){
+  canvas{
+    height:220px;
+  }
 }
 </style>
 </head>
@@ -75,24 +145,25 @@ canvas{
 </header>
 
 <div class="container">
+  <div class="card">
 
-<div class="card">
-<h2>ASSINATURA DO CONTRATANTE</h2>
+    <h2>ASSINATURA DO CONTRATANTE</h2>
 
-<p class="info">
-ASSINE NO CAMPO ABAIXO USANDO O DEDO OU MOUSE.  
-ESSA ASSINATURA TERÁ VALIDADE LEGAL NO CONTRATO.
-</p>
+    <p class="info">
+      ASSINE NO CAMPO ABAIXO USANDO O DEDO OU MOUSE.<br>
+      ESTA ASSINATURA POSSUI VALIDADE LEGAL.
+    </p>
 
-<canvas id="assinatura"></canvas>
+    <div class="canvas-wrap">
+      <canvas id="assinatura"></canvas>
+    </div>
 
-<div class="actions">
-  <button class="btn btn-secondary" onclick="limpar()">LIMPAR ASSINATURA</button>
-  <button class="btn btn-primary" onclick="confirmar()">CONFIRMAR ASSINATURA</button>
-</div>
+    <div class="actions">
+      <button class="btn btn-secondary" onclick="limpar()">LIMPAR</button>
+      <button class="btn btn-primary" onclick="confirmar()">CONFIRMAR</button>
+    </div>
 
-</div>
-
+  </div>
 </div>
 
 <script>
@@ -103,39 +174,41 @@ let desenhando = false;
 
 function ajustarCanvas(){
   const ratio = window.devicePixelRatio || 1;
-  canvas.width = canvas.offsetWidth * ratio;
-  canvas.height = canvas.offsetHeight * ratio;
-  ctx.scale(ratio, ratio);
-  ctx.lineWidth = 2;
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = rect.width * ratio;
+  canvas.height = rect.height * ratio;
+  ctx.setTransform(ratio,0,0,ratio,0,0);
+  ctx.lineWidth = 2.5;
   ctx.lineCap = "round";
 }
 
 ajustarCanvas();
 window.addEventListener("resize", ajustarCanvas);
 
-/* ========= DESENHO ========= */
+/* ========= POSIÇÃO ========= */
 function pos(e){
-  if(e.touches) return {
-    x: e.touches[0].clientX - canvas.getBoundingClientRect().left,
-    y: e.touches[0].clientY - canvas.getBoundingClientRect().top
-  };
-  return {
-    x: e.offsetX,
-    y: e.offsetY
-  };
+  const rect = canvas.getBoundingClientRect();
+  if(e.touches){
+    return {
+      x: e.touches[0].clientX - rect.left,
+      y: e.touches[0].clientY - rect.top
+    };
+  }
+  return { x:e.offsetX, y:e.offsetY };
 }
 
+/* ========= DESENHO ========= */
 canvas.addEventListener("mousedown", e=>{
-  desenhando = true;
-  const p = pos(e);
+  desenhando=true;
+  const p=pos(e);
   ctx.beginPath();
-  ctx.moveTo(p.x, p.y);
+  ctx.moveTo(p.x,p.y);
 });
 
 canvas.addEventListener("mousemove", e=>{
   if(!desenhando) return;
-  const p = pos(e);
-  ctx.lineTo(p.x, p.y);
+  const p=pos(e);
+  ctx.lineTo(p.x,p.y);
   ctx.stroke();
 });
 
@@ -144,17 +217,17 @@ canvas.addEventListener("mouseleave", ()=>desenhando=false);
 
 canvas.addEventListener("touchstart", e=>{
   e.preventDefault();
-  desenhando = true;
-  const p = pos(e);
+  desenhando=true;
+  const p=pos(e);
   ctx.beginPath();
-  ctx.moveTo(p.x, p.y);
+  ctx.moveTo(p.x,p.y);
 },{passive:false});
 
 canvas.addEventListener("touchmove", e=>{
   e.preventDefault();
   if(!desenhando) return;
-  const p = pos(e);
-  ctx.lineTo(p.x, p.y);
+  const p=pos(e);
+  ctx.lineTo(p.x,p.y);
   ctx.stroke();
 },{passive:false});
 
@@ -163,7 +236,7 @@ canvas.addEventListener("touchend", ()=>desenhando=false);
 /* ========= STORAGE ========= */
 const SIGN_KEY = "assinatura_base64";
 
-/* RESTAURAR SE EXISTIR */
+/* RESTAURA SE EXISTIR */
 const salvo = localStorage.getItem(SIGN_KEY);
 if(salvo){
   const img = new Image();
@@ -178,15 +251,15 @@ function limpar(){
 }
 
 function confirmar(){
-  const data = canvas.toDataURL("image/png");
-  // Verifica se está vazio
   const vazio = ctx.getImageData(0,0,canvas.width,canvas.height).data
     .every(v=>v===0);
+
   if(vazio){
     alert("ASSINATURA OBRIGATÓRIA");
     return;
   }
 
+  const data = canvas.toDataURL("image/png");
   localStorage.setItem(SIGN_KEY, data);
   location.href = "contrato.html";
 }
