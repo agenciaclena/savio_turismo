@@ -3,10 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <title>SÁVIO TURISMO • CADASTRO</title>
+
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <style>
 :root{
@@ -17,126 +19,199 @@ body{margin:0;background:var(--bg);color:var(--text)}
 header{background:#fff;padding:14px;display:flex;justify-content:center;border-bottom:1px solid var(--border)}
 header img{height:54px}
 .container{max-width:1200px;margin:auto;padding:16px}
-.grid{display:grid;grid-template-columns:1fr;gap:16px}
-@media(min-width:900px){.grid{grid-template-columns:repeat(2,1fr)}}
-@media(min-width:1200px){.grid{grid-template-columns:repeat(3,1fr)}}
-.card{background:#fff;border-radius:18px;padding:18px;box-shadow:0 10px 24px rgba(0,0,0,.06)}
-.card h2{margin:0 0 12px;font-size:14px;font-weight:800;border-bottom:1px solid var(--border);padding-bottom:8px}
+
+.box{
+  background:#fff;border-radius:18px;padding:18px;margin-bottom:16px;
+  box-shadow:0 10px 24px rgba(0,0,0,.06);
+}
+.box h3{margin:0;font-size:16px;font-weight:900}
+.box p{margin:4px 0;font-size:13px;color:#555}
+.valor{font-size:18px;font-weight:900;color:#16a34a}
+
 label{font-size:12px;font-weight:700;margin-top:10px;display:block}
 input{width:100%;padding:14px;border-radius:14px;border:1px solid #d1d5db;margin-top:6px;font-size:16px}
 .readonly{background:#f1f1f1}
 
-/* Switch */
-.switch-row{display:flex;justify-content:space-between;align-items:center;margin-top:14px}
-.switch-row span{font-size:13px;font-weight:800}
-.switch-row input{display:none}
-.switch-ui{width:48px;height:28px;background:#d1d5db;border-radius:999px;position:relative}
-.switch-ui::after{content:"";width:22px;height:22px;background:#fff;border-radius:50%;position:absolute;top:3px;left:3px;transition:.25s}
-.switch-row input:checked + .switch-ui{background:var(--primary)}
-.switch-row input:checked + .switch-ui::after{transform:translateX(20px)}
+.switch{
+  display:flex;justify-content:space-between;align-items:center;margin-top:14px;
+}
+.switch input{display:none}
+.switch-ui{
+  width:48px;height:28px;background:#d1d5db;border-radius:999px;position:relative
+}
+.switch-ui::after{
+  content:"";width:22px;height:22px;background:#fff;border-radius:50%;
+  position:absolute;top:3px;left:3px;transition:.25s
+}
+.switch input:checked + .switch-ui{background:var(--primary)}
+.switch input:checked + .switch-ui::after{transform:translateX(20px)}
 
-.actions{margin-top:20px;display:flex;flex-direction:column;gap:12px}
-.btn{padding:18px;border:none;border-radius:999px;font-weight:800}
+.btn{
+  width:100%;padding:18px;border:none;border-radius:999px;
+  font-weight:800;margin-top:16px;cursor:pointer
+}
 .btn-primary{background:linear-gradient(135deg,#ff6a00,#ff9a57);color:#fff}
+.btn-clear{background:#e5e7eb}
+
+#btnAssinar{display:none}
+
+/* MODAL */
+.modal{
+  position:fixed;inset:0;background:rgba(0,0,0,.6);
+  display:none;align-items:center;justify-content:center;z-index:9999
+}
+.modal.show{display:flex}
+.modal-box{
+  background:#fff;border-radius:18px;padding:20px;text-align:center;width:320px
+}
+canvas{border:1px solid #000;border-radius:8px}
 </style>
 </head>
 
 <body>
-<header><img src="logo.png"></header>
+
+<header>
+  <img src="logo.png">
+</header>
 
 <div class="container">
-<form id="formCadastro">
-<div class="grid">
 
-<div class="card">
-<h2>DADOS DO PASSAGEIRO</h2>
-<label>NOME</label><input id="nome" required>
-<label>CPF</label><input id="cpf" required>
-<label>RG</label><input id="rg" required>
-<label>NASCIMENTO</label><input id="nascimento" type="date" required>
-<label>PROFISSÃO</label><input id="profissao">
-<label>TELEFONE</label><input id="telefone" required>
-<label>E-MAIL</label><input id="email" type="email" style="text-transform:none" required>
-</div>
+<!-- PACOTE -->
+<div class="box" id="boxPacote"></div>
 
-<div class="card">
-<h2>ENDEREÇO</h2>
-<label>CEP</label><input id="cep" required>
-<label>RUA</label><input id="rua" class="readonly" readonly>
-<label>NÚMERO</label><input id="numero" required>
-<label>BAIRRO</label><input id="bairro" class="readonly" readonly>
-<label>CIDADE</label><input id="cidade" class="readonly" readonly>
-<label>UF</label><input id="uf" class="readonly" readonly>
-</div>
+<!-- FORM -->
+<div class="box">
+<label>NOME</label><input id="nome">
+<label>CPF</label><input id="cpf">
+<label>TELEFONE</label><input id="telefone">
 
-<div class="card">
-<h2>EMERGÊNCIA & DECLARAÇÕES</h2>
-<label>NOME</label><input id="em_nome" required>
-<label>PARENTESCO</label><input id="em_parentesco" required>
-<label>TELEFONE</label><input id="em_telefone" required>
-
-<label class="switch-row" for="aceite_contrato">
+<label class="switch">
   <span>ACEITO O CONTRATO</span>
   <input type="checkbox" id="aceite_contrato">
   <div class="switch-ui"></div>
 </label>
 
-<label class="switch-row" for="aceite_risco">
+<label class="switch">
   <span>CIÊNCIA DOS RISCOS</span>
   <input type="checkbox" id="aceite_risco">
   <div class="switch-ui"></div>
 </label>
 
-<label class="switch-row" for="aceite_lgpd">
+<label class="switch">
   <span>AUTORIZO LGPD</span>
   <input type="checkbox" id="aceite_lgpd">
   <div class="switch-ui"></div>
 </label>
+
+<button id="btnAssinar" class="btn btn-primary">ASSINAR CONTRATO</button>
+<button class="btn btn-clear" onclick="limpar()">LIMPAR</button>
 </div>
 
 </div>
 
-<div class="actions">
-<button class="btn btn-primary">CONFIRMAR</button>
-</div>
-</form>
+<!-- MODAL ASSINATURA -->
+<div class="modal" id="modal">
+  <div class="modal-box">
+    <h3>ASSINE ABAIXO</h3>
+    <canvas id="canvas" width="260" height="120"></canvas>
+    <button class="btn btn-primary" onclick="finalizar()">FINALIZAR</button>
+  </div>
 </div>
 
 <script>
 const $ = id => document.getElementById(id);
 
-/* Restaurar */
+/* ===== SUPABASE ===== */
+const sb = supabase.createClient(
+ "https://ghkfeobnrfvqwzuliqfz.supabase.co",
+ "sb_publishable_R-eenS9xurRgnrqDR9kz0Q_kJonEi7t"
+);
+
+/* ===== PACOTE ===== */
+const params = new URLSearchParams(location.search);
+const id = params.get("id");
+let pacote = JSON.parse(localStorage.getItem("pacote")||"null");
+
+(async()=>{
+  if(!pacote && id){
+    const {data} = await sb.from("excursoes").select("*").eq("id",id).single();
+    pacote = data;
+    localStorage.setItem("pacote",JSON.stringify(pacote));
+  }
+  if(pacote){
+    boxPacote.innerHTML = `
+      <h3>${pacote.titulo}</h3>
+      <p>${pacote.destino}</p>
+      <p>${pacote.data_saida} → ${pacote.data_retorno}</p>
+      <div class="valor">R$ ${pacote.valor}</div>
+    `;
+  }
+})();
+
+/* ===== AUTO SAVE ===== */
+["nome","cpf","telefone","aceite_contrato","aceite_risco","aceite_lgpd"].forEach(id=>{
+  const el=$(id);
+  el.oninput=el.onchange=()=>{
+    const dados={
+      nome:nome.value,
+      cpf:cpf.value,
+      telefone:telefone.value,
+      aceite_contrato:aceite_contrato.checked,
+      aceite_risco:aceite_risco.checked,
+      aceite_lgpd:aceite_lgpd.checked
+    };
+    localStorage.setItem("cadastro_savio",JSON.stringify(dados));
+    verificar();
+  }
+});
+
+/* ===== RESTAURA ===== */
 const salvo = JSON.parse(localStorage.getItem("cadastro_savio")||"{}");
 Object.keys(salvo).forEach(k=>{
-  if($(k)) $(k).type==="checkbox" ? $(k).checked=salvo[k] : $(k).value=salvo[k];
-});
-
-/* CEP */
-$("cep").addEventListener("blur", async ()=>{
-  const c=$("cep").value.replace(/\D/g,"");
-  if(c.length!==8) return;
-  const r=await fetch(`https://viacep.com.br/ws/${c}/json/`).then(r=>r.json());
-  if(r.erro) return alert("CEP não encontrado");
-  $("rua").value=r.logradouro; $("bairro").value=r.bairro;
-  $("cidade").value=r.localidade; $("uf").value=r.uf;
-});
-
-/* Submit */
-$("formCadastro").addEventListener("submit",e=>{
-  e.preventDefault();
-  if(!$("aceite_contrato").checked||!$("aceite_risco").checked||!$("aceite_lgpd").checked){
-    alert("Aceite todas as declarações"); return;
+  if($(k)){
+    $(k).type==="checkbox"?$(k).checked=salvo[k]:$(k).value=salvo[k];
   }
-  const dados={};
-  ["nome","cpf","rg","nascimento","profissao","telefone","email",
-   "cep","rua","numero","bairro","cidade","uf",
-   "em_nome","em_parentesco","em_telefone",
-   "aceite_contrato","aceite_risco","aceite_lgpd"]
-  .forEach(k=>dados[k]=$(k).type==="checkbox"?$(k).checked:$(k).value);
-
-  localStorage.setItem("cadastro_savio",JSON.stringify(dados));
-  location.href="resumo.html";
 });
+
+/* ===== BOTÃO ASSINAR ===== */
+function verificar(){
+  if(aceite_contrato.checked && aceite_risco.checked && aceite_lgpd.checked){
+    btnAssinar.style.display="block";
+  }else{
+    btnAssinar.style.display="none";
+  }
+}
+verificar();
+
+/* ===== ASSINATURA ===== */
+btnAssinar.onclick=()=>modal.classList.add("show");
+
+const c=canvas,ctx=c.getContext("2d");
+let d=false;
+c.onmousedown=()=>d=true;
+c.onmouseup=()=>d=false;
+c.onmousemove=e=>{if(d){ctx.lineTo(e.offsetX,e.offsetY);ctx.stroke()}};
+
+async function finalizar(){
+  const assinatura=c.toDataURL();
+  localStorage.setItem("assinatura_base64",assinatura);
+
+  const contrato=document.createElement("div");
+  contrato.innerHTML=`<h2>CONTRATO</h2>
+  <p>Eu ${nome.value}, CPF ${cpf.value}, aceito os termos.</p>
+  <img src="${assinatura}" width="200">`;
+
+  html2pdf().from(contrato).save("contrato.pdf");
+}
+
+/* ===== LIMPAR ===== */
+function limpar(){
+  if(confirm("LIMPAR TUDO?")){
+    localStorage.clear();
+    location.reload();
+  }
+}
 </script>
+
 </body>
 </html>
