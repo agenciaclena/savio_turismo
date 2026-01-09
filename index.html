@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <title>Sávio Turismo • Excursões</title>
 
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#ff6a00">
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -13,37 +13,60 @@
 <style>
 :root{
   --primary:#ff6a00;
-  --primary-soft:rgba(255,106,0,.14);
   --bg:#f4f6fb;
   --card:#ffffff;
-  --border:#e5e7eb;
   --text:#111827;
   --muted:#6b7280;
+  --radius:22px;
 }
 
 *{box-sizing:border-box;font-family:Inter}
-body{margin:0;background:var(--bg)}
-
-.header{
-  padding:18px 16px 10px;
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
 }
-.header h1{font-size:20px;font-weight:800}
-.header span{color:var(--primary)}
-.header p{font-size:12px;color:var(--muted)}
 
+/* HEADER */
+.header{
+  padding:20px 16px 10px;
+}
+.header h1{font-size:22px;font-weight:800}
+.header span{color:var(--primary)}
+.header p{font-size:13px;color:var(--muted)}
+
+/* BANNER */
+.banner{
+  margin:0 16px 18px;
+  border-radius:28px;
+  overflow:hidden;
+  position:relative;
+}
+.banner-track{
+  display:flex;
+  transition:transform .6s ease;
+}
+.banner img{
+  width:100%;
+  height:200px;
+  object-fit:cover;
+  flex-shrink:0;
+}
+
+/* GRID */
 .grid{
   display:grid;
   grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
-  gap:12px;
-  padding:0 16px 140px;
+  gap:14px;
+  padding:0 16px 160px;
 }
 
+/* CARD */
 .card{
-  background:#fff;
-  border-radius:18px;
-  box-shadow:0 10px 26px rgba(0,0,0,.08);
+  background:var(--card);
+  border-radius:20px;
   overflow:hidden;
-  cursor:pointer;
+  box-shadow:0 10px 26px rgba(0,0,0,.08);
 }
 .card img{
   width:100%;
@@ -51,34 +74,34 @@ body{margin:0;background:var(--bg)}
   object-fit:cover;
 }
 .card-body{
-  padding:10px;
+  padding:12px;
   display:flex;
   flex-direction:column;
   gap:6px;
 }
 .card-body h4{
-  font-size:13px;
+  font-size:14px;
   font-weight:800;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
 }
-.badge{
-  font-size:10px;
-  font-weight:800;
-  padding:4px 10px;
-  border-radius:999px;
-  background:var(--primary-soft);
-  color:var(--primary);
-  width:fit-content;
+.price{
+  font-weight:900;
 }
-.price{font-size:13px;font-weight:800}
+.flags{
+  display:flex;
+  gap:6px;
+}
+.flag{
+  width:10px;height:10px;
+  border-radius:50%;
+  background:#cbd5e1;
+}
+.flag.on{background:var(--primary)}
 
 /* MODAL */
 .modal{
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,.55);
+  background:rgba(0,0,0,.6);
   display:none;
   align-items:flex-end;
   z-index:9999;
@@ -87,33 +110,26 @@ body{margin:0;background:var(--bg)}
 
 .sheet{
   width:100%;
-  height:94vh;
+  height:95vh;
   background:#fff;
   border-radius:28px 28px 0 0;
   display:flex;
   flex-direction:column;
 }
-
 .sheet-header{
   padding:16px;
   font-weight:800;
   display:flex;
   justify-content:space-between;
-  border-bottom:1px solid var(--border);
 }
 .sheet-body{
   flex:1;
-  overflow-y:auto;
+  overflow:auto;
   padding:16px;
 }
-.sheet-footer{
-  padding:14px;
-  border-top:1px solid var(--border);
-}
-
 .hero{
-  height:190px;
-  border-radius:20px;
+  height:220px;
+  border-radius:22px;
   overflow:hidden;
   margin-bottom:18px;
 }
@@ -122,13 +138,16 @@ body{margin:0;background:var(--bg)}
   height:100%;
   object-fit:cover;
 }
-
-.section{margin-bottom:18px}
+.section{margin-bottom:16px}
 .section h3{font-size:14px;font-weight:800}
 .section p{font-size:13px;color:var(--muted);white-space:pre-line}
 
-.flags{display:flex;flex-wrap:wrap;gap:8px}
-.flag{
+.tags{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+.tag{
   background:#e0f2fe;
   color:#0369a1;
   padding:6px 12px;
@@ -139,7 +158,7 @@ body{margin:0;background:var(--bg)}
 
 .btn{
   width:100%;
-  height:50px;
+  height:52px;
   border-radius:999px;
   border:none;
   font-weight:800;
@@ -157,49 +176,43 @@ body{margin:0;background:var(--bg)}
   <p>Escolha sua próxima experiência</p>
 </div>
 
+<!-- BANNER -->
+<div class="banner">
+  <div class="banner-track" id="bannerTrack"></div>
+</div>
+
+<!-- LISTA -->
 <div class="grid" id="lista"></div>
 
 <!-- MODAL -->
 <div class="modal" id="modal">
-  <div class="sheet">
-    <div class="sheet-header">
-      <span id="sheetTitulo"></span>
-      <span onclick="fechar()">✕</span>
+<div class="sheet">
+  <div class="sheet-header">
+    <span id="mTitulo"></span>
+    <span onclick="fechar()">✕</span>
+  </div>
+  <div class="sheet-body">
+    <div class="hero" id="mHero"></div>
+
+    <div class="section"><h3>Destino</h3><p id="mDestino"></p></div>
+    <div class="section"><h3>Período</h3><p id="mDatas"></p></div>
+    <div class="section"><h3>Detalhes</h3><p id="mDetalhes"></p></div>
+
+    <div class="section">
+      <h3>Inclusos</h3>
+      <div class="tags" id="mInclusos"></div>
     </div>
 
-    <div class="sheet-body">
-      <div class="hero" id="hero"></div>
-
-      <div class="section">
-        <h3>Destino</h3>
-        <p id="sheetDestino"></p>
-      </div>
-
-      <div class="section">
-        <h3>Período</h3>
-        <p id="sheetDatas"></p>
-      </div>
-
-      <div class="section" id="boxDescricao" style="display:none">
-        <h3>Descrição</h3>
-        <p id="sheetDescricao"></p>
-      </div>
-
-      <div class="section" id="boxRoteiro" style="display:none">
-        <h3>Roteiro</h3>
-        <p id="sheetRoteiro"></p>
-      </div>
-
-      <div class="section" id="boxInclusos" style="display:none">
-        <h3>Incluso no pacote</h3>
-        <div class="flags" id="flags"></div>
-      </div>
-    </div>
-
-    <div class="sheet-footer">
-      <button class="btn" onclick="adquirir()">Quero garantir minha vaga</button>
+    <div class="section">
+      <h3>Formas de pagamento</h3>
+      <div class="tags" id="mPagamentos"></div>
     </div>
   </div>
+
+  <div style="padding:14px">
+    <button class="btn">Quero garantir minha vaga</button>
+  </div>
+</div>
 </div>
 
 <script>
@@ -208,61 +221,83 @@ const sb = supabase.createClient(
  "sb_publishable_R-eenS9xurRgnrqDR9kz0Q_kJonEi7t"
 );
 
-function imgPublica(path){
-  return sb.storage.from("buffet_excursoes")
-    .getPublicUrl(path).data.publicUrl;
+function pub(path){
+ return sb.storage.from("buffet_excursoes").getPublicUrl(path).data.publicUrl;
 }
 
+/* BANNER */
+let idx=0;
+function startBanner(imgs){
+ const track=document.getElementById("bannerTrack");
+ imgs.forEach(i=>track.innerHTML+=`<img src="${i}">`);
+ setInterval(()=>{
+  idx=(idx+1)%imgs.length;
+  track.style.transform=`translateX(-${idx*100}%)`;
+ },2000);
+}
+
+/* DATA */
+function dataHora(d,h){
+ if(!d) return "";
+ const [y,m,da]=d.split("-");
+ return `${da}/${m}/${y} ${h||""}`;
+}
+
+/* LOAD */
 async function carregar(){
-  const {data} = await sb
-    .from("excursoes")
-    .select("*")
-    .order("data_saida");
+ const {data:cfg}=await sb.from("loja_config").select("*").single();
+ const {data}=await sb.from("excursoes").select("*").eq("status","Ativa");
 
-  lista.innerHTML="";
+ if(cfg){
+  document.documentElement.style.setProperty("--primary",cfg.cor_primaria);
+  startBanner(cfg.banners);
+ }
 
-  data.forEach(e=>{
-    const img = e.poster_url ? imgPublica(e.poster_url) : "";
-    lista.innerHTML+=`
-      <div class="card" onclick='abrir(${JSON.stringify(e)})'>
-        ${img?`<img src="${img}">`:``}
-        <div class="card-body">
-          <h4>${e.titulo}</h4>
-          <span class="badge">${e.destino}</span>
-          <span class="price">
-            R$ ${Number(e.valor).toLocaleString("pt-BR",{minimumFractionDigits:2})}
-          </span>
-        </div>
-      </div>`;
-  });
+ lista.innerHTML="";
+ data.forEach(e=>{
+  lista.innerHTML+=`
+  <div class="card" onclick='abrir(${JSON.stringify(e)})'>
+    <img src="${pub(e.poster_url)}">
+    <div class="card-body">
+      <h4>${e.titulo}</h4>
+      <div class="flags">
+        <span class="flag ${e.inclui_transporte?'on':''}"></span>
+        <span class="flag ${e.inclui_hospedagem?'on':''}"></span>
+        <span class="flag ${e.inclui_cafe?'on':''}"></span>
+      </div>
+      <div class="price">R$ ${e.valor}</div>
+    </div>
+  </div>`;
+ });
 }
 
+/* MODAL */
 function abrir(e){
-  sheetTitulo.innerText=e.titulo;
-  sheetDestino.innerText=e.destino;
-  sheetDatas.innerText=formatarData(e.data_saida)+" → "+formatarData(e.data_retorno);
-  hero.innerHTML=e.poster_url?`<img src="${imgPublica(e.poster_url)}">`:"";
+ mTitulo.innerText=e.titulo;
+ mDestino.innerText=e.destino;
+ mDatas.innerText=dataHora(e.data_saida,e.hora_saida)+" → "+dataHora(e.data_retorno,e.hora_retorno);
+ mHero.innerHTML=`<img src="${pub(e.poster_url)}">`;
+ mDetalhes.innerText=
+ `Transporte: ${e.transporte}
+ Hospedagem: ${e.hospedagem}
+ Alimentação: ${e.alimentacao}
+ Observações: ${e.observacoes||""}`;
 
-  boxDescricao.style.display=e.descricao?"block":"none";
-  sheetDescricao.innerText=e.descricao||"";
+ mInclusos.innerHTML="";
+ if(e.inclui_transporte)mInclusos.innerHTML+=`<div class="tag">🚌 Transporte</div>`;
+ if(e.inclui_hospedagem)mInclusos.innerHTML+=`<div class="tag">🏨 Hospedagem</div>`;
+ if(e.inclui_cafe)mInclusos.innerHTML+=`<div class="tag">☕ Café</div>`;
+ if(e.inclui_seguro)mInclusos.innerHTML+=`<div class="tag">🛡 Seguro</div>`;
 
-  boxRoteiro.style.display=e.roteiro?"block":"none";
-  sheetRoteiro.innerText=e.roteiro||"";
+ mPagamentos.innerHTML="";
+ ["PIX","Crédito","Débito","Dinheiro","Parcelado"].forEach(p=>{
+  mPagamentos.innerHTML+=`<div class="tag">${p}</div>`;
+ });
 
-  flags.innerHTML="";
-  let ok=false;
-  if(e.inclui_cafe){flags.innerHTML+=`<div class="flag">☕ Café</div>`;ok=true}
-  if(e.inclui_seguro){flags.innerHTML+=`<div class="flag">🛡 Seguro</div>`;ok=true}
-  if(e.inclui_guia){flags.innerHTML+=`<div class="flag">🧑‍✈️ Guia</div>`;ok=true}
-  if(e.inclui_transporte){flags.innerHTML+=`<div class="flag">🚌 Transporte</div>`;ok=true}
-  boxInclusos.style.display=ok?"block":"none";
-
-  modal.classList.add("show");
+ modal.classList.add("show");
 }
 
 function fechar(){modal.classList.remove("show")}
-function formatarData(d){const [y,m,da]=d.split("-");return `${da}/${m}/${y}`}
-function adquirir(){alert("Próximo passo: cadastro do cliente")}
 
 carregar();
 </script>
