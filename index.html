@@ -516,6 +516,15 @@ function pub(path){
   if(!path) return "";
   return sb.storage.from("buffet_excursoes").getPublicUrl(path).data.publicUrl;
 }
+function pubParceiro(path){
+  if(!path) return "";
+  return sb
+    .storage
+    .from("buffet_parcerias")
+    .getPublicUrl(path)
+    .data
+    .publicUrl;
+}
 
 /* ===================== BANNER ===================== */
 let idx = 0;
@@ -691,23 +700,44 @@ if(anoEl){
   anoEl.innerText = new Date().getFullYear();
 }
 
-// ===== PARCEIROS (CARROSSEL) =====
+/* ===== PARCEIROS (TABELA parcerias) ===== */
 const parceirosTrack = document.getElementById("parceirosTrack");
 
-if(parceirosTrack && cfg.logos_parceiros?.length){
+async function carregarParceiros(){
+  if(!parceirosTrack) return;
+
+  const { data, error } = await sb
+    .from("parcerias")
+    .select("nome, link, logo_url")
+    .eq("ativo", true)
+    .order("created_at", { ascending: true });
+
+  if(error){
+    console.error("Erro ao carregar parcerias:", error);
+    return;
+  }
+
   parceirosTrack.innerHTML = "";
 
-  // duplica para rolagem infinita
-  const logos = [...cfg.logos_parceiros, ...cfg.logos_parceiros];
+  // 🔁 duplica para rolagem infinita
+  const parceiros = [...data, ...data];
 
-  logos.forEach(path=>{
+  parceiros.forEach(p=>{
+    const a = document.createElement("a");
+
+    a.href = p.link || "#";
+    a.target = "_blank";
+    a.rel = "noopener";
+    a.title = p.nome;
+
     const img = document.createElement("img");
-    img.src = pub(path);
-    img.alt = "Parceiro";
-    parceirosTrack.appendChild(img);
+    img.src = pubParceiro(p.logo_url);
+    img.alt = p.nome;
+
+    a.appendChild(img);
+    parceirosTrack.appendChild(a);
   });
 }
-
 
     
   }
@@ -824,6 +854,7 @@ function fechar(){
 
 carregar();
 carregarStories();
+carregarParceiros();
 </script>
 <div class="modal" id="storyModal" onclick="fecharStory(event)">
   <div class="sheet" style="height:100%">
