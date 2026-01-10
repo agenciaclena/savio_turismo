@@ -20,28 +20,30 @@ content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no,
   --text:#111827;
   --muted:#6b7280;
 }
+
 *{
   box-sizing:border-box;
   font-family:Inter;
   text-transform:uppercase;
 }
+
 body{
   margin:0;
   background:var(--bg);
   color:var(--text);
+}
+
+/* TOPO FIXO */
 header.topo{
   position:fixed;
   top:0;
   left:0;
   right:0;
-
   background:#ffffff;
   height:64px;
-
   display:flex;
   align-items:center;
   justify-content:center;
-
   border-bottom:1px solid var(--border);
   z-index:9999;
 }
@@ -57,15 +59,14 @@ header.topo .logo{
 header.topo .titulo{
   font-size:18px;
   font-weight:900;
-  color:#1e3a8a; /* azul */
+  color:#1e3a8a;
   letter-spacing:1px;
 }
-
 
 .container{
   max-width:1000px;
   margin:auto;
-  padding:96px 16px 160px; /* espaço para o topo fixo */
+  padding:96px 16px 160px;
 }
 
 .card{
@@ -75,6 +76,7 @@ header.topo .titulo{
   margin-bottom:18px;
   box-shadow:0 12px 28px rgba(0,0,0,.08);
 }
+
 h2{
   font-size:15px;
   font-weight:900;
@@ -82,13 +84,15 @@ h2{
   border-bottom:1px solid var(--border);
   padding-bottom:10px;
 }
+
 label{
   font-size:12px;
   font-weight:800;
   display:block;
   margin-top:14px;
 }
-input{
+
+input, select{
   width:100%;
   padding:16px;
   border-radius:14px;
@@ -96,37 +100,68 @@ input{
   font-size:16px;
   margin-top:6px;
 }
-input:focus{
+
+input:focus, select:focus{
   outline:none;
   border-color:var(--primary);
 }
+
 .pacote img{
   width:100%;
   height:260px;
   object-fit:cover;
   border-radius:16px;
 }
+
 .contrato{
   font-size:13px;
   line-height:1.75;
 }
+
 .fleg{
   display:flex;
   justify-content:space-between;
   align-items:center;
   padding:16px 0;
 }
-.fleg span{font-weight:800;font-size:13px}
-.fleg input{display:none}
+
+.fleg span{
+  font-weight:800;
+  font-size:13px;
+}
+
+.fleg input{
+  display:none;
+}
+
 .toggle{
-  width:54px;height:30px;background:#d1d5db;border-radius:999px;position:relative;
+  width:54px;
+  height:30px;
+  background:#d1d5db;
+  border-radius:999px;
+  position:relative;
 }
+
 .toggle::after{
-  content:"";width:24px;height:24px;background:#fff;border-radius:50%;
-  position:absolute;top:3px;left:3px;transition:.25s;
+  content:"";
+  width:24px;
+  height:24px;
+  background:#fff;
+  border-radius:50%;
+  position:absolute;
+  top:3px;
+  left:3px;
+  transition:.25s;
 }
-.fleg input:checked+.toggle{background:var(--primary)}
-.fleg input:checked+.toggle::after{transform:translateX(24px)}
+
+.fleg input:checked + .toggle{
+  background:var(--primary);
+}
+
+.fleg input:checked + .toggle::after{
+  transform:translateX(24px);
+}
+
 canvas{
   width:100%;
   height:260px;
@@ -135,6 +170,7 @@ canvas{
   background:#fafafa;
   touch-action:none;
 }
+
 .actions{
   position:fixed;
   bottom:0;
@@ -144,6 +180,7 @@ canvas{
   border-top:1px solid var(--border);
   padding:14px;
 }
+
 .btn{
   width:100%;
   padding:18px;
@@ -154,6 +191,7 @@ canvas{
   background:linear-gradient(135deg,#ff6a00,#ff9a57);
   color:#fff;
 }
+
 </style>
 </head>
 
@@ -271,130 +309,130 @@ canvas{
   <option value="DINHEIRO">DINHEIRO</option>
 </select>
 </div>
-
-
-<!-- CONTRATO COMPLETO -->
+<!-- CONTRATO COMPLETO (BASE DO PDF) -->
 <div class="card contrato" id="contratoTexto">
 
-<h2>CONTRATO DE PRESTAÇÃO DE SERVIÇOS TURÍSTICOS</h2>
+  <h2>CONTRATO DE PRESTAÇÃO DE SERVIÇOS TURÍSTICOS</h2>
 
-<p>
-<strong>EXCURSÃO – <span id="ctr_titulo">__________</span></strong>
-</p>
+  <p>
+    <strong>EXCURSÃO – <span id="ctr_titulo">__________</span></strong>
+  </p>
 
-<p>
-Pelo presente instrumento particular, de um lado,
-<strong>SÁVIO TURISMO</strong>, pessoa jurídica de direito privado,
-inscrita no CNPJ nº <strong>56.173.108/0001-30</strong>,
-doravante denominada <strong>CONTRATADA</strong>, e, de outro lado,
-<strong><span id="ctr_nome">____________________________</span></strong>,
-CPF <strong><span id="ctr_cpf">________________</span></strong>,
-RG <strong><span id="ctr_rg">________________</span></strong>,
-doravante denominado(a) <strong>CONTRATANTE</strong>,
-têm entre si justo e contratado o que segue:
-</p>
+  <p>
+    Pelo presente instrumento particular, de um lado,
+    <strong>SÁVIO TURISMO</strong>, pessoa jurídica de direito privado,
+    inscrita no CNPJ nº <strong>56.173.108/0001-30</strong>,
+    doravante denominada <strong>CONTRATADA</strong>, e, de outro lado,
+    <strong><span id="ctr_nome">____________________________</span></strong>,
+    CPF <strong><span id="ctr_cpf">________________</span></strong>,
+    RG <strong><span id="ctr_rg">________________</span></strong>,
+    doravante denominado(a) <strong>CONTRATANTE</strong>,
+    têm entre si justo e contratado o que segue:
+  </p>
 
-<h3>I. DO OBJETO</h3>
-<p>
-Prestação de serviços turísticos relativos à excursão
-<strong><span id="ctr_destino">__________</span></strong>,
-com saída em <strong><span id="ctr_saida">__/__/____</span></strong>
-e retorno em <strong><span id="ctr_retorno">__/__/____</span></strong>,
-conforme roteiro e condições estabelecidas.
-</p>
+  <h3>I. DO OBJETO</h3>
+  <p>
+    Prestação de serviços turísticos relativos à excursão
+    <strong><span id="ctr_destino">__________</span></strong>,
+    com saída em <strong><span id="ctr_saida">__/__/____</span></strong>
+    e retorno em <strong><span id="ctr_retorno">__/__/____</span></strong>,
+    conforme roteiro e condições estabelecidas.
+  </p>
 
-<h3>II. DOS SERVIÇOS INCLUSOS</h3>
-<ul id="ctr_inclusos"></ul>
+  <h3>II. DOS SERVIÇOS INCLUSOS</h3>
+  <ul id="ctr_inclusos"></ul>
 
-<h3>III. DO VALOR</h3>
-<p>
-O valor total do pacote contratado é de
-<strong><span id="ctr_valor">R$ 0,00</span></strong>.
-</p>
+  <h3>III. DO VALOR</h3>
+  <p>
+    O valor total do pacote contratado é de
+    <strong><span id="ctr_valor">R$ 0,00</span></strong>.
+  </p>
 
-<h3>IV. DAS OBRIGAÇÕES DO CONTRATANTE</h3>
-<p>
-Cumprir horários, portar documentos pessoais válidos,
-respeitar orientações da equipe responsável e zelar por seus pertences.
-</p>
+  <h3>IV. DAS OBRIGAÇÕES DO CONTRATANTE</h3>
+  <p>
+    Cumprir horários, portar documentos pessoais válidos,
+    respeitar orientações da equipe responsável e zelar por seus pertences.
+  </p>
 
-<h3>V. DOS RISCOS</h3>
-<p>
-O contratante declara estar ciente dos riscos inerentes
-às atividades turísticas.
-</p>
+  <h3>V. DOS RISCOS</h3>
+  <p>
+    O contratante declara estar ciente dos riscos inerentes
+    às atividades turísticas.
+  </p>
 
-<h3>VI. DO CANCELAMENTO</h3>
-<p>
-Em caso de desistência por parte do contratante,
-não haverá reembolso dos valores pagos.
-</p>
+  <h3>VI. DO CANCELAMENTO</h3>
+  <p>
+    Em caso de desistência por parte do contratante,
+    não haverá reembolso dos valores pagos.
+  </p>
 
-<h3>VII. DA PROTEÇÃO DE DADOS (LGPD)</h3>
-<p>
-O contratante autoriza o tratamento de seus dados pessoais
-nos termos da Lei nº 13.709/2018.
-</p>
+  <h3>VII. DA PROTEÇÃO DE DADOS (LGPD)</h3>
+  <p>
+    O contratante autoriza o tratamento de seus dados pessoais
+    nos termos da Lei nº 13.709/2018.
+  </p>
 
-<h3>VIII. DA DECLARAÇÃO FINAL</h3>
-<p>
-Declaro que li, compreendi e aceito integralmente
-todos os termos deste contrato.
-</p>
+  <h3>VIII. DA DECLARAÇÃO FINAL</h3>
+  <p>
+    Declaro que li, compreendi e aceito integralmente
+    todos os termos deste contrato.
+  </p>
 
-<p>
-<strong>Local e data:</strong>
-<span id="ctr_local_data">__________</span>
-</p>
+  <p>
+    <strong>Local e data:</strong>
+    <span id="ctr_local_data">__________</span>
+  </p>
 
-<!-- FLEGS -->
-<label class="fleg">
-  <span>ACEITO O CONTRATO</span>
-  <input type="checkbox" id="f1">
-  <div class="toggle"></div>
-</label>
+  <!-- ACEITES (VALIDAÇÃO) -->
+  <label class="fleg">
+    <span>ACEITO O CONTRATO</span>
+    <input type="checkbox" id="f1">
+    <div class="toggle"></div>
+  </label>
 
-<label class="fleg">
-  <span>CIÊNCIA DOS RISCOS</span>
-  <input type="checkbox" id="f2">
-  <div class="toggle"></div>
-</label>
+  <label class="fleg">
+    <span>CIÊNCIA DOS RISCOS</span>
+    <input type="checkbox" id="f2">
+    <div class="toggle"></div>
+  </label>
 
-<label class="fleg">
-  <span>AUTORIZO LGPD</span>
-  <input type="checkbox" id="f3">
-  <div class="toggle"></div>
-</label>
+  <label class="fleg">
+    <span>AUTORIZO LGPD</span>
+    <input type="checkbox" id="f3">
+    <div class="toggle"></div>
+  </label>
+
+  <!-- ASSINATURA QUE VAI PARA O PDF -->
+  <div id="assinaturaPdf" style="margin-top:28px">
+    <strong>ASSINATURA DO CONTRATANTE</strong><br>
+    <div id="assinaturaImg" style="margin-top:12px"></div>
+  </div>
 
 </div>
 
 
-<!-- ASSINATURA -->
+<!-- ASSINATURA (CANVAS DE DESENHO) -->
 <div class="card">
-<h2>ASSINATURA</h2>
+  <h2>ASSINATURA</h2>
 
-<canvas id="canvas"></canvas>
+  <canvas id="canvas"></canvas>
 
-<div style="display:flex;gap:12px;margin-top:14px">
-  <button
-    type="button"
-    class="btn"
-    style="background:#e5e7eb;color:#111"
-    onclick="limparAssinatura()"
-  >
-    LIMPAR ASSINATURA
-  </button>
+  <div style="display:flex;gap:12px;margin-top:14px">
+    <button
+      type="button"
+      class="btn"
+      style="background:#e5e7eb;color:#111"
+      onclick="limparAssinatura()"
+    >
+      LIMPAR ASSINATURA
+    </button>
+  </div>
 </div>
 
-</div>
 
-
+<!-- BOTÃO FINAL -->
 <div class="actions" id="acoesFinalizar" style="display:none">
   <button class="btn" onclick="finalizar()">FINALIZAR CONTRATO</button>
-</div>
-
-
-
 </div>
 
 <script>
@@ -538,14 +576,15 @@ flegs.forEach(f => {
   f.addEventListener("change", verificarFlegs);
 });
 
-/* FINALIZAR */
 async function finalizar(){
 
+  /* 1️⃣ VALIDAR ACEITES */
   if(!f1.checked || !f2.checked || !f3.checked){
     alert("ACEITE TODAS AS DECLARAÇÕES");
     return;
   }
 
+  /* 2️⃣ VALIDAR SE ASSINOU */
   const vazio = ctx.getImageData(0,0,canvas.width,canvas.height).data
     .every(v => v === 0);
 
@@ -554,21 +593,44 @@ async function finalizar(){
     return;
   }
 
-  /* ===== GERAR PDF ===== */
+  /* 3️⃣ COPIAR ASSINATURA DO CANVAS PARA O CONTRATO (PDF) */
+  const assinaturaBase64 = canvas.toDataURL("image/png");
+
+  document.getElementById("assinaturaImg").innerHTML = `
+    <img
+      src="${assinaturaBase64}"
+      style="width:260px;border-bottom:2px solid #111;margin-top:8px"
+    >
+  `;
+
+  /* 4️⃣ AGUARDAR O DOM ATUALIZAR */
+  await new Promise(r => setTimeout(r, 300));
+
+  /* 5️⃣ GERAR PDF (AGORA COM ASSINATURA) */
   const pdfBlob = await html2pdf()
     .from(document.getElementById("contratoTexto"))
-    .set({ html2canvas:{ scale:2 }})
+    .set({
+      margin:10,
+      filename:"contrato.pdf",
+      html2canvas:{ scale:2, useCORS:true },
+      jsPDF:{ unit:"mm", format:"a4", orientation:"portrait" }
+    })
     .outputPdf("blob");
 
+  /* 6️⃣ NOME E CAMINHO DO PDF */
   const nomeArquivo =
     `CONTRATO_${id}_${cpf.value.replace(/\D/g,"")}_${Date.now()}.pdf`;
 
   const caminho = `2026/01/${nomeArquivo}`;
 
+  /* 7️⃣ UPLOAD NO SUPABASE STORAGE */
   const { error:uploadError } = await sb
     .storage
     .from("buffet_contratos")
-    .upload(caminho, pdfBlob, { contentType:"application/pdf" });
+    .upload(caminho, pdfBlob, {
+      contentType:"application/pdf",
+      upsert:false
+    });
 
   if(uploadError){
     alert("ERRO AO ENVIAR PDF");
@@ -581,7 +643,7 @@ async function finalizar(){
     .from("buffet_contratos")
     .getPublicUrl(caminho);
 
-  /* ===== INSERT NA TABELA CONTRATOS ===== */
+  /* 8️⃣ SALVAR CONTRATO NO BANCO */
   const { error:insertError } = await sb
     .from("contratos")
     .insert({
@@ -593,8 +655,6 @@ async function finalizar(){
       rg: rg.value,
       telefone: telefone.value,
       email: email.value,
-
-      endereco: endereco.value,
 
       emergencia_nome: em_nome.value,
       emergencia_parentesco: em_parentesco.value,
@@ -620,7 +680,8 @@ async function finalizar(){
     return;
   }
 
-  alert("CONTRATO ASSINADO COM SUCESSO");
+  /* 9️⃣ SUCESSO */
+  alert("CONTRATO ASSINADO E SALVO COM SUCESSO");
 }
 
 function formatarData(d){
