@@ -700,6 +700,35 @@ if(anoEl){
   anoEl.innerText = new Date().getFullYear();
 }
 
+
+    
+  }
+const loc = document.getElementById("localizacao");
+if(loc && cfg.localizacao){
+  loc.innerText = `📍 ${cfg.localizacao}`;
+}
+
+  itens = data || [];
+  lista.innerHTML = "";
+
+  itens.forEach(e=>{
+    const uf = ufPorCep(e.cep || "");
+    const parcelasTxt = textoParcelas(e.valor, e.parcelas);
+
+    lista.innerHTML += `
+      <div class="card" onclick='abrir("${e.id}")'>
+        <img src="${pub(e.poster_url)}">
+        <div class="card-body">
+          <h4>${e.titulo}</h4>
+          <div class="meta">📅 ${dataHora(e.data_saida,e.hora_saida)}</div>
+          ${uf ? `<div class="meta">📍 ${uf}</div>` : ``}
+          <div class="price">${formatarMoeda(e.valor)}</div>
+          ${parcelasTxt ? `<div class="meta">💳 ${parcelasTxt}</div>` : ``}
+        </div>
+      </div>
+    `;
+  });
+}
 /* ===== PARCEIROS (TABELA parcerias) ===== */
 const parceirosTrack = document.getElementById("parceirosTrack");
 
@@ -739,34 +768,6 @@ async function carregarParceiros(){
   });
 }
 
-    
-  }
-const loc = document.getElementById("localizacao");
-if(loc && cfg.localizacao){
-  loc.innerText = `📍 ${cfg.localizacao}`;
-}
-
-  itens = data || [];
-  lista.innerHTML = "";
-
-  itens.forEach(e=>{
-    const uf = ufPorCep(e.cep || "");
-    const parcelasTxt = textoParcelas(e.valor, e.parcelas);
-
-    lista.innerHTML += `
-      <div class="card" onclick='abrir("${e.id}")'>
-        <img src="${pub(e.poster_url)}">
-        <div class="card-body">
-          <h4>${e.titulo}</h4>
-          <div class="meta">📅 ${dataHora(e.data_saida,e.hora_saida)}</div>
-          ${uf ? `<div class="meta">📍 ${uf}</div>` : ``}
-          <div class="price">${formatarMoeda(e.valor)}</div>
-          ${parcelasTxt ? `<div class="meta">💳 ${parcelasTxt}</div>` : ``}
-        </div>
-      </div>
-    `;
-  });
-}
 async function carregarStories(){
   const { data } = await sb
     .from("stories")
