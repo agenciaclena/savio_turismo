@@ -741,9 +741,17 @@ async function finalizar(){
   /* 4️⃣ AGUARDAR O DOM ATUALIZAR */
   await new Promise(r => setTimeout(r, 300));
 
-  /* 5️⃣ GERAR PDF (AGORA COM ASSINATURA) */
-  const pdfBlob = await gerarPdfContratoSeguro();
+ /* 5️⃣ ATIVA MODO PDF */
+document.body.classList.add("modo-pdf");
 
+/* AGUARDA O CSS APLICAR */
+await new Promise(r => setTimeout(r, 300));
+
+/* 6️⃣ GERAR PDF */
+const pdfBlob = await gerarPdfContratoSeguro();
+
+/* 7️⃣ DESATIVA MODO PDF */
+document.body.classList.remove("modo-pdf");
 
   /* 6️⃣ NOME E CAMINHO DO PDF */
   const nomeArquivo =
