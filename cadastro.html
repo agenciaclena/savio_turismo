@@ -692,13 +692,6 @@ async function finalizar(){
   /* 3️⃣ COPIAR ASSINATURA DO CANVAS PARA O CONTRATO (PDF) */
   const assinaturaBase64 = canvas.toDataURL("image/png");
 
-  document.getElementById("assinaturaImg").innerHTML = `
-    <img
-      src="${assinaturaBase64}"
-      style="width:260px;border-bottom:2px solid #111;margin-top:8px"
-    >
-  `;
-
   /* 4️⃣ AGUARDAR O DOM ATUALIZAR */
   await new Promise(r => setTimeout(r, 300));
 
