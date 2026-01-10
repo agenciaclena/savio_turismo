@@ -330,6 +330,51 @@ body{
   cursor:pointer;
   z-index:10000;
 }
+/* ===== PARCEIROS FOOTER ===== */
+.footer{
+  background:var(--bg);
+  padding:24px 0 32px;
+  overflow:hidden;
+}
+
+.footer-title{
+  text-align:center;
+  font-size:13px;
+  font-weight:800;
+  margin-bottom:14px;
+}
+
+.parceiros-wrap{
+  width:100%;
+  overflow:hidden;
+  position:relative;
+}
+
+.parceiros-track{
+  display:flex;
+  align-items:center;
+  gap:32px;
+  width:max-content;
+  animation:parceiros-loop 22s linear infinite;
+}
+
+.parceiros-track img{
+  height:38px;
+  width:auto;
+  opacity:.85;
+  filter:grayscale(100%);
+  transition:.3s;
+}
+
+.parceiros-track img:hover{
+  opacity:1;
+  filter:none;
+}
+
+@keyframes parceiros-loop{
+  from{ transform:translateX(0); }
+  to{ transform:translateX(-50%); }
+}
 
 </style>
 </head>
@@ -709,6 +754,40 @@ function fecharInfo(e){
 }
 carregar();
 carregarStories();
+  async function carregarParceiros(){
+  const track = document.getElementById("parceirosTrack");
+  if(!track) return;
+
+  const { data, error } = await sb
+    .from("parcerias")
+    .select("nome, logo_url")
+    .eq("ativo", true)
+    .order("created_at", { ascending:true });
+
+  if(error || !data || data.length === 0){
+    track.innerHTML = "";
+    return;
+  }
+
+  // duplica para loop infinito
+  const parceiros = [...data, ...data];
+  track.innerHTML = "";
+
+  parceiros.forEach(p=>{
+    const img = document.createElement("img");
+    img.src = sb
+      .storage
+      .from("buffet_parcerias")
+      .getPublicUrl(p.logo_url)
+      .data
+      .publicUrl;
+
+    img.alt = p.nome || "Parceiro";
+    track.appendChild(img);
+  });
+}
+
+carregarParceiros();
 </script>
 <div class="modal" id="storyModal" onclick="fecharStory(event)">
   <div class="sheet" style="height:100%">
@@ -727,4 +806,12 @@ carregarStories();
 
 <script async src="https://www.instagram.com/embed.js"></script>
 </body>
+<footer class="footer">
+  <div class="footer-title">Parcerias</div>
+
+  <div class="parceiros-wrap">
+    <div class="parceiros-track" id="parceirosTrack"></div>
+  </div>
+</footer>
+
 </html>
