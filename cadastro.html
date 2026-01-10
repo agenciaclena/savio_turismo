@@ -689,33 +689,26 @@ async function finalizar(){
     return;
   }
 
-  /* 3️⃣ COPIAR ASSINATURA DO CANVAS PARA O CONTRATO (PDF) */
+  /* 3️⃣ CAPTURA ASSINATURA UMA ÚNICA VEZ */
   const assinaturaBase64 = canvas.toDataURL("image/png");
 
-  /* 4️⃣ AGUARDAR O DOM ATUALIZAR */
+  /* 4️⃣ ATIVA MODO PDF */
+  document.body.classList.add("modo-pdf");
   await new Promise(r => setTimeout(r, 300));
 
- /* 5️⃣ ATIVA MODO PDF */
-document.body.classList.add("modo-pdf");
+  /* 5️⃣ GERAR PDF COM ASSINATURA */
+  const pdfBlob = await gerarPdfContratoSeguro(assinaturaBase64);
 
-/* AGUARDA O CSS APLICAR */
-await new Promise(r => setTimeout(r, 300));
+  /* 6️⃣ DESATIVA MODO PDF */
+  document.body.classList.remove("modo-pdf");
 
-/* 6️⃣ GERAR PDF */
-const assinaturaBase64 = canvas.toDataURL("image/png");
-const pdfBlob = await gerarPdfContratoSeguro(assinaturaBase64);
-
-
-/* 7️⃣ DESATIVA MODO PDF */
-document.body.classList.remove("modo-pdf");
-
-  /* 6️⃣ NOME E CAMINHO DO PDF */
+  /* 7️⃣ NOME E CAMINHO DO PDF */
   const nomeArquivo =
     `CONTRATO_${id}_${cpf.value.replace(/\D/g,"")}_${Date.now()}.pdf`;
 
   const caminho = `2026/01/${nomeArquivo}`;
 
-  /* 7️⃣ UPLOAD NO SUPABASE STORAGE */
+  /* 8️⃣ UPLOAD NO SUPABASE STORAGE */
   const { error:uploadError } = await sb
     .storage
     .from("buffet_contratos")
@@ -735,11 +728,10 @@ document.body.classList.remove("modo-pdf");
     .from("buffet_contratos")
     .getPublicUrl(caminho);
 
-  /* 8️⃣ SALVAR CONTRATO NO BANCO */
+  /* 9️⃣ SALVAR CONTRATO NO BANCO */
   const { error:insertError } = await sb
     .from("contratos")
     .insert({
-
       excursao_id: id,
 
       nome: nome.value,
@@ -772,10 +764,8 @@ document.body.classList.remove("modo-pdf");
     return;
   }
 
-  /* 9️⃣ SUCESSO */
   alert("CONTRATO ASSINADO E SALVO COM SUCESSO");
 }
-
 function formatarData(d){
   if(!d) return "__/__/____";
   const [y,m,da] = d.split("-");
