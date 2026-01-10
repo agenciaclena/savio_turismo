@@ -65,7 +65,7 @@ h3{
   font-weight:800;
 }
 
-/* ===== FLEGS ===== */
+/* ===== ACEITES ===== */
 .flegs{
   margin-top:40px;
   border-top:1px solid var(--border);
@@ -86,9 +86,7 @@ h3{
   line-height:1.3;
 }
 
-.fleg input{
-  display:none;
-}
+.fleg input{ display:none }
 
 .toggle{
   width:52px;
@@ -120,7 +118,7 @@ h3{
   transform:translateX(24px);
 }
 
-/* ACTIONS */
+/* BOTÃO */
 .actions{
   position:fixed;
   bottom:0;
@@ -141,7 +139,6 @@ h3{
   background:#d1d5db;
   color:#666;
   cursor:not-allowed;
-  transition:.25s;
 }
 
 .actions button.active{
@@ -163,69 +160,62 @@ h3{
   </div>
 
   <p>
-    Pelo presente instrumento particular, de um lado,
-    <strong>SÁVIO TURISMO</strong>, inscrita no CNPJ nº
-    <strong>56.173.108/0001-30</strong>, e, de outro lado,
-    <strong id="c_nome"></strong>, CPF <strong id="c_cpf"></strong>,
-    RG <strong id="c_rg"></strong>, doravante denominado(a)
-    <strong>CONTRATANTE</strong>.
+    Pelo presente instrumento particular, de um lado
+    <strong>SÁVIO TURISMO</strong>, CNPJ
+    <strong>56.173.108/0001-30</strong>, e de outro
+    <strong id="c_nome"></strong>,
+    CPF <strong id="c_cpf"></strong>,
+    RG <strong id="c_rg"></strong>.
   </p>
 
   <h3>I. DO OBJETO</h3>
   <p>
-    Prestação de serviços turísticos relativos à excursão
+    Prestação de serviços turísticos referentes à excursão
     <strong id="p_titulo"></strong>.
   </p>
 
   <h3>II. DO VALOR</h3>
   <p>
-    Valor total: <strong id="p_valor"></strong>.
+    Valor total do contrato:
+    <strong id="p_valor"></strong>.
   </p>
 
-  <h3>III. DECLARAÇÕES</h3>
+  <h3>III. DECLARAÇÃO</h3>
   <p>
-    O contratante declara, para todos os fins de direito, que leu,
-    compreendeu e aceita integralmente todos os termos deste contrato,
-    estando ciente de suas responsabilidades, condições e riscos
-    inerentes à atividade turística contratada.
+    Declaro que li, compreendi e aceito integralmente os termos
+    deste contrato eletrônico.
   </p>
 
-  <h3>IV. VALIDADE JURÍDICA</h3>
+  <h3>IV. VALIDADE LEGAL</h3>
   <p>
-    O presente contrato possui validade jurídica plena, sendo firmado
-    de forma eletrônica, nos termos da legislação vigente, produzindo
-    todos os efeitos legais a partir do aceite eletrônico e posterior
-    assinatura digital do contratante.
+    Este contrato é firmado eletronicamente, produzindo efeitos
+    legais mediante aceite e assinatura digital.
   </p>
 
   <h3>V. LGPD</h3>
   <p>
-    O contratante autoriza expressamente o tratamento de seus dados
-    pessoais para fins exclusivos de execução deste contrato, nos
-    termos da Lei nº 13.709/2018 (Lei Geral de Proteção de Dados).
+    Autorizo o tratamento dos meus dados pessoais para execução
+    deste contrato, conforme Lei nº 13.709/2018.
   </p>
 
-  <!-- FLEGS -->
   <div class="flegs">
-
     <label class="fleg">
-      <span>LI E ACEITO INTEGRALMENTE O CONTRATO</span>
+      <span>LI E ACEITO O CONTRATO</span>
       <input type="checkbox" class="chk">
       <div class="toggle"></div>
     </label>
 
     <label class="fleg">
-      <span>ESTOU CIENTE DOS RISCOS DA ATIVIDADE</span>
+      <span>ESTOU CIENTE DOS RISCOS</span>
       <input type="checkbox" class="chk">
       <div class="toggle"></div>
     </label>
 
     <label class="fleg">
-      <span>AUTORIZO O TRATAMENTO DOS DADOS (LGPD)</span>
+      <span>AUTORIZO O USO DOS DADOS (LGPD)</span>
       <input type="checkbox" class="chk">
       <div class="toggle"></div>
     </label>
-
   </div>
 
 </div>
@@ -235,11 +225,10 @@ h3{
 </div>
 
 <script>
-/* ================= DADOS ================= */
+/* ===== CARREGAMENTO SEGURO ===== */
 const dados = JSON.parse(localStorage.getItem("cadastro") || "{}");
 const pacote = JSON.parse(localStorage.getItem("pacoteSelecionado") || {});
 
-/* BLOQUEIO ABSOLUTO */
 if(
   !dados.nome ||
   !dados.cpf ||
@@ -247,24 +236,26 @@ if(
   !pacote.titulo ||
   !pacote.valor
 ){
-  alert("DADOS DO CONTRATO INCOMPLETOS. RETORNE AO INÍCIO.");
+  alert("Dados do contrato ausentes. Retorne ao início.");
   location.href = "index.html";
 }
 
-/* INJEÇÃO */
+/* ===== INJETAR DADOS ===== */
 document.getElementById("c_nome").innerText = dados.nome;
 document.getElementById("c_cpf").innerText = dados.cpf;
 document.getElementById("c_rg").innerText = dados.rg;
 document.getElementById("p_titulo").innerText = pacote.titulo;
 document.getElementById("p_valor").innerText = pacote.valor;
 
-/* ================= ACEITE ================= */
+/* ===== ACEITE ===== */
 const checks = document.querySelectorAll(".chk");
 const btn = document.getElementById("btnAssinar");
 
 function validar(){
-  const ok = [...checks].every(c => c.checked);
-  btn.classList.toggle("active", ok);
+  btn.classList.toggle(
+    "active",
+    [...checks].every(c => c.checked)
+  );
 }
 
 checks.forEach(c => c.addEventListener("change", validar));
@@ -272,22 +263,17 @@ checks.forEach(c => c.addEventListener("change", validar));
 btn.onclick = () => {
   if(!btn.classList.contains("active")) return;
 
-  const aceiteContrato = {
+  localStorage.setItem("aceiteContrato", JSON.stringify({
     nome: dados.nome,
     cpf: dados.cpf,
     rg: dados.rg,
     pacote: pacote.titulo,
     valor: pacote.valor,
-    aceite_termos: true,
-    aceite_riscos: true,
-    aceite_lgpd: true,
-    data_aceite: new Date().toISOString(),
+    data: new Date().toISOString(),
+    userAgent: navigator.userAgent,
     timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-    user_agent: navigator.userAgent,
     hash: crypto.randomUUID()
-  };
-
-  localStorage.setItem("aceiteContrato", JSON.stringify(aceiteContrato));
+  }));
 
   location.href = "assinatura.html";
 };
