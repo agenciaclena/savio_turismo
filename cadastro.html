@@ -554,11 +554,36 @@ async function finalizar(){
     return;
   }
 
-  /* ===== GERAR PDF ===== */
-  const pdfBlob = await html2pdf()
-    .from(document.getElementById("contratoTexto"))
-    .set({ html2canvas:{ scale:2 }})
-    .outputPdf("blob");
+// 🔁 clona o contrato para evitar layout dinâmico
+const contratoOriginal = document.getElementById("contratoTexto");
+const contratoClone = contratoOriginal.cloneNode(true);
+
+// força visibilidade total
+contratoClone.style.display = "block";
+contratoClone.style.position = "static";
+contratoClone.style.background = "#fff";
+contratoClone.style.padding = "24px";
+contratoClone.style.width = "100%";
+
+// injeta temporariamente no body
+document.body.appendChild(contratoClone);
+
+// aguarda renderização real
+await new Promise(r => setTimeout(r, 300));
+
+// gera o PDF
+const pdfBlob = await html2pdf()
+  .from(contratoClone)
+  .set({
+    margin: 10,
+    html2canvas: { scale: 2, useCORS: true },
+    jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
+  })
+  .outputPdf("blob");
+
+// remove clone
+contratoClone.remove();
+
 
   const nomeArquivo =
     `CONTRATO_${id}_${cpf.value.replace(/\D/g,"")}_${Date.now()}.pdf`;
