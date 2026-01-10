@@ -3,20 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <title>Painel Admin • Excursões</title>
-
-<meta name="viewport"
-  content="width=device-width,
-  initial-scale=1,
-  maximum-scale=1,
-  user-scalable=no,
-  viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Inter}
-body{background:#f4f6fb;color:#111;overflow:hidden}
+body{background:#f4f6fb;color:#111}
 
 :root{
   --primary:#ff6a00;
@@ -25,39 +19,31 @@ body{background:#f4f6fb;color:#111;overflow:hidden}
 }
 
 /* HEADER */
-.header{
-  padding:18px 16px 10px;
-}
-.header h1{
-  font-size:20px;
-  font-weight:800;
-}
+.header{padding:20px}
+.header h1{font-size:22px;font-weight:800}
 .header span{color:var(--primary)}
-.header p{
-  font-size:12px;
-  color:var(--muted);
-}
+.header p{font-size:13px;color:var(--muted)}
 
-/* LISTA */
-.lista{
-  height:calc(100vh - 90px);
-  overflow:auto;
-  padding:0 14px 120px;
+/* GRID */
+.grid{
   display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
-  gap:14px;
+  grid-template-columns:repeat(4,1fr);
+  gap:18px;
+  padding:0 20px 140px;
 }
+@media(max-width:1024px){.grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:768px){.grid{grid-template-columns:repeat(2,1fr)}}
 
 /* CARD */
 .card{
   background:#fff;
-  border-radius:18px;
+  border-radius:20px;
   overflow:hidden;
-  box-shadow:0 10px 26px rgba(0,0,0,.12);
+  box-shadow:0 12px 30px rgba(0,0,0,.12);
 }
 .poster{
   width:100%;
-  aspect-ratio:1 / 1.414;
+  max-height:420px;
   background:#eee;
   display:flex;
   align-items:center;
@@ -65,128 +51,170 @@ body{background:#f4f6fb;color:#111;overflow:hidden}
 }
 .poster img{
   width:100%;
-  height:100%;
-  object-fit:cover;
+  height:auto;
+  max-height:100%;
+  object-fit:contain;
 }
-.card-body{
-  padding:12px;
-  display:flex;
-  flex-direction:column;
-  gap:6px;
+.poster{
+  width:100%;
+  aspect-ratio:1 / 1.414;
+  max-height:60vh;
+  background:#eee;
 }
-.card-body h4{
-  font-size:14px;
-  font-weight:800;
+
+.card-body{padding:14px;display:flex;flex-direction:column;gap:8px}
+.card-body h4{font-size:15px;font-weight:800}
+
+/* FLAGS */
+.flags{display:flex;gap:6px;flex-wrap:wrap}
+.flag{
+  width:10px;height:10px;border-radius:50%;
+  background:#cbd5e1;
 }
-.meta{
-  font-size:11px;
-  color:var(--muted);
-}
-.price{
-  font-weight:900;
-  font-size:14px;
-}
-.edit{
-  margin-top:6px;
-  font-size:12px;
-  font-weight:800;
-  color:var(--primary);
-  cursor:pointer;
-}
+.flag.on{background:var(--primary)}
+
+.meta{font-size:12px;color:var(--muted)}
+.price{font-size:15px;font-weight:900}
+.edit{color:var(--primary);font-weight:800;cursor:pointer}
 
 /* FAB */
 .fab{
-  position:fixed;
-  right:18px;
-  bottom:18px;
-  width:58px;
-  height:58px;
-  border-radius:50%;
-  border:none;
+  position:fixed;right:20px;bottom:20px;
+  width:60px;height:60px;border-radius:50%;
   background:linear-gradient(135deg,#ff6a00,#ff9a57);
-  color:#fff;
-  font-size:32px;
+  color:#fff;font-size:30px;border:none;
   cursor:pointer;
 }
 
 /* MODAL */
 .modal{
-  position:fixed;
-  inset:0;
+  position:fixed;inset:0;
   background:rgba(0,0,0,.55);
-  display:none;
-  align-items:flex-end;
-  z-index:9999;
+  display:none;align-items:flex-end;
 }
 .modal.show{display:flex}
 
 .sheet{
-  width:100%;
-  height:95vh;
-  background:#fff;
+  background:#fff;width:100%;height:95vh;
   border-radius:28px 28px 0 0;
-  display:flex;
-  flex-direction:column;
+  display:flex;flex-direction:column;
 }
 .sheet-header{
-  padding:16px;
-  font-weight:800;
-  display:flex;
-  justify-content:space-between;
-  border-bottom:1px solid var(--border);
+  padding:18px;border-bottom:1px solid var(--border);
+  font-weight:800;display:flex;justify-content:space-between
 }
 .sheet-body{
-  flex:1;
-  overflow:auto;
-  padding:16px;
-  display:grid;
-  gap:12px;
+  flex:1;overflow:auto;padding:18px;
+  display:grid;gap:12px
 }
-.sheet-body label{
-  font-size:12px;
-  font-weight:700;
+.sheet-body label{font-size:12px;font-weight:700;color:#555}
+.sheet-body input,.sheet-body select,.sheet-body textarea{
+  height:44px;border-radius:14px;border:1px solid var(--border);
+  padding:0 14px
 }
-.sheet-body input,
-.sheet-body select{
-  height:44px;
-  border-radius:14px;
-  border:1px solid var(--border);
-  padding:0 14px;
-}
+.sheet-body textarea{min-height:90px;padding:10px}
 
-/* IMAGEM */
 .image-box{
-  height:220px;
-  border-radius:18px;
-  background:#eee;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  cursor:pointer;
+  height:220px;border-radius:18px;background:#eee;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer
 }
-.image-box img{
-  width:100%;
-  height:100%;
-  object-fit:contain;
-}
+.image-box img{width:100%;height:100%;object-fit:contain}
 
-/* FOOTER */
+.checks{
+  display:grid;grid-template-columns:repeat(2,1fr);gap:10px
+}
+.checks label{display:flex;gap:8px;font-size:13px;font-weight:700}
+
 .sheet-footer{
-  padding:14px;
-  border-top:1px solid var(--border);
-  display:flex;
-  gap:10px;
+  padding:16px;border-top:1px solid var(--border);
+  display:flex;gap:12px
 }
 .sheet-footer button{
-  flex:1;
-  height:48px;
-  border-radius:999px;
-  border:none;
-  font-weight:900;
+  flex:1;height:48px;border-radius:999px;
+  border:none;font-weight:900;cursor:pointer
 }
 .save{background:var(--primary);color:#fff}
 .cancel{background:#e5e7eb}
-.delete{background:#fff;color:#dc2626;border:1px solid #dc2626}
+.delete{background:transparent;color:#dc2626}
+
+/* ===== TOGGLE FLAGS (BONITAS) ===== */
+.toggle-group{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:14px;
+  margin-top:6px;
+}
+
+.toggle{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:12px 14px;
+  border:1px solid var(--border);
+  border-radius:14px;
+  font-size:13px;
+  font-weight:700;
+  background:#fff;
+  cursor:pointer;
+}
+
+.toggle span{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+/* esconde checkbox real */
+.toggle input{
+  display:none;
+}
+
+/* switch */
+.toggle .switch{
+  width:38px;
+  height:22px;
+  background:#d1d5db;
+  border-radius:999px;
+  position:relative;
+  transition:.25s;
+}
+
+.toggle .switch::after{
+  content:"";
+  width:18px;
+  height:18px;
+  background:#fff;
+  border-radius:50%;
+  position:absolute;
+  top:2px;
+  left:2px;
+  transition:.25s;
+}
+
+/* ativo */
+.toggle input:checked + .switch{
+  background:var(--primary);
+}
+.toggle input:checked + .switch::after{
+  left:18px;
+}
+.tags{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+}
+
+.tag{
+  font-size:11px;
+  font-weight:800;
+  padding:4px 10px;
+  border-radius:999px;
+  background:#fff7ed;
+  color:#c2410c;
+  border:1px solid #fed7aa;
+}
+
 </style>
 </head>
 
@@ -194,61 +222,122 @@ body{background:#f4f6fb;color:#111;overflow:hidden}
 
 <div class="header">
   <h1>Excursões <span>Admin</span></h1>
-  <p>Cadastro e controle das viagens</p>
+  <p>Cadastro completo das viagens</p>
 </div>
 
-<div class="lista" id="lista"></div>
-
+<div class="grid" id="lista"></div>
+  
 <button class="fab" onclick="novo()">+</button>
+<button class="fab" style="bottom:90px" onclick="abrirConfig()">⚙️</button>
+<button class="fab" style="bottom:160px" onclick="abrirParcerias()">🤝</button>
 
 <!-- MODAL -->
 <div class="modal" id="modal">
-  <div class="sheet">
+<div class="sheet">
+<div class="sheet-header">
+  <span id="tituloForm">Nova excursão</span>
+  <span onclick="fechar()">✕</span>
+</div>
 
-    <div class="sheet-header">
-      <span id="tituloForm">Nova excursão</span>
-      <span onclick="fechar()">✕</span>
-    </div>
+<div class="sheet-body">
 
-    <div class="sheet-body">
+<label>Poster A4</label>
+<div class="image-box" onclick="imagem.click()">
+  <img id="preview" style="display:none">
+  <input type="file" id="imagem" hidden accept="image/*">
+</div>
 
-      <label>Poster</label>
-      <div class="image-box" onclick="imagem.click()">
-        <img id="preview" style="display:none">
-        <input type="file" id="imagem" hidden accept="image/*">
-      </div>
+<label>Título</label><input id="titulo">
+<label>Destino</label><input id="destino">
 
-      <label>Título</label>
-      <input id="titulo">
+<label>Tipo</label>
+<select id="tipo">
+  <option>Excursão</option>
+  <option>Luau</option>
+  <option>Acampamento</option>
+</select>
 
-      <label>Destino</label>
-      <input id="destino">
+<label>Data saída</label><input type="date" id="data_saida">
+<label>Hora saída</label><input type="time" id="hora_saida">
 
-      <label>Data saída</label>
-      <input type="date" id="data_saida">
+<label>Data retorno</label><input type="date" id="data_retorno">
+<label>Hora retorno</label><input type="time" id="hora_retorno">
 
-      <label>Hora saída</label>
-      <input type="time" id="hora_saida">
+<label>Duração (dias)</label><input id="duracao_dias">
+<label>Local saída</label><input id="local_saida">
+<label>Transporte</label><input id="transporte">
+<label>Hospedagem</label><input id="hospedagem">
+<label>Alimentação</label><input id="alimentacao">
 
-      <label>Valor</label>
-      <input id="valor" inputmode="numeric" placeholder="Ex: 1500">
+<label>Inclusos</label>
 
-      <label>Status</label>
-      <select id="status">
-        <option value="Ativa">Ativa</option>
-        <option value="Inativa">Inativa</option>
-        <option value="Esgotada">Esgotada</option>
-      </select>
+<div class="checks">
+  <label><input type="checkbox" id="inclui_transporte"> Transporte</label>
+  <label><input type="checkbox" id="inclui_hospedagem"> Hospedagem</label>
+  <label><input type="checkbox" id="inclui_cafe"> Café</label>
+  <label><input type="checkbox" id="inclui_almoco"> Almoço</label>
+  <label><input type="checkbox" id="inclui_jantar"> Jantar</label>
+  <label><input type="checkbox" id="inclui_seguro"> Seguro</label>
+  <label><input type="checkbox" id="inclui_guia"> Guia</label>
+</div>
 
-    </div>
+<label>Formas de pagamento</label>
 
-    <div class="sheet-footer">
-      <button class="delete" id="btnExcluir" onclick="excluir()" style="display:none">Excluir</button>
-      <button class="cancel" onclick="fechar()">Cancelar</button>
-      <button class="save" onclick="salvar()">Salvar</button>
-    </div>
+<div class="toggle-group">
 
-  </div>
+  <label class="toggle">
+    <span>💳 Pix</span>
+    <input type="checkbox" id="pag_pix">
+    <div class="switch"></div>
+  </label>
+
+  <label class="toggle">
+    <span>💳 Crédito</span>
+    <input type="checkbox" id="pag_credito">
+    <div class="switch"></div>
+  </label>
+
+  <label class="toggle">
+    <span>💳 Débito</span>
+    <input type="checkbox" id="pag_debito">
+    <div class="switch"></div>
+  </label>
+
+  <label class="toggle">
+    <span>💵 Dinheiro</span>
+    <input type="checkbox" id="pag_dinheiro">
+    <div class="switch"></div>
+  </label>
+
+  <label class="toggle">
+    <span>📆 Parcelado</span>
+    <input type="checkbox" id="pag_parcelado">
+    <div class="switch"></div>
+  </label>
+</div>
+<label>Roteiro</label><textarea id="roteiro"></textarea>
+<label>Valor</label>
+<input id="valor" inputmode="numeric" placeholder="R$ 0,00">
+<label>Parcelas</label><input id="parcelas">
+<label>Observações</label><textarea id="observacoes"></textarea>
+
+<label>Status</label>
+<select id="status">
+  <option value="Ativa">Ativa</option>
+  <option value="Inativa">Inativa</option>
+  <option value="Esgotada">Esgotada</option>
+</select>
+
+
+</div>
+
+<div class="sheet-footer">
+  <button class="delete" id="btnExcluir" onclick="excluir()" style="display:none">Excluir</button>
+  <button class="cancel" onclick="fechar()">Cancelar</button>
+  <button class="save" onclick="salvar()">Salvar</button>
+</div>
+
+</div>
 </div>
 
 <script>
@@ -258,84 +347,218 @@ const sb = supabase.createClient(
 );
 
 let userId;
-let itens=[];
-let editId=null;
-let blob=null;
+let editId = null;
+let blob = null;
+let itens = [];
+let lojaConfig = null;
+let blobParceiro = null;
 
-(async()=>{
-  const {data:{session}} = await sb.auth.getSession();
-  if(!session){ location.href="login.html"; return; }
-  userId=session.user.id;
-  carregar();
+/* ================= INIT ================= */
+(async () => {
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) {
+    location.href = "login.html";
+    return;
+  }
+  userId = session.user.id;
+  await carregar();
 })();
 
-imagem.onchange=()=>{
-  blob=imagem.files[0];
-  preview.src=URL.createObjectURL(blob);
-  preview.style.display="block";
+/* ================= EVENTOS ================= */
+valor.addEventListener("input", () => {
+  let v = valor.value.replace(/\D/g, "");
+  v = (Number(v) / 100).toLocaleString("pt-BR", {
+    style: "currency",
+    currency: "BRL"
+  });
+  valor.value = v;
+});
+
+imagem.onchange = () => {
+  blob = imagem.files[0];
+  preview.src = URL.createObjectURL(blob);
+  preview.style.display = "block";
+};
+logoParceiro.onchange = () => {
+  blobParceiro = logoParceiro.files[0];
+  previewParceiro.src = URL.createObjectURL(blobParceiro);
+  previewParceiro.style.display = "block";
 };
 
-function novo(){
-  editId=null;
-  blob=null;
-  preview.style.display="none";
-  btnExcluir.style.display="none";
-  tituloForm.innerText="Nova excursão";
-  titulo.value="";
-  destino.value="";
-  data_saida.value="";
-  hora_saida.value="";
-  valor.value="";
-  status.value="Ativa";
+/* ================= MODAL EXCURSÃO ================= */
+function novo() {
+  editId = null;
+  blob = null;
+
+  preview.style.display = "none";
+  btnExcluir.style.display = "none";
+  tituloForm.innerText = "Nova excursão";
+
+  document
+    .querySelectorAll(".sheet-body input, .sheet-body textarea")
+    .forEach(el => {
+      if (el.type === "checkbox") el.checked = false;
+      else el.value = "";
+    });
+
+  status.value = "Ativa";
+
+  pag_pix.checked = false;
+  pag_credito.checked = false;
+  pag_debito.checked = false;
+  pag_dinheiro.checked = false;
+  pag_parcelado.checked = false;
+
   modal.classList.add("show");
 }
 
-function fechar(){ modal.classList.remove("show"); }
+function fechar() {
+  modal.classList.remove("show");
+}
 
-async function salvar(){
-  let poster=null;
+/* ================= SALVAR EXCURSÃO ================= */
+async function salvar() {
+  let poster = editId
+    ? itens.find(i => i.id === editId)?.poster_url
+    : null;
 
-  if(blob){
-    poster=`${userId}/${Date.now()}.jpg`;
-    await sb.storage.from("buffet_excursoes").upload(poster,blob,{upsert:true});
+  if (blob) {
+    poster = `${userId}/${Date.now()}.jpg`;
+    await sb.storage
+      .from("buffet_excursoes")
+      .upload(poster, blob, { upsert: true });
   }
 
-  const payload={
-    user_id:userId,
-    titulo:titulo.value,
-    destino:destino.value,
-    data_saida:data_saida.value,
-    hora_saida:hora_saida.value,
-    valor:Number(valor.value.replace(/\D/g,""))||0,
-    status:status.value,
-    poster_url:poster
+  const payload = {
+    user_id: userId,
+    titulo: titulo.value || null,
+    destino: destino.value || null,
+    tipo: tipo.value || "Excursão",
+
+    data_saida: data_saida.value || null,
+    hora_saida: hora_saida.value || null,
+    data_retorno: data_retorno.value || null,
+    hora_retorno: hora_retorno.value || null,
+
+    duracao_dias: Number(duracao_dias.value) || null,
+    local_saida: local_saida.value || null,
+    transporte: transporte.value || null,
+    hospedagem: hospedagem.value || null,
+    alimentacao: alimentacao.value || null,
+
+    inclui_transporte: !!inclui_transporte.checked,
+    inclui_hospedagem: !!inclui_hospedagem.checked,
+    inclui_cafe: !!inclui_cafe.checked,
+    inclui_almoco: !!inclui_almoco.checked,
+    inclui_jantar: !!inclui_jantar.checked,
+    inclui_seguro: !!inclui_seguro.checked,
+    inclui_guia: !!inclui_guia.checked,
+
+    roteiro: roteiro.value || null,
+    valor: limparMoeda(valor.value),
+    parcelas: Number(parcelas.value) || 0,
+    observacoes: observacoes.value || null,
+
+    pag_pix: !!pag_pix.checked,
+    pag_credito: !!pag_credito.checked,
+    pag_debito: !!pag_debito.checked,
+    pag_dinheiro: !!pag_dinheiro.checked,
+    pag_parcelado: !!pag_parcelado.checked,
+
+    status: status.value || "Ativa",
+    poster_url: poster
   };
 
-  editId
-    ? await sb.from("excursoes").update(payload).eq("id",editId)
+  const { error } = editId
+    ? await sb.from("excursoes").update(payload).eq("id", editId)
     : await sb.from("excursoes").insert(payload);
+
+  if (error) {
+    alert("Erro ao salvar: " + error.message);
+    return;
+  }
 
   fechar();
   carregar();
 }
 
-async function carregar(){
-  const {data}=await sb.from("excursoes").select("*").eq("user_id",userId);
-  itens=data||[];
-  lista.innerHTML="";
+/* ================= FORMATADORES ================= */
+function formatarData(data) {
+  if (!data) return "";
+  const [ano, mes, dia] = data.split("-");
+  return `${dia}/${mes}/${ano}`;
+}
 
-  itens.forEach(e=>{
-    const img=e.poster_url
-      ? sb.storage.from("buffet_excursoes").getPublicUrl(e.poster_url).data.publicUrl
+function formatarHora(hora) {
+  if (!hora) return "";
+  return hora.slice(0, 5);
+}
+
+function formatarMoeda(valor) {
+  if (valor === null || valor === undefined) return "R$ 0,00";
+  return Number(valor).toLocaleString("pt-BR", {
+    style: "currency",
+    currency: "BRL"
+  });
+}
+
+function limparMoeda(valor) {
+  if (!valor) return 0;
+  return Number(
+    valor
+      .replace(/\./g, "")
+      .replace(",", ".")
+      .replace(/[^\d.]/g, "")
+  );
+}
+
+/* ================= LISTAGEM ================= */
+async function carregar() {
+  const { data } = await sb
+    .from("excursoes")
+    .select("*")
+    .eq("user_id", userId);
+
+  itens = data || [];
+  lista.innerHTML = "";
+
+  itens.forEach(e => {
+    const img = e.poster_url
+      ? sb.storage
+          .from("buffet_excursoes")
+          .getPublicUrl(e.poster_url).data.publicUrl
       : "";
 
-    lista.innerHTML+=`
+    lista.innerHTML += `
       <div class="card">
-        <div class="poster">${img?`<img src="${img}">`:``}</div>
+        <div class="poster">${img ? `<img src="${img}">` : ``}</div>
         <div class="card-body">
           <h4>${e.titulo}</h4>
-          <div class="meta">${e.destino||""}</div>
-          <div class="price">R$ ${e.valor}</div>
+
+          <div class="tags">
+            ${e.inclui_transporte ? `<span class="tag">Transporte</span>` : ``}
+            ${e.inclui_hospedagem ? `<span class="tag">Hospedagem</span>` : ``}
+            ${e.inclui_cafe ? `<span class="tag">Café</span>` : ``}
+            ${e.inclui_almoco ? `<span class="tag">Almoço</span>` : ``}
+            ${e.inclui_jantar ? `<span class="tag">Jantar</span>` : ``}
+          </div>
+
+          <div class="tags">
+            ${e.pag_pix ? `<span class="tag">Pix</span>` : ``}
+            ${e.pag_credito ? `<span class="tag">Crédito</span>` : ``}
+            ${e.pag_debito ? `<span class="tag">Débito</span>` : ``}
+            ${e.pag_dinheiro ? `<span class="tag">Dinheiro</span>` : ``}
+            ${e.pag_parcelado ? `<span class="tag">Parcelado</span>` : ``}
+          </div>
+
+          <div class="meta">${e.destino || ""}</div>
+          <div class="meta">
+            ${formatarData(e.data_saida)} ${formatarHora(e.hora_saida)}
+            →
+            ${formatarData(e.data_retorno)} ${formatarHora(e.hora_retorno)}
+          </div>
+
+          <div class="price">${formatarMoeda(e.valor)}</div>
           <div class="edit" onclick="editar('${e.id}')">Editar</div>
         </div>
       </div>
@@ -343,36 +566,316 @@ async function carregar(){
   });
 }
 
-function editar(id){
-  const e=itens.find(i=>i.id===id);
-  if(!e) return;
+/* ================= EDITAR ================= */
+function editar(id) {
+  const e = itens.find(i => i.id === id);
+  if (!e) return;
 
-  editId=id;
-  btnExcluir.style.display="block";
-  tituloForm.innerText="Editar excursão";
+  editId = id;
+  btnExcluir.style.display = "block";
+  tituloForm.innerText = "Editar excursão";
 
-  titulo.value=e.titulo||"";
-  destino.value=e.destino||"";
-  data_saida.value=e.data_saida||"";
-  hora_saida.value=e.hora_saida||"";
-  valor.value=e.valor||"";
-  status.value=e.status||"Ativa";
+  titulo.value = e.titulo || "";
+  destino.value = e.destino || "";
+  tipo.value = e.tipo || "Excursão";
+  data_saida.value = e.data_saida || "";
+  hora_saida.value = e.hora_saida || "";
+  data_retorno.value = e.data_retorno || "";
+  hora_retorno.value = e.hora_retorno || "";
+  duracao_dias.value = e.duracao_dias || "";
+  local_saida.value = e.local_saida || "";
+  transporte.value = e.transporte || "";
+  hospedagem.value = e.hospedagem || "";
+  alimentacao.value = e.alimentacao || "";
+  roteiro.value = e.roteiro || "";
+  valor.value = formatarMoeda(e.valor);
+  parcelas.value = e.parcelas || "";
+  observacoes.value = e.observacoes || "";
 
-  if(e.poster_url){
-    preview.src=sb.storage.from("buffet_excursoes").getPublicUrl(e.poster_url).data.publicUrl;
-    preview.style.display="block";
+  status.value = e.status || "Ativa";
+
+  inclui_transporte.checked = !!e.inclui_transporte;
+  inclui_hospedagem.checked = !!e.inclui_hospedagem;
+  inclui_cafe.checked = !!e.inclui_cafe;
+  inclui_almoco.checked = !!e.inclui_almoco;
+  inclui_jantar.checked = !!e.inclui_jantar;
+  inclui_seguro.checked = !!e.inclui_seguro;
+  inclui_guia.checked = !!e.inclui_guia;
+
+  pag_pix.checked = !!e.pag_pix;
+  pag_credito.checked = !!e.pag_credito;
+  pag_debito.checked = !!e.pag_debito;
+  pag_dinheiro.checked = !!e.pag_dinheiro;
+  pag_parcelado.checked = !!e.pag_parcelado;
+
+  if (e.poster_url) {
+    preview.src = sb.storage
+      .from("buffet_excursoes")
+      .getPublicUrl(e.poster_url).data.publicUrl;
+    preview.style.display = "block";
+  } else {
+    preview.style.display = "none";
   }
 
   modal.classList.add("show");
 }
 
-async function excluir(){
-  if(!confirm("Excluir excursão?")) return;
-  await sb.from("excursoes").delete().eq("id",editId);
+/* ================= CONFIG LOJA ================= */
+function abrirConfig() {
+  carregarConfig();
+  modalConfig.classList.add("show");
+}
+
+function fecharConfig() {
+  modalConfig.classList.remove("show");
+}
+
+async function carregarConfig() {
+  const { data, error } = await sb
+    .from("loja_config")
+    .select("*")
+    .single();
+
+  if (error) {
+    alert("Erro ao carregar configurações");
+    return;
+  }
+
+  lojaConfig = data;
+
+  cfg_nome.value = data.nome_loja || "";
+  cfg_cor_primaria.value = data.cor_primaria || "#ff6a00";
+  cfg_cor_fundo.value = data.cor_fundo || "#f4f6fb";
+  cfg_cor_card.value = data.cor_card || "#ffffff";
+  cfg_cor_texto.value = data.cor_texto || "#111827";
+
+  cfg_banners.value = (data.banners || []).join("\n");
+  cfg_banner_efeito.value = data.banner_efeito || "slide";
+  cfg_banner_intervalo.value = data.banner_intervalo || 2000;
+
+  cfg_uv_ativo.checked = !!data.ultimas_vagas_ativo;
+  cfg_uv_dias.value = data.ultimas_vagas_dias || 7;
+  cfg_uv_texto.value = data.ultimas_vagas_texto || "Últimas vagas";
+  cfg_uv_cor.value = data.ultimas_vagas_cor || "#dc2626";
+  cfg_uv_piscar.checked = !!data.ultimas_vagas_piscar;
+}
+
+async function salvarConfig() {
+  if (!lojaConfig) return;
+
+  const payload = {
+    nome_loja: cfg_nome.value,
+    cor_primaria: cfg_cor_primaria.value,
+    cor_fundo: cfg_cor_fundo.value,
+    cor_card: cfg_cor_card.value,
+    cor_texto: cfg_cor_texto.value,
+
+    banners: cfg_banners.value.split("\n").filter(Boolean),
+    banner_efeito: cfg_banner_efeito.value,
+    banner_intervalo: Number(cfg_banner_intervalo.value),
+
+    ultimas_vagas_ativo: cfg_uv_ativo.checked,
+    ultimas_vagas_dias: Number(cfg_uv_dias.value),
+    ultimas_vagas_texto: cfg_uv_texto.value,
+    ultimas_vagas_cor: cfg_uv_cor.value,
+    ultimas_vagas_piscar: cfg_uv_piscar.checked
+  };
+
+  const { error } = await sb
+    .from("loja_config")
+    .update(payload)
+    .eq("id", lojaConfig.id);
+
+  if (error) {
+    alert("Erro ao salvar configurações");
+    return;
+  }
+
+  fecharConfig();
+}
+
+/* ================= EXCLUIR ================= */
+async function excluir() {
+  if (!confirm("Excluir excursão?")) return;
+  await sb.from("excursoes").delete().eq("id", editId);
   fechar();
   carregar();
 }
+
+function abrirParcerias(){
+  modalParcerias.classList.add("show");
+}
+
+function fecharParcerias(){
+  modalParcerias.classList.remove("show");
+
+  blobParceiro = null;
+  logoParceiro.value = ""; // 🔥 LIMPA FILE INPUT
+
+  previewParceiro.style.display = "none";
+  parc_nome.value = "";
+  parc_link.value = "";
+  parc_ativo.checked = true;
+}
+
+async function salvarParceria(){
+  if(!blobParceiro){
+    alert("Selecione a logo");
+    return;
+  }
+
+  const path = `${userId}/${Date.now()}.png`;
+
+  const { error:uploadError } = await sb.storage
+    .from("buffet_parceirias")
+    .upload(path, blobParceiro, { upsert:true });
+
+  if(uploadError){
+    alert("Erro ao enviar logo");
+    return;
+  }
+
+  const payload = {
+  user_id: userId,
+  nome: parc_nome.value || null,
+  link: parc_link.value || null,
+  logo_url: path,
+  ativo: parc_ativo.checked
+};
+
+
+  const { error } = await sb.from("parcerias").insert(payload);
+
+  if(error){
+    alert("Erro ao salvar parceria");
+    return;
+  }
+
+  fecharParcerias();
+  alert("Parceria salva com sucesso ✅");
+}
+
 </script>
+
+<div class="modal" id="modalConfig">
+  <div class="sheet">
+
+    <div class="sheet-header">
+      <span>Configurações da Loja</span>
+      <span onclick="fecharConfig()">✕</span>
+    </div>
+
+    <div class="sheet-body">
+
+      <!-- ABA: VISUAL -->
+      <h4>🎨 Visual</h4>
+
+      <label>Nome da loja</label>
+      <input id="cfg_nome">
+
+      <label>Cor primária</label>
+      <input type="color" id="cfg_cor_primaria">
+
+      <label>Cor de fundo</label>
+      <input type="color" id="cfg_cor_fundo">
+
+      <label>Cor dos cards</label>
+      <input type="color" id="cfg_cor_card">
+
+      <label>Cor do texto</label>
+      <input type="color" id="cfg_cor_texto">
+
+      <hr>
+
+      <!-- ABA: BANNERS -->
+      <h4>🖼️ Banners</h4>
+
+      <label>URLs (uma por linha)</label>
+      <textarea id="cfg_banners" placeholder="https://..."></textarea>
+
+      <label>Efeito</label>
+      <select id="cfg_banner_efeito">
+        <option value="slide">Slide</option>
+        <option value="fade">Fade</option>
+      </select>
+
+      <label>Intervalo (ms)</label>
+      <input type="number" id="cfg_banner_intervalo">
+
+      <hr>
+
+      <!-- ABA: ÚLTIMAS VAGAS -->
+      <h4>🚨 Últimas vagas</h4>
+
+      <label class="toggle">
+        <span>Ativar alerta</span>
+        <input type="checkbox" id="cfg_uv_ativo">
+        <div class="switch"></div>
+      </label>
+
+      <label>Dias antes da viagem</label>
+      <input type="number" id="cfg_uv_dias">
+
+      <label>Texto exibido</label>
+      <input id="cfg_uv_texto">
+
+      <label>Cor do alerta</label>
+      <input type="color" id="cfg_uv_cor">
+
+      <label class="toggle">
+        <span>Piscar alerta</span>
+        <input type="checkbox" id="cfg_uv_piscar">
+        <div class="switch"></div>
+      </label>
+
+    </div>
+
+    <div class="sheet-footer">
+      <button class="cancel" onclick="fecharConfig()">Cancelar</button>
+      <button class="save" onclick="salvarConfig()">Salvar</button>
+    </div>
+
+  </div>
+</div>
+<div class="modal" id="modalParcerias">
+  <div class="sheet">
+
+    <div class="sheet-header">
+      <span>Parcerias</span>
+      <span onclick="fecharParcerias()">✕</span>
+    </div>
+
+    <div class="sheet-body">
+
+     <label>Logo da parceria</label>
+<div class="image-box" onclick="logoParceiro.click()">
+  <img id="previewParceiro" style="display:none">
+  <input type="file" id="logoParceiro" hidden accept="image/*">
+</div>
+
+<label>Nome</label>
+<input id="parc_nome">
+
+<label>Link da parceria</label>
+<input id="parc_link" placeholder="https://site-do-parceiro.com" type="url">
+
+<label class="toggle">
+  <span>Ativo</span>
+  <input type="checkbox" id="parc_ativo" checked>
+  <div class="switch"></div>
+</label>
+
+
+    </div>
+
+    <div class="sheet-footer">
+      <button class="cancel" onclick="fecharParcerias()">Cancelar</button>
+      <button class="save" onclick="salvarParceria()">Salvar</button>
+    </div>
+
+  </div>
+</div>
+
 
 </body>
 </html>
