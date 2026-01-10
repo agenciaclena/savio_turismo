@@ -3,7 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <title>Parcerias</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="viewport"
+  content="width=device-width,
+  initial-scale=1,
+  maximum-scale=1,
+  user-scalable=no,
+  viewport-fit=cover">
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -14,38 +20,36 @@
 :root{
   --primary:#ff6a00;
   --border:#e5e7eb;
+  --muted:#6b7280;
+  --danger:#dc2626;
 }
 
-body{
-  background:rgba(0,0,0,.55);
-  display:flex;
-  align-items:flex-end;
-  height:100vh;
+html,body{
+  height:100%;
+  background:#f4f6fb;
+  overflow:hidden;
 }
 
-.modal{
-  background:#fff;
-  width:100%;
-  height:92vh;
-  border-radius:28px 28px 0 0;
+/* LAYOUT */
+.page{
+  height:100%;
   display:flex;
   flex-direction:column;
 }
 
+/* HEADER */
 .header{
   padding:18px;
-  border-bottom:1px solid var(--border);
-  display:flex;
-  justify-content:space-between;
   font-weight:800;
+  border-bottom:1px solid var(--border);
 }
 
-.body{
-  flex:1;
-  overflow:auto;
-  padding:20px;
+/* FORM */
+.form{
+  padding:16px;
   display:grid;
-  gap:14px;
+  gap:12px;
+  border-bottom:1px solid var(--border);
 }
 
 label{
@@ -61,9 +65,9 @@ input{
 }
 
 .image-box{
-  height:220px;
+  height:160px;
   border-radius:18px;
-  background:#f3f4f6;
+  background:#e5e7eb;
   display:flex;
   align-items:center;
   justify-content:center;
@@ -76,103 +80,134 @@ input{
   object-fit:contain;
 }
 
-.toggle{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:12px;
-  border:1px solid var(--border);
-  border-radius:14px;
-  font-weight:700;
-}
-
-.toggle input{display:none}
-
-.switch{
-  width:38px;
-  height:22px;
-  background:#d1d5db;
-  border-radius:999px;
-  position:relative;
-}
-
-.switch::after{
-  content:"";
-  width:18px;
-  height:18px;
-  background:#fff;
-  border-radius:50%;
-  position:absolute;
-  top:2px;
-  left:2px;
-  transition:.2s;
-}
-
-.toggle input:checked + .switch{
-  background:var(--primary);
-}
-
-.toggle input:checked + .switch::after{
-  left:18px;
-}
-
-.footer{
-  padding:16px;
-  display:flex;
-  gap:12px;
-  border-top:1px solid var(--border);
-}
-
-button{
+/* LISTA */
+.lista{
   flex:1;
+  overflow:auto;
+  padding:16px;
+  display:grid;
+  gap:12px;
+}
+
+.item{
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:12px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  cursor:pointer;
+}
+
+.item img{
+  width:48px;
+  height:48px;
+  object-fit:contain;
+}
+
+.item strong{
+  font-size:14px;
+}
+
+.item span{
+  font-size:11px;
+  color:var(--muted);
+}
+
+/* BOTÃO */
+button{
   height:48px;
   border-radius:999px;
   border:none;
+  background:var(--primary);
+  color:#fff;
   font-weight:900;
   cursor:pointer;
 }
 
-.save{background:var(--primary);color:#fff}
-.cancel{background:#e5e7eb}
+/* POPUP EDIT */
+.popup{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.55);
+  display:none;
+  align-items:center;
+  justify-content:center;
+}
+
+.popup-box{
+  background:#fff;
+  width:90%;
+  max-width:320px;
+  border-radius:20px;
+  padding:18px;
+  display:grid;
+  gap:12px;
+}
+
+.popup-box h3{
+  font-size:16px;
+}
+
+.popup-actions{
+  display:flex;
+  gap:10px;
+}
+
+.popup-actions button{
+  flex:1;
+}
+
+.delete{
+  background:var(--danger);
+}
 </style>
 </head>
 
 <body>
 
-<div class="modal">
+<div class="page">
 
-  <div class="header">
-    <span>Nova parceria</span>
-    <span onclick="fechar()">✕</span>
-  </div>
+  <!-- HEADER -->
+  <div class="header">Parcerias</div>
 
-  <div class="body">
+  <!-- FORM -->
+  <div class="form">
 
-    <label>Logo da parceria</label>
+    <label>Logo</label>
     <div class="image-box" onclick="logo.click()">
       <img id="preview" style="display:none">
-      <input type="file" id="logo" hidden accept="image/*">
+      <input type="file" id="logo" hidden>
     </div>
 
     <label>Nome</label>
     <input id="nome">
 
     <label>Link</label>
-    <input id="link" placeholder="https://site-do-parceiro.com" type="url">
+    <input id="link" type="url">
 
-    <label class="toggle">
-      <span>Ativo</span>
-      <input type="checkbox" id="ativo" checked>
-      <div class="switch"></div>
-    </label>
-
+    <button onclick="salvar()">Salvar parceria</button>
   </div>
 
-  <div class="footer">
-    <button class="cancel" onclick="fechar()">Cancelar</button>
-    <button class="save" onclick="salvar()">Salvar</button>
-  </div>
+  <!-- LISTA -->
+  <div class="lista" id="lista"></div>
 
+</div>
+
+<!-- POPUP EDIT -->
+<div class="popup" id="popup">
+  <div class="popup-box">
+    <h3>Editar parceria</h3>
+
+    <input id="edit_nome">
+    <input id="edit_link">
+
+    <div class="popup-actions">
+      <button onclick="atualizar()">Salvar</button>
+      <button class="delete" onclick="excluir()">Excluir</button>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -183,60 +218,90 @@ const sb = supabase.createClient(
 
 let userId;
 let file = null;
+let editId = null;
 
 (async()=>{
   const { data:{ session } } = await sb.auth.getSession();
   if(!session){
-    alert("Faça login primeiro");
+    location.href="login.html";
     return;
   }
   userId = session.user.id;
+  carregar();
 })();
 
 logo.onchange = () => {
   file = logo.files[0];
   preview.src = URL.createObjectURL(file);
-  preview.style.display = "block";
+  preview.style.display="block";
 };
 
-function fechar(){
-  window.parent.postMessage("fecharParcerias","*");
-}
-
 async function salvar(){
-  if(!file){
-    alert("Selecione a logo");
-    return;
-  }
+  if(!file) return alert("Selecione a logo");
 
   const path = `${userId}/${Date.now()}.png`;
+  await sb.storage.from("buffet_parceirias").upload(path, file, { upsert:true });
 
-  const { error:uploadError } = await sb.storage
-    .from("buffet_parceirias")
-    .upload(path, file, { upsert:true });
+  await sb.from("parcerias").insert({
+    user_id:userId,
+    nome:nome.value,
+    link:link.value,
+    logo_url:path,
+    ativo:true
+  });
 
-  if(uploadError){
-    alert("Erro ao enviar imagem");
-    return;
-  }
+  nome.value="";
+  link.value="";
+  preview.style.display="none";
+  file=null;
 
-  const payload = {
-    user_id: userId,
-    nome: nome.value || null,
-    link: link.value || null,
-    logo_url: path,
-    ativo: ativo.checked
-  };
+  carregar();
+}
 
-  const { error } = await sb.from("parcerias").insert(payload);
+async function carregar(){
+  const { data } = await sb.from("parcerias").select("*").eq("user_id",userId);
+  lista.innerHTML="";
 
-  if(error){
-    alert("Erro ao salvar");
-    return;
-  }
+  data.forEach(p=>{
+    const img = sb.storage.from("buffet_parceirias").getPublicUrl(p.logo_url).data.publicUrl;
 
-  alert("Parceria salva ✅");
-  fechar();
+    const div = document.createElement("div");
+    div.className="item";
+    div.innerHTML=`
+      <img src="${img}">
+      <div>
+        <strong>${p.nome}</strong><br>
+        <span>${p.link}</span>
+      </div>
+    `;
+
+    div.onclick=()=>window.open(p.link,"_blank");
+    div.ondblclick=()=>{
+      editId=p.id;
+      edit_nome.value=p.nome;
+      edit_link.value=p.link;
+      popup.style.display="flex";
+    };
+
+    lista.appendChild(div);
+  });
+}
+
+async function atualizar(){
+  await sb.from("parcerias").update({
+    nome:edit_nome.value,
+    link:edit_link.value
+  }).eq("id",editId);
+
+  popup.style.display="none";
+  carregar();
+}
+
+async function excluir(){
+  if(!confirm("Excluir parceria?")) return;
+  await sb.from("parcerias").delete().eq("id",editId);
+  popup.style.display="none";
+  carregar();
 }
 </script>
 
