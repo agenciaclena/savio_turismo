@@ -576,6 +576,67 @@ flegs.forEach(f => {
   f.addEventListener("change", verificarFlegs);
 });
 
+
+
+
+
+
+
+
+
+
+
+  async function gerarPdfContratoSeguro(){
+
+  // CLONA O CONTRATO
+  const original = document.getElementById("contratoTexto");
+  const clone = original.cloneNode(true);
+
+  // LIMPA ESTILO DE TELA
+  clone.style.position = "relative";
+  clone.style.width = "210mm";
+  clone.style.maxWidth = "210mm";
+  clone.style.margin = "0 auto";
+  clone.style.padding = "24px";
+  clone.style.background = "#fff";
+  clone.style.boxShadow = "none";
+  clone.style.borderRadius = "0";
+
+  // CONTAINER FORA DA TELA
+  const wrapper = document.createElement("div");
+  wrapper.style.position = "fixed";
+  wrapper.style.left = "-9999px";
+  wrapper.style.top = "0";
+  wrapper.appendChild(clone);
+
+  document.body.appendChild(wrapper);
+
+  // AGUARDA RENDERIZAÇÃO REAL
+  await new Promise(r => setTimeout(r, 1000));
+
+  // GERA PDF
+  const pdfBlob = await html2pdf()
+    .from(clone)
+    .set({
+      margin: 10,
+      html2canvas: {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: "#ffffff"
+      },
+      jsPDF: {
+        unit: "mm",
+        format: "a4",
+        orientation: "portrait"
+      }
+    })
+    .outputPdf("blob");
+
+  // LIMPA DOM
+  document.body.removeChild(wrapper);
+
+  return pdfBlob;
+}
 async function finalizar(){
 
   /* 1️⃣ VALIDAR ACEITES */
@@ -607,15 +668,8 @@ async function finalizar(){
   await new Promise(r => setTimeout(r, 300));
 
   /* 5️⃣ GERAR PDF (AGORA COM ASSINATURA) */
-  const pdfBlob = await html2pdf()
-    .from(document.getElementById("contratoTexto"))
-    .set({
-      margin:10,
-      filename:"contrato.pdf",
-      html2canvas:{ scale:2, useCORS:true },
-      jsPDF:{ unit:"mm", format:"a4", orientation:"portrait" }
-    })
-    .outputPdf("blob");
+  const pdfBlob = await gerarPdfContratoSeguro();
+
 
   /* 6️⃣ NOME E CAMINHO DO PDF */
   const nomeArquivo =
