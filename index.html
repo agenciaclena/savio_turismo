@@ -27,7 +27,7 @@ body{
   color:var(--text);
   opacity:0;
   transition:opacity .2s ease;
-  padding-top:72px; /* altura do header no desktop */
+  padding-top:64px; /* 🔥 encaixa perfeito */
 }
 
 .header{
@@ -37,18 +37,27 @@ body{
   right:0;
   z-index:999;
   background:var(--bg);
-  padding:12px 16px 8px; /* 🔥 mais fino */
+  padding:10px 16px 6px; /* 🔥 mais fino ainda */
   border-bottom:1px solid rgba(0,0,0,.06);
   backdrop-filter:saturate(180%) blur(8px);
 }
 
 
-.header h1{font-size:22px;font-weight:800}
+.header h1{
+  font-size:20px;       /* 🔥 menor */
+  font-weight:800;
+  line-height:1.1;     /* 🔥 mais compacto */
+}  
 .header span{color:var(--primary)}
-.header p{font-size:13px;color:var(--muted)}
 
+  
+.header p{
+  font-size:12px;
+  color:var(--muted);
+  margin-top:2px;      /* 🔥 controla o espaço */
+}
 .banner{
-  margin:10px 16px 18px; /* 🔥 espaço superior controlado */
+  margin:6px 16px 18px; /* 🔥 visual mais próximo */
   border-radius:24px;   /* um pouco mais elegante */
   overflow:hidden;
   position:relative;
@@ -398,9 +407,10 @@ body{
 }
 @media(max-width:480px){
   body{
-    padding-top:80px;
+    padding-top:56px; /* 🔥 ideal para celular */
   }
 }
+
 .localizacao{
   display:inline-flex;
   align-items:center;
