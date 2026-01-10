@@ -365,6 +365,29 @@ todos os termos deste contrato.
   <input type="checkbox" id="f3">
   <div class="toggle"></div>
 </label>
+<!-- ASSINATURA EMBUTIDA NO CONTRATO -->
+<div style="margin-top:40px">
+
+  <p><strong>ASSINATURA DO CONTRATANTE</strong></p>
+
+  <img
+    id="assinaturaImagem"
+    style="
+      width:260px;
+      height:auto;
+      display:none;
+      border-bottom:1px solid #000;
+      margin-top:12px;
+    "
+  >
+
+  <p style="font-size:12px;margin-top:6px">
+    <span id="assinaturaNome"></span><br>
+    CPF: <span id="assinaturaCPF"></span><br>
+    Data: <span id="assinaturaData"></span>
+  </p>
+
+</div>
 
 </div>
 
@@ -553,6 +576,26 @@ async function finalizar(){
     alert("ASSINE O CONTRATO");
     return;
   }
+// 🖊️ CONVERTE A ASSINATURA DO CANVAS EM IMAGEM
+const assinaturaBase64 = canvas.toDataURL("image/png");
+
+// injeta assinatura no contrato ORIGINAL
+const imgAss = document.getElementById("assinaturaImagem");
+imgAss.src = assinaturaBase64;
+imgAss.style.display = "block";
+
+// dados da assinatura
+assinaturaNome.innerText = nome.value;
+assinaturaCPF.innerText = cpf.value;
+
+// data e hora oficiais da assinatura
+const agora = new Date();
+const dataAssinaturaLegivel =
+  agora.toLocaleDateString("pt-BR") +
+  " " +
+  agora.toLocaleTimeString("pt-BR");
+
+assinaturaData.innerText = dataAssinaturaLegivel;
 
 // 🔁 clona o contrato para evitar layout dinâmico
 const contratoOriginal = document.getElementById("contratoTexto");
@@ -606,7 +649,11 @@ contratoClone.remove();
     .from("buffet_contratos")
     .getPublicUrl(caminho);
 
- const { error:insertError } = await sb
+// 📅 data oficial da assinatura (auditoria)
+const dataAssinaturaISO = new Date().toISOString();
+
+// 💾 salva contrato no banco
+const { error: insertError } = await sb
   .from("contratos")
   .insert({
     excursao_id: id,
@@ -628,11 +675,14 @@ contratoClone.remove();
       medicamentos: saude_medicamentos.value || null
     },
 
-    valor: ctr_valor.innerText.replace(/[^\d]/g,""),
+    valor: ctr_valor.innerText.replace(/[^\d]/g, ""),
     forma_pagamento: forma_pagamento.value || null,
 
     pdf_url: pdfData.publicUrl,
-    status: "ASSINADO"
+    status: "ASSINADO",
+
+    // 🔐 auditoria jurídica
+    data_assinatura: dataAssinaturaISO
   });
 
 
