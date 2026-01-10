@@ -30,21 +30,18 @@ html,body{
   overflow:hidden;
 }
 
-/* LAYOUT */
 .page{
   height:100%;
   display:flex;
   flex-direction:column;
 }
 
-/* HEADER */
 .header{
   padding:18px;
   font-weight:800;
   border-bottom:1px solid var(--border);
 }
 
-/* FORM */
 .form{
   padding:16px;
   display:grid;
@@ -80,7 +77,16 @@ input{
   object-fit:contain;
 }
 
-/* LISTA */
+button{
+  height:48px;
+  border-radius:999px;
+  border:none;
+  background:var(--primary);
+  color:#fff;
+  font-weight:900;
+  cursor:pointer;
+}
+
 .lista{
   flex:1;
   overflow:auto;
@@ -106,27 +112,6 @@ input{
   object-fit:contain;
 }
 
-.item strong{
-  font-size:14px;
-}
-
-.item span{
-  font-size:11px;
-  color:var(--muted);
-}
-
-/* BOTÃO */
-button{
-  height:48px;
-  border-radius:999px;
-  border:none;
-  background:var(--primary);
-  color:#fff;
-  font-weight:900;
-  cursor:pointer;
-}
-
-/* POPUP EDIT */
 .popup{
   position:fixed;
   inset:0;
@@ -146,22 +131,13 @@ button{
   gap:12px;
 }
 
-.popup-box h3{
-  font-size:16px;
-}
-
 .popup-actions{
   display:flex;
   gap:10px;
 }
 
-.popup-actions button{
-  flex:1;
-}
-
-.delete{
-  background:var(--danger);
-}
+.popup-actions button{flex:1}
+.delete{background:var(--danger)}
 </style>
 </head>
 
@@ -169,16 +145,14 @@ button{
 
 <div class="page">
 
-  <!-- HEADER -->
   <div class="header">Parcerias</div>
 
-  <!-- FORM -->
   <div class="form">
 
     <label>Logo</label>
     <div class="image-box" onclick="logo.click()">
       <img id="preview" style="display:none">
-      <input type="file" id="logo" hidden>
+      <input type="file" id="logo" hidden accept="image/*">
     </div>
 
     <label>Nome</label>
@@ -190,16 +164,13 @@ button{
     <button onclick="salvar()">Salvar parceria</button>
   </div>
 
-  <!-- LISTA -->
   <div class="lista" id="lista"></div>
 
 </div>
 
-<!-- POPUP EDIT -->
 <div class="popup" id="popup">
   <div class="popup-box">
-    <h3>Editar parceria</h3>
-
+    <strong>Editar parceria</strong>
     <input id="edit_nome">
     <input id="edit_link">
 
@@ -232,23 +203,43 @@ let editId = null;
 
 logo.onchange = () => {
   file = logo.files[0];
+  if(!file) return;
   preview.src = URL.createObjectURL(file);
   preview.style.display="block";
 };
 
 async function salvar(){
-  if(!file) return alert("Selecione a logo");
+  if(!file){
+    alert("Selecione a logo");
+    return;
+  }
 
-  const path = `${userId}/${Date.now()}.png`;
-  await sb.storage.from("buffet_parceirias").upload(path, file, { upsert:true });
+  const path = `${userId}/${Date.now()}-${file.name}`;
 
-  await sb.from("parcerias").insert({
+  const { error:uploadError } = await sb
+    .storage
+    .from("buffet_parcerias")
+    .upload(path, file, { upsert:true });
+
+  if(uploadError){
+    console.error(uploadError);
+    alert("Erro ao enviar imagem");
+    return;
+  }
+
+  const { error } = await sb.from("parcerias").insert({
     user_id:userId,
     nome:nome.value,
     link:link.value,
     logo_url:path,
     ativo:true
   });
+
+  if(error){
+    console.error(error);
+    alert("Erro ao salvar parceria");
+    return;
+  }
 
   nome.value="";
   link.value="";
@@ -259,20 +250,24 @@ async function salvar(){
 }
 
 async function carregar(){
-  const { data } = await sb.from("parcerias").select("*").eq("user_id",userId);
+  const { data } = await sb
+    .from("parcerias")
+    .select("*")
+    .eq("user_id",userId)
+    .order("created_at",{ascending:false});
+
   lista.innerHTML="";
 
   data.forEach(p=>{
-    const img = sb.storage.from("buffet_parceirias").getPublicUrl(p.logo_url).data.publicUrl;
+    const img = sb.storage
+      .from("buffet_parcerias")
+      .getPublicUrl(p.logo_url).data.publicUrl;
 
     const div = document.createElement("div");
     div.className="item";
     div.innerHTML=`
       <img src="${img}">
-      <div>
-        <strong>${p.nome}</strong><br>
-        <span>${p.link}</span>
-      </div>
+      <strong>${p.nome}</strong>
     `;
 
     div.onclick=()=>window.open(p.link,"_blank");
