@@ -27,13 +27,22 @@ body{
   color:var(--text);
   opacity:0;
   transition:opacity .2s ease;
+  padding-top:96px; /* altura do header no desktop */
 }
 
 
-/* HEADER */
 .header{
+  position:fixed;
+  top:0;
+  left:0;
+  right:0;
+  z-index:999;
+  background:var(--bg);
   padding:20px 16px 10px;
+  border-bottom:1px solid rgba(0,0,0,.05);
+  backdrop-filter:saturate(180%) blur(8px);
 }
+
 .header h1{font-size:22px;font-weight:800}
 .header span{color:var(--primary)}
 .header p{font-size:13px;color:var(--muted)}
@@ -264,15 +273,7 @@ body{
   display:flex;
   justify-content:center;
 }
-.sheet-actions{
-  flex-shrink:0; /* 🔒 não sobe */
-  background:#fff;
-  padding:12px 16px calc(12px + env(safe-area-inset-bottom));
-  display:flex;
-  gap:12px;
-  align-items:center;
-  border-top:1px solid #f1f5f9;
-}
+
 .btn-whats-circle{
   width:52px;
   height:52px;
@@ -314,46 +315,137 @@ body{
   stroke:#000;
   stroke-width:1.6;
 }
-.info-btn{
-  position:fixed;
-  top:16px;
-  right:16px;
-  width:32px;
-  height:32px;
-  border-radius:50%;
-  background:#111;
-  color:#fff;
-  font-weight:900;
+.localizacao{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  margin-top:4px;
+  font-size:12px;
+  font-weight:700;
+  color:#111;
+  text-decoration:none;
+}
+.footer{
+  background:#fff;
+  border-top:1px solid #e5e7eb;
+  padding:16px;
+}
+
+.footer-title{
+  font-size:12px;
+  font-weight:800;
+  margin-bottom:10px;
+  display:block;
+}
+
+.parceiros-wrap{
+  overflow:hidden;
+  width:100%;
+}
+
+.parceiros-track{
+  display:flex;
+  gap:24px;
+  align-items:center;
+  animation:scroll-parceiros 20s linear infinite;
+}
+
+.parceiros-track img{
+  height:36px;
+  width:auto;
+  opacity:.85;
+  filter:grayscale(100%);
+  transition:.3s;
+}
+
+.parceiros-track img:hover{
+  opacity:1;
+  filter:none;
+}
+
+.footer-copy{
+  margin-top:16px;
+  font-size:11px;
+  color:#6b7280;
+  text-align:center;
+}
+
+@keyframes scroll-parceiros{
+  from{ transform:translateX(0) }
+  to{ transform:translateX(-50%) }
+}
+.header-top{
   display:flex;
   align-items:center;
-  justify-content:center;
-  cursor:pointer;
-  z-index:10000;
+  justify-content:space-between;
+  gap:12px;
+}
+
+.localizacao-top{
+  font-size:12px;
+  font-weight:700;
+  white-space:nowrap;
+}
+
+/* Ajuste fino no mobile */
+@media(max-width:480px){
+  .titulo{
+    font-size:20px;
+  }
+  .localizacao-top{
+    font-size:11px;
+  }
+}
+@media(max-width:480px){
+  body{
+    padding-top:80px;
+  }
+}
+.localizacao{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  font-size:12px;
+  font-weight:700;
+  color:#111;
+  cursor:default;
+  user-select:none;
 }
 
 </style>
 </head>
 
 <body>
-
 <div class="header">
-<h1 class="titulo">
-  Sávio 
-  <span class="turismo">
-    Turismo
-    <a 
-      href="https://wa.me/5577998253249"
-      target="_blank"
-      aria-label="WhatsApp"
-      class="whats-icon"
-    >
-      <svg viewBox="0 0 32 32">
-        <path d="M16 3C9.4 3 4 8.2 4 14.6c0 2.6.9 5.1 2.5 7.1L4 29l7.5-2.4c2 .9 4.2 1.4 6.5 1.4 6.6 0 12-5.2 12-11.6S22.6 3 16 3z"/>
-        <path d="M12.8 9.7c-.3-.7-.6-.7-.9-.7h-.7c-.2 0-.6.1-.9.4-.3.3-1.2 1.2-1.2 2.9s1.2 3.4 1.4 3.6c.2.2 2.4 3.8 6 5.2 3 .9 3.6.7 4.2.6.6-.1 2-1 2.3-2 .3-1 .3-1.9.2-2-.1-.2-.3-.3-.6-.5s-2-1-2.3-1.1c-.3-.1-.5-.2-.7.2-.2.3-.8 1.1-1 1.3-.2.2-.4.3-.7.1-.3-.1-1.4-.5-2.7-1.6-1-1-1.6-2.2-1.8-2.6-.2-.3 0-.5.1-.7.1-.1.3-.3.4-.5.1-.2.2-.3.3-.5.1-.2 0-.4 0-.6z"/>
-      </svg>
-    </a>
-  </span>
-</h1>
+
+  <div class="header-top">
+    <h1 class="titulo">
+      Sávio 
+      <span class="turismo">
+        Turismo
+        <a 
+          href="https://wa.me/5577998253249"
+          target="_blank"
+          aria-label="WhatsApp"
+          class="whats-icon"
+        >
+          <svg viewBox="0 0 32 32">
+            <path d="M16 3C9.4 3 4 8.2 4 14.6c0 2.6.9 5.1 2.5 7.1L4 29l7.5-2.4c2 .9 4.2 1.4 6.5 1.4 6.6 0 12-5.2 12-11.6S22.6 3 16 3z"/>
+            <path d="M12.8 9.7c-.3-.7-.6-.7-.9-.7h-.7c-.2 0-.6.1-.9.4-.3.3-1.2 1.2-1.2 2.9s1.2 3.4 1.4 3.6c.2.2 2.4 3.8 6 5.2 3 .9 3.6.7 4.2.6.6-.1 2-1 2.3-2 .3-1 .3-1.9.2-2-.1-.2-.3-.3-.6-.5s-2-1-2.3-1.1c-.3-.1-.5-.2-.7.2-.2.3-.8 1.1-1 1.3-.2.2-.4.3-.7.1-.3-.1-1.4-.5-2.7-1.6-1-1-1.6-2.2-1.8-2.6-.2-.3 0-.5.1-.7.1-.1.3-.3.4-.5.1-.2.2-.3.3-.5.1-.2 0-.4 0-.6z"/>
+          </svg>
+        </a>
+      </span>
+    </h1>
+
+<div
+  id="localizacao"
+  class="localizacao localizacao-top"
+>
+  📍 Barreiras - BA
+</div>
+
+  </div>
+
   <p>Escolha sua próxima experiência</p>
 </div>
 
@@ -593,7 +685,36 @@ async function carregar(){
     document.body.style.opacity = "1";
 
     startBanner(cfg.banners, cfg.banner_efeito, cfg.banner_intervalo);
+// ===== ANO AUTOMÁTICO =====
+const anoEl = document.getElementById("ano");
+if(anoEl){
+  anoEl.innerText = new Date().getFullYear();
+}
+
+// ===== PARCEIROS (CARROSSEL) =====
+const parceirosTrack = document.getElementById("parceirosTrack");
+
+if(parceirosTrack && cfg.logos_parceiros?.length){
+  parceirosTrack.innerHTML = "";
+
+  // duplica para rolagem infinita
+  const logos = [...cfg.logos_parceiros, ...cfg.logos_parceiros];
+
+  logos.forEach(path=>{
+    const img = document.createElement("img");
+    img.src = pub(path);
+    img.alt = "Parceiro";
+    parceirosTrack.appendChild(img);
+  });
+}
+
+
+    
   }
+const loc = document.getElementById("localizacao");
+if(loc && cfg.localizacao){
+  loc.innerText = `📍 ${cfg.localizacao}`;
+}
 
   itens = data || [];
   lista.innerHTML = "";
@@ -700,13 +821,7 @@ Observações: ${e.observacoes||""}`;
 function fechar(){
   modal.classList.remove("show");
 }
-function abrirInfo(){
-  document.getElementById("infoModal").classList.add("show");
-}
-function fecharInfo(e){
-  if(e && e.target !== e.currentTarget) return;
-  document.getElementById("infoModal").classList.remove("show");
-}
+
 carregar();
 carregarStories();
 </script>
@@ -726,5 +841,19 @@ carregarStories();
 </script>
 
 <script async src="https://www.instagram.com/embed.js"></script>
+<footer class="footer">
+  <div class="parceiros">
+    <span class="footer-title">Parcerias</span>
+
+    <div class="parceiros-wrap">
+      <div class="parceiros-track" id="parceirosTrack"></div>
+    </div>
+  </div>
+
+  <div class="footer-copy">
+    © <span id="ano"></span> Sávio Turismo — Todos os direitos reservados
+  </div>
+</footer>
+
 </body>
 </html>
