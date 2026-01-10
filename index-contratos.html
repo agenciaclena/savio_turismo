@@ -2,263 +2,321 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Parcerias</title>
+<title>Contratos • Admin</title>
 
-<meta name="viewport"
-  content="width=device-width,
-  initial-scale=1,
-  maximum-scale=1,
-  user-scalable=no,
-  viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Inter}
-html,body{height:100%;background:#f4f6fb;overflow:hidden}
 
 :root{
   --primary:#ff6a00;
+  --success:#16a34a;
+  --bg:#f4f6fb;
+  --card:#ffffff;
   --border:#e5e7eb;
-  --danger:#dc2626;
-  --card:#fff;
+  --muted:#6b7280;
 }
 
-/* ===== LAYOUT ===== */
-.page{height:100%;display:flex;flex-direction:column}
+body{
+  background:var(--bg);
+  color:#111;
+}
 
 /* HEADER */
 .header{
-  padding:16px;
-  font-size:18px;
+  padding:20px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.header h1{
+  font-size:22px;
   font-weight:800;
-  border-bottom:1px solid var(--border);
+}
+.header-actions{
+  display:flex;
+  gap:12px;
+}
+.download{
+  border:1px solid var(--border);
+  background:#fff;
+  padding:10px 14px;
+  border-radius:12px;
+  cursor:pointer;
+  font-weight:800;
 }
 
-/* FORM */
-.form{
-  padding:16px;
-  display:grid;
-  gap:12px;
-  border-bottom:1px solid var(--border);
+/* SEARCH */
+.search{
+  padding:0 20px 10px;
 }
-label{font-size:12px;font-weight:700}
-input{
-  height:44px;
+.search input{
+  width:100%;
+  height:46px;
   border-radius:14px;
   border:1px solid var(--border);
-  padding:0 14px;
-}
-.image-box{
-  height:150px;
-  border-radius:18px;
-  background:#e5e7eb;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  cursor:pointer;
-}
-.image-box img{
-  width:100%;
-  height:100%;
-  object-fit:contain;
-}
-button{
-  height:48px;
-  border-radius:999px;
-  border:none;
-  background:var(--primary);
-  color:#fff;
-  font-weight:900;
+  padding:0 16px;
+  font-size:14px;
 }
 
-/* ===== GRID PARCERIAS ===== */
-.lista{
-  flex:1;
-  overflow:auto;
-  padding:16px;
+/* LIST */
+.list{
+  padding:20px;
   display:grid;
-  grid-template-columns:repeat(5,1fr); /* 🔥 5 POR LINHA */
   gap:14px;
 }
-.item{
+
+.card{
   background:var(--card);
-  border:1px solid var(--border);
   border-radius:18px;
-  padding:12px;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:8px;
-  user-select:none;
-}
-.item img{
-  width:72px;
-  height:72px;
-  object-fit:contain;
-}
-.item span{
-  font-size:12px;
-  font-weight:800;
-  text-align:center;
+  padding:14px;
+  box-shadow:0 10px 26px rgba(0,0,0,.08);
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:12px;
+  cursor:pointer;
 }
 
-/* ===== POPUP ===== */
-.popup{
+.card h4{
+  font-size:15px;
+  font-weight:800;
+}
+
+.meta{
+  font-size:13px;
+  color:var(--muted);
+}
+
+.price{
+  font-weight:900;
+  margin-top:4px;
+}
+
+.badge{
+  font-size:11px;
+  font-weight:800;
+  padding:4px 10px;
+  border-radius:999px;
+  display:inline-block;
+  margin-top:6px;
+}
+.assinado{background:#fef3c7;color:#92400e}
+.pago{background:#dcfce7;color:#166534}
+
+.actions{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  align-items:flex-end;
+}
+
+.btn{
+  height:34px;
+  padding:0 14px;
+  border-radius:999px;
+  border:1px solid var(--border);
+  background:#fff;
+  font-size:12px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+.btn.pago{
+  border-color:var(--success);
+  color:var(--success);
+}
+
+/* MODAL */
+.modal{
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,.55);
+  background:rgba(0,0,0,.6);
   display:none;
-  align-items:center;
-  justify-content:center;
+  align-items:flex-end;
   z-index:999;
 }
-.popup-box{
+.modal.show{display:flex}
+
+.sheet{
   background:#fff;
-  width:92%;
-  max-width:340px;
-  border-radius:20px;
+  width:100%;
+  max-height:90vh;
+  border-radius:28px 28px 0 0;
+  display:flex;
+  flex-direction:column;
+}
+
+.sheet-header{
   padding:16px;
+  border-bottom:1px solid var(--border);
+  font-weight:800;
+  display:flex;
+  justify-content:space-between;
+}
+
+.sheet-body{
+  padding:16px;
+  overflow:auto;
   display:grid;
+  gap:10px;
+}
+
+.sheet-body p{
+  font-size:13px;
+  color:#444;
+}
+
+.sheet-footer{
+  padding:16px;
+  border-top:1px solid var(--border);
+  display:flex;
   gap:12px;
 }
-.popup-box strong{font-size:14px}
-.popup-actions{display:flex;gap:10px}
-.popup-actions button{flex:1}
-.delete{background:var(--danger)}
-.cancel{background:#e5e7eb;color:#000}
+
+.sheet-footer a{
+  flex:1;
+  text-align:center;
+  padding:14px;
+  border-radius:999px;
+  background:var(--primary);
+  color:#fff;
+  text-decoration:none;
+  font-weight:900;
+}
 </style>
 </head>
 
 <body>
 
-<div class="page">
-
-  <div class="header">Parcerias</div>
-
-  <!-- FORM NOVA -->
-  <div class="form">
-    <label>Logo</label>
-    <div class="image-box" onclick="logo.click()">
-      <img id="preview" style="display:none">
-      <input type="file" id="logo" hidden accept="image/*">
-    </div>
-
-    <label>Nome</label>
-    <input id="nome">
-
-    <label>Link (informativo)</label>
-    <input id="link">
-
-    <button onclick="salvar()">Salvar parceria</button>
+<div class="header">
+  <h1>📄 Contratos</h1>
+  <div class="header-actions">
+    <div class="download" onclick="baixarTodos()">⬇️ Baixar todos</div>
   </div>
-
-  <!-- LISTA -->
-  <div class="lista" id="lista"></div>
 </div>
 
-<!-- POPUP EDITAR -->
-<div class="popup" id="popup">
-  <div class="popup-box">
-    <strong>Editar parceria</strong>
+<div class="search">
+  <input id="busca" placeholder="Buscar passageiro, excursão ou data...">
+</div>
 
-    <div class="image-box" onclick="edit_logo.click()">
-      <img id="edit_preview">
-      <input type="file" id="edit_logo" hidden accept="image/*">
+<div class="list" id="lista"></div>
+
+<!-- MODAL -->
+<div class="modal" id="modal" onclick="fechar(event)">
+  <div class="sheet">
+    <div class="sheet-header">
+      <span id="mTitulo"></span>
+      <span onclick="fechar()">✕</span>
     </div>
-
-    <input id="edit_nome">
-    <input id="edit_link">
-
-    <div class="popup-actions">
-      <button onclick="atualizar()">Salvar</button>
-      <button class="delete" onclick="excluir()">Excluir</button>
+    <div class="sheet-body" id="mBody"></div>
+    <div class="sheet-footer">
+      <a id="mPdf" target="_blank">Abrir contrato (PDF)</a>
     </div>
-
-    <button class="cancel" onclick="fecharPopup()">Cancelar</button>
   </div>
 </div>
 
 <script>
 const sb = supabase.createClient(
-  "https://ghkfeobnrfvqwzuliqfz.supabase.co",
-  "sb_publishable_R-eenS9xurRgnrqDR9kz0Q_kJonEi7t"
+ "https://ghkfeobnrfvqwzuliqfz.supabase.co",
+ "sb_publishable_R-eenS9xurRgnrqDR9kz0Q_kJonEi7t"
 );
 
-let userId, file=null, editFile=null, editId=null;
-
-(async()=>{
-  const { data:{session} } = await sb.auth.getSession();
-  if(!session) location.href="login.html";
-  userId = session.user.id;
-  carregar();
-})();
-
-logo.onchange = () =>{
-  file = logo.files[0];
-  preview.src = URL.createObjectURL(file);
-  preview.style.display="block";
-};
-
-edit_logo.onchange = ()=>{
-  editFile = edit_logo.files[0];
-  edit_preview.src = URL.createObjectURL(editFile);
-};
-
-async function salvar(){
-  if(!file) return alert("Selecione a logo");
-  const path = `${userId}/${Date.now()}.png`;
-  await sb.storage.from("buffet_parcerias").upload(path,file,{upsert:true});
-  await sb.from("parcerias").insert({
-    user_id:userId,nome:nome.value,link:link.value,logo_url:path
-  });
-  nome.value="";link.value="";preview.style.display="none";file=null;
-  carregar();
-}
+let contratos = [];
 
 async function carregar(){
-  const { data } = await sb.from("parcerias")
-    .select("*").eq("user_id",userId).order("created_at",{ascending:false});
-  lista.innerHTML="";
-  data.forEach(p=>{
-    const img = sb.storage.from("buffet_parcerias")
-      .getPublicUrl(p.logo_url).data.publicUrl;
-    const div=document.createElement("div");
-    div.className="item";
-    div.innerHTML=`<img src="${img}"><span>${p.nome}</span>`;
-    div.ondblclick=()=>{
-      editId=p.id;
-      edit_nome.value=p.nome;
-      edit_link.value=p.link||"";
-      edit_preview.src=img;
-      popup.style.display="flex";
-    };
-    lista.appendChild(div);
+  const { data } = await sb
+    .from("contratos")
+    .select("*, excursoes(titulo,data_saida)")
+    .order("created_at",{ascending:false});
+
+  contratos = data || [];
+  render();
+}
+
+function render(){
+  const q = busca.value.toLowerCase();
+  lista.innerHTML = "";
+
+  contratos
+    .filter(c =>
+      c.nome.toLowerCase().includes(q) ||
+      (c.excursoes?.titulo || "").toLowerCase().includes(q) ||
+      (c.excursoes?.data_saida || "").includes(q)
+    )
+    .forEach(c=>{
+      lista.innerHTML += `
+        <div class="card" onclick="abrir('${c.id}')">
+          <div>
+            <h4>${c.nome}</h4>
+            <div class="meta">${c.excursoes?.titulo || ""}</div>
+            <div class="meta">📅 ${c.excursoes?.data_saida || ""}</div>
+            <div class="price">R$ ${(c.valor/100).toFixed(2)}</div>
+            <span class="badge ${c.status==='PAGO'?'pago':'assinado'}">${c.status}</span>
+          </div>
+          <div class="actions">
+            ${c.status!=="PAGO"
+              ? `<button class="btn" onclick="marcarPago(event,'${c.id}')">Marcar pago</button>`
+              : `<div class="btn pago">Pago</div>`
+            }
+            <button class="btn" onclick="window.open('${c.pdf_url}')">❤️</button>
+          </div>
+        </div>
+      `;
+    });
+}
+
+async function marcarPago(e,id){
+  e.stopPropagation();
+  if(!confirm("Confirmar pagamento?")) return;
+
+  await sb.from("contratos").update({status:"PAGO"}).eq("id",id);
+  carregar();
+}
+
+function abrir(id){
+  const c = contratos.find(i=>i.id===id);
+  if(!c) return;
+
+  mTitulo.innerText = c.nome;
+  const saude = JSON.parse(c.info_saude||"{}");
+
+  mBody.innerHTML = `
+    <p><b>CPF:</b> ${c.cpf}</p>
+    <p><b>Telefone:</b> ${c.telefone}</p>
+    <p><b>Email:</b> ${c.email}</p>
+    <p><b>Endereço:</b> ${c.endereco}</p>
+    <hr>
+    <p><b>Emergência:</b> ${c.emergencia_nome} (${c.emergencia_parentesco})</p>
+    <p><b>Contato:</b> ${c.emergencia_telefone}</p>
+    <hr>
+    <p><b>Saúde:</b></p>
+    <p>Sangue: ${saude.sangue||"-"}</p>
+    <p>Alergias: ${saude.alergias||"-"}</p>
+    <p>Condição: ${saude.condicao||"-"}</p>
+    <p>Medicamentos: ${saude.medicamentos||"-"}</p>
+  `;
+
+  mPdf.href = c.pdf_url;
+  modal.classList.add("show");
+}
+
+function fechar(e){
+  if(e && e.target!==e.currentTarget) return;
+  modal.classList.remove("show");
+}
+
+function baixarTodos(){
+  contratos.forEach(c=>{
+    if(c.pdf_url) window.open(c.pdf_url);
   });
 }
 
-function fecharPopup(){popup.style.display="none";editFile=null;}
-
-async function atualizar(){
-  let logoUrl;
-  if(editFile){
-    logoUrl = `${userId}/${Date.now()}.png`;
-    await sb.storage.from("buffet_parcerias").upload(logoUrl,editFile,{upsert:true});
-  }
-  await sb.from("parcerias").update({
-    nome:edit_nome.value,
-    link:edit_link.value,
-    ...(logoUrl && {logo_url:logoUrl})
-  }).eq("id",editId);
-  fecharPopup();carregar();
-}
-
-async function excluir(){
-  if(!confirm("Excluir parceria?"))return;
-  await sb.from("parcerias").delete().eq("id",editId);
-  fecharPopup();carregar();
-}
+busca.oninput = render;
+carregar();
 </script>
 
 </body>
