@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <title>Painel Admin</title>
 
-<!-- 🔒 VIEWPORT BLOQUEANDO ZOOM -->
 <meta name="viewport"
   content="width=device-width,
   initial-scale=1,
@@ -14,11 +13,8 @@
 
 <meta name="theme-color" content="#ff6a00">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Admin">
 <meta name="mobile-web-app-capable" content="yes">
 
-<link rel="manifest" href="manifest.json">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -28,18 +24,17 @@
   padding:0;
   box-sizing:border-box;
   font-family:Inter;
-  -webkit-tap-highlight-color: transparent;
+  -webkit-tap-highlight-color:transparent;
 }
 
 html,body{
   width:100%;
   height:100%;
   background:#f5f7fb;
-  overflow:hidden; /* ❌ SEM SCROLL GLOBAL */
-  touch-action: manipulation; /* 🔒 BLOQUEIA GESTOS */
+  overflow:hidden;
 }
 
-/* VARIÁVEIS */
+/* VARS */
 :root{
   --primary:#ff6a00;
   --card:#ffffff;
@@ -50,79 +45,85 @@ html,body{
 
 /* HEADER */
 .header{
-  padding:18px 16px 12px;
+  padding:14px 14px 8px;
   display:flex;
   justify-content:space-between;
   align-items:center;
 }
 .header h1{
-  font-size:18px;
+  font-size:17px;
   font-weight:800;
-  color:var(--text);
 }
 .header p{
-  font-size:12px;
+  font-size:11px;
   color:var(--muted);
-  margin-top:2px;
 }
 
-/* SINO */
-.notify{
-  position:relative;
-  font-size:22px;
-}
-.badge{
-  position:absolute;
-  top:-6px;
-  right:-6px;
-  background:#ef4444;
-  color:#fff;
-  font-size:10px;
-  font-weight:800;
-  border-radius:999px;
-  padding:2px 6px;
+/* CALENDÁRIO */
+.calendar{
+  padding:10px 12px;
+  overflow-x:auto;
+  display:flex;
+  gap:10px;
 }
 
-/* GRID – 5 POR LINHA */
+.day{
+  min-width:130px;
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:10px;
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+
+.day strong{
+  font-size:12px;
+}
+
+.day span{
+  font-size:11px;
+  color:#374151;
+}
+
+/* GRID BOTÕES */
 .grid{
-  padding:8px 12px env(safe-area-inset-bottom);
+  flex:1;
+  padding:10px 10px env(safe-area-inset-bottom);
   display:grid;
   grid-template-columns:repeat(5,1fr);
-  gap:10px;
-  height:calc(100vh - 76px);
+  gap:8px;
   overflow-y:auto;
 }
 
 /* CARD */
 .card{
   background:var(--card);
-  border-radius:16px;
+  border-radius:14px;
   border:1px solid var(--border);
   aspect-ratio:1/1;
   display:flex;
   flex-direction:column;
   align-items:center;
   justify-content:center;
-  gap:6px;
+  gap:4px;
   text-align:center;
-  transition:.15s ease;
 }
+
 .card:active{
   transform:scale(.94);
-  background:#fff7ed;
 }
 
 /* ÍCONE */
 .icon{
-  font-size:24px;
+  font-size:20px;
 }
 
 /* TEXTO */
 .card span{
-  font-size:11px;
+  font-size:10px;
   font-weight:800;
-  color:#1f2937;
-  line-height:1.2;
 }
 
 /* POPUP */
@@ -140,12 +141,12 @@ html,body{
 }
 .close{
   position:fixed;
-  top:12px;
-  right:12px;
+  top:10px;
+  right:10px;
   z-index:10000;
   background:#fff;
   border-radius:999px;
-  padding:8px 12px;
+  padding:6px 10px;
   font-weight:800;
 }
 </style>
@@ -157,16 +158,14 @@ html,body{
 <div class="header">
   <div>
     <h1>Painel Admin</h1>
-    <p>Controle do sistema</p>
-  </div>
-
-  <div class="notify" onclick="abrir('notificacoes.html')">
-    🔔
-    <div class="badge" id="badge">3</div>
+    <p>Resumo e controle</p>
   </div>
 </div>
 
-<!-- GRID -->
+<!-- CALENDÁRIO -->
+<div class="calendar" id="calendar"></div>
+
+<!-- GRID DE BOTÕES -->
 <div class="grid">
 
   <div class="card" onclick="abrir('index-parcerias.html')">
@@ -228,38 +227,62 @@ html,body{
 </div>
 
 <script>
-/* 🔐 SUPABASE */
 const sb = supabase.createClient(
   "https://ghkfeobnrfvqwzuliqfz.supabase.co",
   "sb_publishable_R-eenS9xurRgnrqDR9kz0Q_kJonEi7t"
 );
 
-/* 🔒 PROTEÇÃO DE LOGIN */
+/* 🔐 LOGIN */
 (async()=>{
   const { data:{session} } = await sb.auth.getSession();
   if(!session){
     location.replace("login.html");
+    return;
   }
+  carregarCalendario();
 })();
+
+/* 📅 CALENDÁRIO */
+async function carregarCalendario(){
+  const { data } = await sb
+    .from("excursoes")
+    .select("id,destino,data_saida,hora_saida")
+    .eq("status","Ativa")
+    .order("data_saida",{ascending:true});
+
+  calendar.innerHTML="";
+
+  data.forEach(v=>{
+    const d = document.createElement("div");
+    d.className="day";
+    d.innerHTML=`
+      <strong>${formatarData(v.data_saida)}</strong>
+      <span>${v.destino}</span>
+      <span>🕒 ${v.hora_saida?.slice(0,5) || "--:--"}</span>
+      <span>👥 0 passageiros</span>
+    `;
+    calendar.appendChild(d);
+  });
+}
+
+function formatarData(data){
+  const [a,m,d] = data.split("-");
+  return `${d}/${m}`;
+}
 
 /* POPUP */
 function abrir(url){
-  frame.src = url;
-  popup.style.display = "block";
+  frame.src=url;
+  popup.style.display="block";
 }
 function fechar(){
-  frame.src = "";
-  popup.style.display = "none";
+  frame.src="";
+  popup.style.display="none";
 }
 
-/* 🔒 BLOQUEIA ZOOM iOS EXTRA */
-document.addEventListener('gesturestart', e => e.preventDefault());
-document.addEventListener('dblclick', e => e.preventDefault());
-
-/* PWA */
-if("serviceWorker" in navigator){
-  navigator.serviceWorker.register("sw.js");
-}
+/* 🔒 BLOQUEIOS */
+document.addEventListener("gesturestart",e=>e.preventDefault());
+document.addEventListener("dblclick",e=>e.preventDefault());
 </script>
 
 </body>
