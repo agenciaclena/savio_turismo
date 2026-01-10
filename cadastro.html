@@ -581,38 +581,35 @@ async function finalizar(){
     .from("buffet_contratos")
     .getPublicUrl(caminho);
 
-  /* ===== INSERT NA TABELA CONTRATOS ===== */
-  const { error:insertError } = await sb
-    .from("contratos")
-    .insert({
+ const { error:insertError } = await sb
+  .from("contratos")
+  .insert({
+    excursao_id: id,
 
-      excursao_id: id,
+    nome: nome.value,
+    cpf: cpf.value,
+    rg: rg.value,
+    telefone: telefone.value,
+    email: email.value,
 
-      nome: nome.value,
-      cpf: cpf.value,
-      rg: rg.value,
-      telefone: telefone.value,
-      email: email.value,
+    emergencia_nome: em_nome.value,
+    emergencia_parentesco: em_parentesco.value,
+    emergencia_telefone: em_telefone.value,
 
-      endereco: endereco.value,
+    info_saude: {
+      sangue: saude_sangue.value || null,
+      alergias: saude_alergias.value || null,
+      condicao: saude_condicao.value || null,
+      medicamentos: saude_medicamentos.value || null
+    },
 
-      emergencia_nome: em_nome.value,
-      emergencia_parentesco: em_parentesco.value,
-      emergencia_telefone: em_telefone.value,
+    valor: ctr_valor.innerText.replace(/[^\d]/g,""),
+    forma_pagamento: forma_pagamento.value || null,
 
-      info_saude: {
-        sangue: saude_sangue.value || null,
-        alergias: saude_alergias.value || null,
-        condicao: saude_condicao.value || null,
-        medicamentos: saude_medicamentos.value || null
-      },
+    pdf_url: pdfData.publicUrl,
+    status: "ASSINADO"
+  });
 
-      valor: ctr_valor.innerText.replace(/[^\d]/g,""),
-      forma_pagamento: forma_pagamento.value || null,
-
-      pdf_url: pdfData.publicUrl,
-      status: "ASSINADO"
-    });
 
   if(insertError){
     alert("ERRO AO SALVAR CONTRATO");
