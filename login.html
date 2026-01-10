@@ -152,7 +152,7 @@ const sb = supabase.createClient(
 (async()=>{
   const { data:{session} } = await sb.auth.getSession();
   if(session){
-    location.replace("index-admin.html");
+    location.replace("app.html");
   }
 })();
 
@@ -177,7 +177,7 @@ async function login(){
   }
 
   // LOGIN OK
-  location.replace("index-admin.html");
+  location.replace("app.html");
 }
 
 /* PWA */
