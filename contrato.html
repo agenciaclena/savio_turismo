@@ -97,7 +97,6 @@ h3{
   border-radius:999px;
   position:relative;
   transition:.25s;
-  flex-shrink:0;
 }
 
 .toggle::after{
@@ -185,26 +184,44 @@ h3{
 
   <h3>III. DECLARAÇÕES</h3>
   <p>
-    O contratante declara que leu e compreendeu todos os termos deste contrato.
+    O contratante declara, para todos os fins de direito, que leu,
+    compreendeu e aceita integralmente todos os termos deste contrato,
+    estando ciente de suas responsabilidades, condições e riscos
+    inerentes à atividade turística contratada.
+  </p>
+
+  <h3>IV. VALIDADE JURÍDICA</h3>
+  <p>
+    O presente contrato possui validade jurídica plena, sendo firmado
+    de forma eletrônica, nos termos da legislação vigente, produzindo
+    todos os efeitos legais a partir do aceite eletrônico e posterior
+    assinatura digital do contratante.
+  </p>
+
+  <h3>V. LGPD</h3>
+  <p>
+    O contratante autoriza expressamente o tratamento de seus dados
+    pessoais para fins exclusivos de execução deste contrato, nos
+    termos da Lei nº 13.709/2018 (Lei Geral de Proteção de Dados).
   </p>
 
   <!-- FLEGS -->
   <div class="flegs">
 
     <label class="fleg">
-      <span>LI E ACEITO O CONTRATO</span>
+      <span>LI E ACEITO INTEGRALMENTE O CONTRATO</span>
       <input type="checkbox" class="chk">
       <div class="toggle"></div>
     </label>
 
     <label class="fleg">
-      <span>ESTOU CIENTE DOS RISCOS</span>
+      <span>ESTOU CIENTE DOS RISCOS DA ATIVIDADE</span>
       <input type="checkbox" class="chk">
       <div class="toggle"></div>
     </label>
 
     <label class="fleg">
-      <span>AUTORIZO O USO DE DADOS (LGPD)</span>
+      <span>AUTORIZO O TRATAMENTO DOS DADOS (LGPD)</span>
       <input type="checkbox" class="chk">
       <div class="toggle"></div>
     </label>
@@ -214,33 +231,64 @@ h3{
 </div>
 
 <div class="actions">
-  <button id="btnAssinar">IR PARA ASSINATURA</button>
+  <button id="btnAssinar">PROSSEGUIR PARA ASSINATURA</button>
 </div>
 
 <script>
-/* ===== DADOS ===== */
+/* ================= DADOS ================= */
 const dados = JSON.parse(localStorage.getItem("cadastro") || "{}");
-const pacote = JSON.parse(localStorage.getItem("pacoteSelecionado") || "{}");
+const pacote = JSON.parse(localStorage.getItem("pacoteSelecionado") || {});
 
-c_nome.innerText = dados.nome || "";
-c_cpf.innerText = dados.cpf || "";
-c_rg.innerText = dados.rg || "";
-p_titulo.innerText = pacote.titulo || "";
-p_valor.innerText = pacote.valor || "";
+/* BLOQUEIO ABSOLUTO */
+if(
+  !dados.nome ||
+  !dados.cpf ||
+  !dados.rg ||
+  !pacote.titulo ||
+  !pacote.valor
+){
+  alert("DADOS DO CONTRATO INCOMPLETOS. RETORNE AO INÍCIO.");
+  location.href = "index.html";
+}
 
-/* ===== VALIDAÇÃO DAS FLEGS ===== */
+/* INJEÇÃO */
+document.getElementById("c_nome").innerText = dados.nome;
+document.getElementById("c_cpf").innerText = dados.cpf;
+document.getElementById("c_rg").innerText = dados.rg;
+document.getElementById("p_titulo").innerText = pacote.titulo;
+document.getElementById("p_valor").innerText = pacote.valor;
+
+/* ================= ACEITE ================= */
 const checks = document.querySelectorAll(".chk");
 const btn = document.getElementById("btnAssinar");
 
 function validar(){
-  const ok = [...checks].every(c=>c.checked);
+  const ok = [...checks].every(c => c.checked);
   btn.classList.toggle("active", ok);
 }
 
-checks.forEach(c=>c.addEventListener("change", validar));
+checks.forEach(c => c.addEventListener("change", validar));
 
-btn.onclick = ()=>{
+btn.onclick = () => {
   if(!btn.classList.contains("active")) return;
+
+  const aceiteContrato = {
+    nome: dados.nome,
+    cpf: dados.cpf,
+    rg: dados.rg,
+    pacote: pacote.titulo,
+    valor: pacote.valor,
+    aceite_termos: true,
+    aceite_riscos: true,
+    aceite_lgpd: true,
+    data_aceite: new Date().toISOString(),
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    user_agent: navigator.userAgent,
+    hash: crypto.randomUUID()
+  };
+
+  localStorage.setItem("aceiteContrato", JSON.stringify(aceiteContrato));
+
   location.href = "assinatura.html";
 };
 </script>
