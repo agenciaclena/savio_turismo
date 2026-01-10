@@ -20,7 +20,6 @@
 :root{
   --primary:#ff6a00;
   --border:#e5e7eb;
-  --muted:#6b7280;
   --danger:#dc2626;
 }
 
@@ -36,12 +35,14 @@ html,body{
   flex-direction:column;
 }
 
+/* HEADER */
 .header{
-  padding:18px;
+  padding:16px;
   font-weight:800;
   border-bottom:1px solid var(--border);
 }
 
+/* FORM */
 .form{
   padding:16px;
   display:grid;
@@ -62,7 +63,7 @@ input{
 }
 
 .image-box{
-  height:160px;
+  height:140px;
   border-radius:18px;
   background:#e5e7eb;
   display:flex;
@@ -87,11 +88,13 @@ button{
   cursor:pointer;
 }
 
+/* LISTA EM LINHA */
 .lista{
   flex:1;
   overflow:auto;
   padding:16px;
   display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(120px,1fr));
   gap:12px;
 }
 
@@ -101,17 +104,25 @@ button{
   border-radius:16px;
   padding:12px;
   display:flex;
+  flex-direction:column;
   align-items:center;
-  gap:12px;
-  cursor:pointer;
+  gap:8px;
+  text-align:center;
+  user-select:none;
 }
 
 .item img{
-  width:48px;
-  height:48px;
+  width:64px;
+  height:64px;
   object-fit:contain;
 }
 
+.item span{
+  font-size:12px;
+  font-weight:800;
+}
+
+/* POPUP */
 .popup{
   position:fixed;
   inset:0;
@@ -119,6 +130,7 @@ button{
   display:none;
   align-items:center;
   justify-content:center;
+  z-index:999;
 }
 
 .popup-box{
@@ -131,6 +143,10 @@ button{
   gap:12px;
 }
 
+.popup-box strong{
+  font-size:14px;
+}
+
 .popup-actions{
   display:flex;
   gap:10px;
@@ -138,6 +154,7 @@ button{
 
 .popup-actions button{flex:1}
 .delete{background:var(--danger)}
+.cancel{background:#e5e7eb;color:#000}
 </style>
 </head>
 
@@ -148,7 +165,6 @@ button{
   <div class="header">Parcerias</div>
 
   <div class="form">
-
     <label>Logo</label>
     <div class="image-box" onclick="logo.click()">
       <img id="preview" style="display:none">
@@ -158,7 +174,7 @@ button{
     <label>Nome</label>
     <input id="nome">
 
-    <label>Link</label>
+    <label>Link (somente informativo)</label>
     <input id="link" type="url">
 
     <button onclick="salvar()">Salvar parceria</button>
@@ -168,9 +184,11 @@ button{
 
 </div>
 
+<!-- POPUP EDIÇÃO -->
 <div class="popup" id="popup">
   <div class="popup-box">
     <strong>Editar parceria</strong>
+
     <input id="edit_nome">
     <input id="edit_link">
 
@@ -178,6 +196,8 @@ button{
       <button onclick="atualizar()">Salvar</button>
       <button class="delete" onclick="excluir()">Excluir</button>
     </div>
+
+    <button class="cancel" onclick="fecharPopup()">Cancelar</button>
   </div>
 </div>
 
@@ -214,7 +234,7 @@ async function salvar(){
     return;
   }
 
-  const path = `${userId}/${Date.now()}-${file.name}`;
+  const path = `${userId}/${Date.now()}.png`;
 
   const { error:uploadError } = await sb
     .storage
@@ -222,7 +242,6 @@ async function salvar(){
     .upload(path, file, { upsert:true });
 
   if(uploadError){
-    console.error(uploadError);
     alert("Erro ao enviar imagem");
     return;
   }
@@ -236,7 +255,6 @@ async function salvar(){
   });
 
   if(error){
-    console.error(error);
     alert("Erro ao salvar parceria");
     return;
   }
@@ -267,19 +285,26 @@ async function carregar(){
     div.className="item";
     div.innerHTML=`
       <img src="${img}">
-      <strong>${p.nome}</strong>
+      <span>${p.nome}</span>
     `;
 
-    div.onclick=()=>window.open(p.link,"_blank");
-    div.ondblclick=()=>{
-      editId=p.id;
-      edit_nome.value=p.nome;
-      edit_link.value=p.link;
-      popup.style.display="flex";
+    /* 🔒 NÃO FAZ NADA NO CLICK */
+    div.onclick = () => {};
+
+    /* ✅ DUPLO CLICK ABRE EDIÇÃO */
+    div.ondblclick = () => {
+      editId = p.id;
+      edit_nome.value = p.nome;
+      edit_link.value = p.link || "";
+      popup.style.display = "flex";
     };
 
     lista.appendChild(div);
   });
+}
+
+function fecharPopup(){
+  popup.style.display="none";
 }
 
 async function atualizar(){
@@ -288,14 +313,14 @@ async function atualizar(){
     link:edit_link.value
   }).eq("id",editId);
 
-  popup.style.display="none";
+  fecharPopup();
   carregar();
 }
 
 async function excluir(){
   if(!confirm("Excluir parceria?")) return;
   await sb.from("parcerias").delete().eq("id",editId);
-  popup.style.display="none";
+  fecharPopup();
   carregar();
 }
 </script>
