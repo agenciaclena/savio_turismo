@@ -652,7 +652,6 @@ contratoClone.remove();
 // 📅 data oficial da assinatura (auditoria)
 const dataAssinaturaISO = new Date().toISOString();
 
-// 💾 salva contrato no banco
 const { error: insertError } = await sb
   .from("contratos")
   .insert({
@@ -679,10 +678,8 @@ const { error: insertError } = await sb
     forma_pagamento: forma_pagamento.value || null,
 
     pdf_url: pdfData.publicUrl,
-    status: "ASSINADO",
-
-    // 🔐 auditoria jurídica
-    data_assinatura: dataAssinaturaISO
+    data_assinatura: dataAssinaturaISO, // ✅ AGORA FUNCIONA
+    status: "ASSINADO"
   });
 
 
