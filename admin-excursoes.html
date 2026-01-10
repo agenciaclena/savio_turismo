@@ -228,8 +228,6 @@ body{background:#f4f6fb;color:#111}
 <div class="grid" id="lista"></div>
   
 <button class="fab" onclick="novo()">+</button>
-<button class="fab" style="bottom:90px" onclick="abrirConfig()">⚙️</button>
-<button class="fab" style="bottom:160px" onclick="abrirParcerias()">🤝</button>
 
 <!-- MODAL -->
 <div class="modal" id="modal">
@@ -350,19 +348,32 @@ let userId;
 let editId = null;
 let blob = null;
 let itens = [];
-let lojaConfig = null;
-let blobParceiro = null;
 
-/* ================= INIT ================= */
+
+/* ================= PROTEÇÃO DE LOGIN ================= */
 (async () => {
   const { data: { session } } = await sb.auth.getSession();
-  if (!session) {
-    location.href = "login.html";
+
+  // 🔒 Se NÃO estiver logado, bloqueia
+  if (!session || !session.user) {
+    window.location.replace("login.html");
     return;
   }
+
+  // ✅ Usuário autenticado
   userId = session.user.id;
+
+  // 🔁 Escuta logout em outra aba
+  sb.auth.onAuthStateChange((event) => {
+    if (event === "SIGNED_OUT") {
+      window.location.replace("login.html");
+    }
+  });
+
+  // 🚀 Carrega dados
   await carregar();
 })();
+
 
 /* ================= EVENTOS ================= */
 valor.addEventListener("input", () => {
@@ -620,80 +631,6 @@ function editar(id) {
   modal.classList.add("show");
 }
 
-/* ================= CONFIG LOJA ================= */
-function abrirConfig() {
-  carregarConfig();
-  modalConfig.classList.add("show");
-}
-
-function fecharConfig() {
-  modalConfig.classList.remove("show");
-}
-
-async function carregarConfig() {
-  const { data, error } = await sb
-    .from("loja_config")
-    .select("*")
-    .single();
-
-  if (error) {
-    alert("Erro ao carregar configurações");
-    return;
-  }
-
-  lojaConfig = data;
-
-  cfg_nome.value = data.nome_loja || "";
-  cfg_cor_primaria.value = data.cor_primaria || "#ff6a00";
-  cfg_cor_fundo.value = data.cor_fundo || "#f4f6fb";
-  cfg_cor_card.value = data.cor_card || "#ffffff";
-  cfg_cor_texto.value = data.cor_texto || "#111827";
-
-  cfg_banners.value = (data.banners || []).join("\n");
-  cfg_banner_efeito.value = data.banner_efeito || "slide";
-  cfg_banner_intervalo.value = data.banner_intervalo || 2000;
-
-  cfg_uv_ativo.checked = !!data.ultimas_vagas_ativo;
-  cfg_uv_dias.value = data.ultimas_vagas_dias || 7;
-  cfg_uv_texto.value = data.ultimas_vagas_texto || "Últimas vagas";
-  cfg_uv_cor.value = data.ultimas_vagas_cor || "#dc2626";
-  cfg_uv_piscar.checked = !!data.ultimas_vagas_piscar;
-}
-
-async function salvarConfig() {
-  if (!lojaConfig) return;
-
-  const payload = {
-    nome_loja: cfg_nome.value,
-    cor_primaria: cfg_cor_primaria.value,
-    cor_fundo: cfg_cor_fundo.value,
-    cor_card: cfg_cor_card.value,
-    cor_texto: cfg_cor_texto.value,
-
-    banners: cfg_banners.value.split("\n").filter(Boolean),
-    banner_efeito: cfg_banner_efeito.value,
-    banner_intervalo: Number(cfg_banner_intervalo.value),
-
-    ultimas_vagas_ativo: cfg_uv_ativo.checked,
-    ultimas_vagas_dias: Number(cfg_uv_dias.value),
-    ultimas_vagas_texto: cfg_uv_texto.value,
-    ultimas_vagas_cor: cfg_uv_cor.value,
-    ultimas_vagas_piscar: cfg_uv_piscar.checked
-  };
-
-  const { error } = await sb
-    .from("loja_config")
-    .update(payload)
-    .eq("id", lojaConfig.id);
-
-  if (error) {
-    alert("Erro ao salvar configurações");
-    return;
-  }
-
-  fecharConfig();
-}
-
 /* ================= EXCLUIR ================= */
 async function excluir() {
   if (!confirm("Excluir excursão?")) return;
@@ -702,62 +639,8 @@ async function excluir() {
   carregar();
 }
 
-function abrirParcerias(){
-  modalParcerias.classList.add("show");
-}
-
-function fecharParcerias(){
-  modalParcerias.classList.remove("show");
-
-  blobParceiro = null;
-  logoParceiro.value = ""; // 🔥 LIMPA FILE INPUT
-
-  previewParceiro.style.display = "none";
-  parc_nome.value = "";
-  parc_link.value = "";
-  parc_ativo.checked = true;
-}
-
-async function salvarParceria(){
-  if(!blobParceiro){
-    alert("Selecione a logo");
-    return;
-  }
-
-  const path = `${userId}/${Date.now()}.png`;
-
-  const { error:uploadError } = await sb.storage
-    .from("buffet_parceirias")
-    .upload(path, blobParceiro, { upsert:true });
-
-  if(uploadError){
-    alert("Erro ao enviar logo");
-    return;
-  }
-
-  const payload = {
-  user_id: userId,
-  nome: parc_nome.value || null,
-  link: parc_link.value || null,
-  logo_url: path,
-  ativo: parc_ativo.checked
-};
-
-
-  const { error } = await sb.from("parcerias").insert(payload);
-
-  if(error){
-    alert("Erro ao salvar parceria");
-    return;
-  }
-
-  fecharParcerias();
-  alert("Parceria salva com sucesso ✅");
-}
 
 </script>
-
-<div class="modal" id="modalConfig">
   <div class="sheet">
 
     <div class="sheet-header">
@@ -837,7 +720,6 @@ async function salvarParceria(){
 
   </div>
 </div>
-<div class="modal" id="modalParcerias">
   <div class="sheet">
 
     <div class="sheet-header">
