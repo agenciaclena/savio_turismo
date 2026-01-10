@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Parcerias</title>
+<title>Configurações da Loja</title>
 
 <meta name="viewport"
   content="width=device-width,
@@ -15,169 +15,301 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Inter}
-html,body{height:100%;background:#f4f6fb;overflow:hidden}
-
-:root{
-  --primary:#ff6a00;
-  --border:#e5e7eb;
-  --danger:#dc2626;
-  --card:#fff;
+/* RESET */
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Inter, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-/* ===== LAYOUT ===== */
-.page{height:100%;display:flex;flex-direction:column}
+/* TOKENS */
+:root{
+  --primary:#ff6a00;
+  --primary-soft:#fff7ed;
+  --border:#e5e7eb;
+  --muted:#6b7280;
+  --text:#111827;
+  --bg:#ffffff;
+}
+
+/* BASE */
+html,body{
+  height:100%;
+  background:rgba(0,0,0,.55);
+  overflow:hidden;
+  color:var(--text);
+}
+
+/* MODAL */
+.modal{
+  background:var(--bg);
+  width:100%;
+  height:94vh;
+  border-radius:28px 28px 0 0;
+  display:flex;
+  flex-direction:column;
+  box-shadow:0 -20px 60px rgba(0,0,0,.25);
+}
 
 /* HEADER */
 .header{
-  padding:16px;
-  font-size:18px;
-  font-weight:800;
+  padding:18px 20px;
   border-bottom:1px solid var(--border);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-weight:800;
+  font-size:15px;
 }
 
-/* FORM */
-.form{
-  padding:16px;
-  display:grid;
-  gap:12px;
-  border-bottom:1px solid var(--border);
+.header span:last-child{
+  cursor:pointer;
+  font-size:18px;
+  color:#374151;
 }
-label{font-size:12px;font-weight:700}
-input{
+
+/* BODY */
+.body{
+  flex:1;
+  overflow:auto;
+  padding:20px;
+  display:grid;
+  gap:14px;
+}
+
+/* SECTIONS */
+h4{
+  margin-top:18px;
+  margin-bottom:6px;
+  font-size:13px;
+  font-weight:900;
+  letter-spacing:.02em;
+  color:#374151;
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+
+/* LABELS */
+label{
+  font-size:12px;
+  font-weight:700;
+  color:#374151;
+}
+
+/* INPUTS */
+input,
+textarea,
+select{
+  width:100%;
   height:44px;
   border-radius:14px;
   border:1px solid var(--border);
   padding:0 14px;
+  font-size:14px;
+  background:#fff;
+  transition:border-color .2s, box-shadow .2s;
 }
-.image-box{
-  height:150px;
-  border-radius:18px;
-  background:#e5e7eb;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+
+textarea{
+  min-height:90px;
+  padding:12px 14px;
+  resize:none;
+}
+
+input:focus,
+textarea:focus,
+select:focus{
+  outline:none;
+  border-color:var(--primary);
+  box-shadow:0 0 0 3px rgba(255,106,0,.12);
+}
+
+/* COLOR INPUT */
+input[type="color"]{
+  padding:6px;
+  height:44px;
   cursor:pointer;
 }
-.image-box img{
-  width:100%;
-  height:100%;
-  object-fit:contain;
+
+/* TOGGLE */
+.toggle{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:14px 16px;
+  border:1px solid var(--border);
+  border-radius:16px;
+  font-weight:800;
+  font-size:13px;
+  background:#fff;
+  gap:12px;
 }
+
+/* HIDE CHECKBOX */
+.toggle input{
+  display:none;
+}
+
+/* SWITCH */
+.switch{
+  width:40px;
+  height:22px;
+  background:#d1d5db;
+  border-radius:999px;
+  position:relative;
+  transition:.25s;
+  flex-shrink:0;
+}
+
+.switch::after{
+  content:"";
+  width:18px;
+  height:18px;
+  background:#fff;
+  border-radius:50%;
+  position:absolute;
+  top:2px;
+  left:2px;
+  transition:.25s;
+  box-shadow:0 1px 3px rgba(0,0,0,.2);
+}
+
+.toggle input:checked + .switch{
+  background:var(--primary);
+}
+
+.toggle input:checked + .switch::after{
+  left:20px;
+}
+
+/* FOOTER */
+.footer{
+  padding:16px 20px;
+  display:flex;
+  gap:12px;
+  border-top:1px solid var(--border);
+  background:#fff;
+}
+
+/* BUTTONS */
 button{
+  flex:1;
   height:48px;
   border-radius:999px;
   border:none;
-  background:var(--primary);
-  color:#fff;
   font-weight:900;
+  font-size:14px;
+  cursor:pointer;
+  transition:transform .15s, box-shadow .15s, opacity .15s;
 }
 
-/* ===== GRID PARCERIAS ===== */
-.lista{
-  flex:1;
-  overflow:auto;
-  padding:16px;
-  display:grid;
-  grid-template-columns:repeat(5,1fr); /* 🔥 5 POR LINHA */
-  gap:14px;
-}
-.item{
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:18px;
-  padding:12px;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:8px;
-  user-select:none;
-}
-.item img{
-  width:72px;
-  height:72px;
-  object-fit:contain;
-}
-.item span{
-  font-size:12px;
-  font-weight:800;
-  text-align:center;
+button:active{
+  transform:scale(.98);
 }
 
-/* ===== POPUP ===== */
-.popup{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.55);
-  display:none;
-  align-items:center;
-  justify-content:center;
-  z-index:999;
+.save{
+  background:linear-gradient(135deg,#ff6a00,#ff9a57);
+  color:#fff;
+  box-shadow:0 8px 22px rgba(255,106,0,.35);
 }
-.popup-box{
-  background:#fff;
-  width:92%;
-  max-width:340px;
-  border-radius:20px;
-  padding:16px;
-  display:grid;
-  gap:12px;
+
+.cancel{
+  background:#f3f4f6;
+  color:#111;
 }
-.popup-box strong{font-size:14px}
-.popup-actions{display:flex;gap:10px}
-.popup-actions button{flex:1}
-.delete{background:var(--danger)}
-.cancel{background:#e5e7eb;color:#000}
+
+.save:hover{opacity:.95}
+.cancel:hover{background:#e5e7eb}
+
+/* SCROLLBAR CLEAN (mobile friendly) */
+.body::-webkit-scrollbar{
+  width:6px;
+}
+.body::-webkit-scrollbar-thumb{
+  background:#e5e7eb;
+  border-radius:999px;
+}
+
 </style>
 </head>
 
 <body>
 
-<div class="page">
+<div class="modal">
 
-  <div class="header">Parcerias</div>
-
-  <!-- FORM NOVA -->
-  <div class="form">
-    <label>Logo</label>
-    <div class="image-box" onclick="logo.click()">
-      <img id="preview" style="display:none">
-      <input type="file" id="logo" hidden accept="image/*">
-    </div>
-
-    <label>Nome</label>
-    <input id="nome">
-
-    <label>Link (informativo)</label>
-    <input id="link">
-
-    <button onclick="salvar()">Salvar parceria</button>
+  <div class="header">
+    <span>Configurações da Loja</span>
+    <span onclick="fechar()">✕</span>
   </div>
 
-  <!-- LISTA -->
-  <div class="lista" id="lista"></div>
-</div>
+  <div class="body">
 
-<!-- POPUP EDITAR -->
-<div class="popup" id="popup">
-  <div class="popup-box">
-    <strong>Editar parceria</strong>
+    <!-- VISUAL -->
+    <h4>🎨 Visual</h4>
 
-    <div class="image-box" onclick="edit_logo.click()">
-      <img id="edit_preview">
-      <input type="file" id="edit_logo" hidden accept="image/*">
-    </div>
+    <label>Nome da loja</label>
+    <input id="nome_loja">
 
-    <input id="edit_nome">
-    <input id="edit_link">
+    <label>Cor primária</label>
+    <input type="color" id="cor_primaria">
 
-    <div class="popup-actions">
-      <button onclick="atualizar()">Salvar</button>
-      <button class="delete" onclick="excluir()">Excluir</button>
-    </div>
+    <label>Cor de fundo</label>
+    <input type="color" id="cor_fundo">
 
-    <button class="cancel" onclick="fecharPopup()">Cancelar</button>
+    <label>Cor dos cards</label>
+    <input type="color" id="cor_card">
+
+    <label>Cor do texto</label>
+    <input type="color" id="cor_texto">
+
+    <!-- BANNERS -->
+    <h4>🖼️ Banners</h4>
+
+    <label>URLs (uma por linha)</label>
+    <textarea id="banners" placeholder="https://..."></textarea>
+
+    <label>Efeito</label>
+    <select id="banner_efeito">
+      <option value="slide">Slide</option>
+      <option value="fade">Fade</option>
+    </select>
+
+    <label>Intervalo (ms)</label>
+    <input type="number" id="banner_intervalo">
+
+    <!-- ÚLTIMAS VAGAS -->
+    <h4>🚨 Últimas vagas</h4>
+
+    <label class="toggle">
+      <span>Ativar alerta</span>
+      <input type="checkbox" id="uv_ativo">
+      <div class="switch"></div>
+    </label>
+
+    <label>Dias antes da viagem</label>
+    <input type="number" id="uv_dias">
+
+    <label>Texto exibido</label>
+    <input id="uv_texto">
+
+    <label>Cor do alerta</label>
+    <input type="color" id="uv_cor">
+
+    <label class="toggle">
+      <span>Piscar alerta</span>
+      <input type="checkbox" id="uv_piscar">
+      <div class="switch"></div>
+    </label>
+
   </div>
+
+  <div class="footer">
+    <button class="cancel" onclick="fechar()">Cancelar</button>
+    <button class="save" onclick="salvar()">Salvar</button>
+  </div>
+
 </div>
 
 <script>
@@ -186,78 +318,79 @@ const sb = supabase.createClient(
   "sb_publishable_R-eenS9xurRgnrqDR9kz0Q_kJonEi7t"
 );
 
-let userId, file=null, editFile=null, editId=null;
+let configId = null;
 
 (async()=>{
-  const { data:{session} } = await sb.auth.getSession();
-  if(!session) location.href="login.html";
-  userId = session.user.id;
-  carregar();
+  const { data:{ session } } = await sb.auth.getSession();
+  if(!session){
+    location.href="login.html";
+    return;
+  }
+
+  const { data, error } = await sb
+    .from("loja_config")
+    .select("*")
+    .single();
+
+  if(error){
+    alert("Erro ao carregar configurações");
+    return;
+  }
+
+  configId = data.id;
+
+  nome_loja.value = data.nome_loja || "";
+  cor_primaria.value = data.cor_primaria || "#ff6a00";
+  cor_fundo.value = data.cor_fundo || "#f4f6fb";
+  cor_card.value = data.cor_card || "#ffffff";
+  cor_texto.value = data.cor_texto || "#111827";
+
+  banners.value = (data.banners || []).join("\n");
+  banner_efeito.value = data.banner_efeito || "slide";
+  banner_intervalo.value = data.banner_intervalo || 2000;
+
+  uv_ativo.checked = !!data.ultimas_vagas_ativo;
+  uv_dias.value = data.ultimas_vagas_dias || 7;
+  uv_texto.value = data.ultimas_vagas_texto || "Últimas vagas";
+  uv_cor.value = data.ultimas_vagas_cor || "#dc2626";
+  uv_piscar.checked = !!data.ultimas_vagas_piscar;
 })();
 
-logo.onchange = () =>{
-  file = logo.files[0];
-  preview.src = URL.createObjectURL(file);
-  preview.style.display="block";
-};
-
-edit_logo.onchange = ()=>{
-  editFile = edit_logo.files[0];
-  edit_preview.src = URL.createObjectURL(editFile);
-};
-
 async function salvar(){
-  if(!file) return alert("Selecione a logo");
-  const path = `${userId}/${Date.now()}.png`;
-  await sb.storage.from("buffet_parcerias").upload(path,file,{upsert:true});
-  await sb.from("parcerias").insert({
-    user_id:userId,nome:nome.value,link:link.value,logo_url:path
-  });
-  nome.value="";link.value="";preview.style.display="none";file=null;
-  carregar();
-}
+  const payload = {
+    nome_loja: nome_loja.value,
+    cor_primaria: cor_primaria.value,
+    cor_fundo: cor_fundo.value,
+    cor_card: cor_card.value,
+    cor_texto: cor_texto.value,
 
-async function carregar(){
-  const { data } = await sb.from("parcerias")
-    .select("*").eq("user_id",userId).order("created_at",{ascending:false});
-  lista.innerHTML="";
-  data.forEach(p=>{
-    const img = sb.storage.from("buffet_parcerias")
-      .getPublicUrl(p.logo_url).data.publicUrl;
-    const div=document.createElement("div");
-    div.className="item";
-    div.innerHTML=`<img src="${img}"><span>${p.nome}</span>`;
-    div.ondblclick=()=>{
-      editId=p.id;
-      edit_nome.value=p.nome;
-      edit_link.value=p.link||"";
-      edit_preview.src=img;
-      popup.style.display="flex";
-    };
-    lista.appendChild(div);
-  });
-}
+    banners: banners.value.split("\n").filter(Boolean),
+    banner_efeito: banner_efeito.value,
+    banner_intervalo: Number(banner_intervalo.value),
 
-function fecharPopup(){popup.style.display="none";editFile=null;}
+    ultimas_vagas_ativo: uv_ativo.checked,
+    ultimas_vagas_dias: Number(uv_dias.value),
+    ultimas_vagas_texto: uv_texto.value,
+    ultimas_vagas_cor: uv_cor.value,
+    ultimas_vagas_piscar: uv_piscar.checked
+  };
 
-async function atualizar(){
-  let logoUrl;
-  if(editFile){
-    logoUrl = `${userId}/${Date.now()}.png`;
-    await sb.storage.from("buffet_parcerias").upload(logoUrl,editFile,{upsert:true});
+  const { error } = await sb
+    .from("loja_config")
+    .update(payload)
+    .eq("id", configId);
+
+  if(error){
+    alert("Erro ao salvar");
+    return;
   }
-  await sb.from("parcerias").update({
-    nome:edit_nome.value,
-    link:edit_link.value,
-    ...(logoUrl && {logo_url:logoUrl})
-  }).eq("id",editId);
-  fecharPopup();carregar();
+
+  alert("Configurações salvas ✅");
+  fechar();
 }
 
-async function excluir(){
-  if(!confirm("Excluir parceria?"))return;
-  await sb.from("parcerias").delete().eq("id",editId);
-  fecharPopup();carregar();
+function fechar(){
+  window.parent.postMessage("fechar","*");
 }
 </script>
 
