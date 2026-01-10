@@ -21,7 +21,9 @@ content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no,
   --muted:#6b7280;
 }
 
-/* RESET */
+/* =========================
+   RESET
+========================= */
 *{
   box-sizing:border-box;
   font-family:Inter;
@@ -35,15 +37,15 @@ body{
 }
 
 /* =========================
-   TOPO FIXO
+   TOPO FIXO (TELA)
 ========================= */
 header.topo{
   position:fixed;
   top:0;
   left:0;
   right:0;
-  background:#ffffff;
   height:64px;
+  background:#fff;
   display:flex;
   align-items:center;
   justify-content:center;
@@ -65,7 +67,7 @@ header.topo .titulo{
 }
 
 /* =========================
-   LAYOUT
+   LAYOUT TELA
 ========================= */
 .container{
   max-width:1000px;
@@ -88,8 +90,8 @@ h2{
   font-size:15px;
   font-weight:900;
   margin:0 0 14px;
-  border-bottom:1px solid var(--border);
   padding-bottom:10px;
+  border-bottom:1px solid var(--border);
 }
 
 h3{
@@ -149,7 +151,7 @@ input:focus, select:focus{
 }
 
 /* =========================
-   FLAGS / TOGGLES
+   FLAGS
 ========================= */
 .fleg{
   display:flex;
@@ -233,38 +235,62 @@ canvas{
   cursor:pointer;
 }
 
-/* =========================
-   🔥 MODO PDF (CRÍTICO)
-========================= */
+/* =====================================================
+   🔥🔥🔥 MODO PDF — DEFINITIVO
+===================================================== */
 body.modo-pdf{
-  background:#ffffff !important;
+  background:#fff !important;
 }
 
-/* ESCONDE TUDO QUE NÃO ENTRA NO PDF */
+/* REMOVE ESPAÇOS QUE GERAVAM PÁGINA EM BRANCO */
+body.modo-pdf .container{
+  padding:0 !important;
+  margin:0 !important;
+}
+
+/* ESCONDE O QUE NÃO VAI PARA O PDF */
 body.modo-pdf header,
 body.modo-pdf .pacote,
-body.modo-pdf .card:not(.contrato),
-body.modo-pdf .actions{
+body.modo-pdf .actions,
+body.modo-pdf .card:not(.contrato){
   display:none !important;
 }
 
-/* AJUSTA CONTRATO PARA A4 */
+/* CONTRATO = PÁGINA A4 */
 body.modo-pdf .contrato{
   display:block !important;
-  box-shadow:none !important;
-  border-radius:0 !important;
-  margin:0 !important;
-  padding:24px !important;
   width:210mm !important;
   max-width:210mm !important;
-  background:#ffffff !important;
+  margin:0 auto !important;
+  padding:24mm !important;
+  background:#fff !important;
+  box-shadow:none !important;
+  border-radius:0 !important;
+
+  /* 👇 EVITA PÁGINA EM BRANCO */
+  page-break-before: avoid !important;
+  break-before: avoid-page !important;
 }
 
-/* GARANTE CORES NO PDF */
+/* ASSINATURA NO PDF */
+body.modo-pdf #assinaturaPdf{
+  margin-top:40px !important;
+  page-break-inside: avoid !important;
+}
+
+body.modo-pdf #assinaturaImg img{
+  display:block !important;
+  width:260px !important;
+  margin-top:12px !important;
+  border-bottom:2px solid #111 !important;
+}
+
+/* GARANTE CORES */
 body.modo-pdf *{
   -webkit-print-color-adjust:exact !important;
   print-color-adjust:exact !important;
 }
+
 </style>
 
 </head>
